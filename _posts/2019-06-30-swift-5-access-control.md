@@ -1,5 +1,5 @@
 ---
-layout: ''
+layout: post
 title: Swift 5 — Access Control
 date: 2019-06-30 21:00:00 +0000
 description: Access control* restricts access to parts of your code from code in other
