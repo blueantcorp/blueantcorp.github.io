@@ -14,9 +14,9 @@ You can assign specific access levels to individual types (classes, structures, 
 
 In Swift 3 and swift 4, we have **open**, **public**, **internal**, **fileprivate**, and **private** for access control.Open access is the highest (least restrictive) access level and private access is the lowest (most restrictive) access level.
 
-> Almost all entities in your code have a default access level of **internal** if you do not specify an explicit access level yourself. As a result, in many cases you do not need to specify an explicit access level in your code.
+> Almost all entities in your code have a default access level of **internal** if you do not specify an explicit access level yourself. As a result, in many cases you do not need to specify an explicit access level in your code.  
 
-\[As of **Swift 4**, there are 5 **levels of access**\]([https://developer.apple.com/library/content/documentation/Swift/Conceptual/Swift_Programming_Language/AccessControl.html](https://developer.apple.com/library/content/documentation/Swift/Conceptual/Swift_Programming_Language/AccessControl.html "https://developer.apple.com/library/content/documentation/Swift/Conceptual/Swift_Programming_Language/AccessControl.html")), described below from the highest (least restrictive) to the lowest (most restrictive).
+\[As of **Swift 4**, there are 5 **levels of access**\] https://developer.apple.com/library/content/documentation/Swift/Conceptual/Swift_Programming_Language/AccessControl.html, described below from the highest (least restrictive) to the lowest (most restrictive).
 
 \### 1. \`open\` and \`public — \`(least restrictive)
 
@@ -84,7 +84,7 @@ Open access applies only to classes and class members, and it differs from publi
 
 \### 3. internal (default access level)
 
-\**internal** is the default access level. Internal classes and members can be accessed anywhere within the same module(target) they are defined. You typically use \`internal\`access when defining an app’s or a framework’s internal structure.
+\*_internal_* is the default access level. Internal classes and members can be accessed anywhere within the same module(target) they are defined. You typically use \`internal\`access when defining an app’s or a framework’s internal structure.
 
 Lets consider another example from UIKit to explain this. Suppose there is an internal method declared inside the UIKit module. Let’s say a method called \`internalMethod()\` .
 
@@ -92,7 +92,7 @@ Lets consider another example from UIKit to explain this. Suppose there is an in
 
 internal func internalMethod() {
 
- print("I am inside UIKit")
+print("I am inside UIKit")
 
 }
 
@@ -110,7 +110,7 @@ Restricts the use of an entity to its defining source file. You typically use \`
 
 fileprivate func someFunction() {
 
- print("I will only be called from inside A.swift file")
+print("I will only be called from inside A.swift file")
 
 }
 
@@ -118,11 +118,11 @@ fileprivate func someFunction() {
 
 override func viewDidLoad() {
 
- super.viewDidLoad()
+super.viewDidLoad()
 
 let obj = A()
 
- A.someFunction() // error
+A.someFunction() // error
 
 }
 
@@ -130,7 +130,7 @@ let obj = A()
 
 \### 5. \`private — \`(most restrictive)
 
-\**Private access restricts the use of an entity to the enclosing declaration, and to extensions of that declaration that are in the same file**. You typically use \`private\` access to hide the implementation details of a specific piece of functionality when those details are used only within a single declaration.
+\*_Private access restricts the use of an entity to the enclosing declaration, and to extensions of that declaration that are in the same file_*. You typically use \`private\` access to hide the implementation details of a specific piece of functionality when those details are used only within a single declaration.
 
 \`\`\`
 
@@ -138,7 +138,7 @@ let obj = A()
 
 class A {
 
- private var name = "First Letter"
+private var name = "First Letter"
 
 }
 
@@ -152,7 +152,7 @@ print(name) // you may access it here from swift 4. Swift 3 will throw error.
 
 }
 
-A() 
+A()
 
 A().name // Error even if accessed from outside the class A{} of A.swift file.
 
@@ -168,7 +168,7 @@ If you are familiar with extensions, you might have already fallen in love with 
 
 extension A {
 
-   // new functionality can be added here
+// new functionality can be added here
 
 }
 
@@ -180,7 +180,7 @@ Let’s look at a situation: Suppose I have a view controller that has a propert
 
 class RootViewController: UIViewController {
 
-  private var someFlag = false
+private var someFlag = false
 
 }
 
@@ -192,15 +192,15 @@ Unfortunately, using Swift 3, if I now try to access this property from a class 
 
 extension RootViewController: someDelegate {
 
-  func doSomething {
+func doSomething {
 
     if someFlag { //error :Use of unresolved identifier 'someFlag'
-
+    
       // do the thing
-
+    
     }
 
-  }
+}
 
 }
 
@@ -212,13 +212,13 @@ The problem is that the \`private\` access level restricts access to the propert
 
 class RootViewController: UIViewController {
 
-  fileprivate var someFlag = false
+fileprivate var someFlag = false
 
 }
 
 \`\`\`
 
-\**Note: The above section is meant for swift 3 only. The access control of private access level is changed in swift 4 as mentioned in the previous section.**
+\*_Note: The above section is meant for swift 3 only. The access control of private access level is changed in swift 4 as mentioned in the previous section._*
 
 \#### Interview questions:
 
@@ -226,13 +226,13 @@ class RootViewController: UIViewController {
 
 Entities that are declared public or open are accessible from the module in which they are defined and from any module that imports the module they are defined in. The open access level was introduced to impose limitations on class inheritance in Swift.Open access level can only be applied to classes and class members, such as properties and methods.
 
-\- An \`open\` class is *accessible* and *subclassable* outside of the defining module. An \`open\` class member is *accessible* and *overridable* outside of the defining module.
+\- An \`open\` class is _accessible_ and _subclassable_ outside of the defining module. An \`open\` class member is _accessible_ and _overridable_ outside of the defining module.
 
-\- A \`public\` class is *accessible* but *not subclassable* outside of the defining module. A \`public\`class member is *accessible* but *not overridable* outside of the defining module.
+\- A \`public\` class is _accessible_ but _not subclassable_ outside of the defining module. A \`public\`class member is _accessible_ but _not overridable_ outside of the defining module.
 
 Keeping it short, Both public and open comes to play only between modules. Internal access mode will give public access throughout the same module.
 
-\**Ex:** *If you are creating a framework for facebook login in swift*. The developer will import the framework you created and try to call the \`login()\` function. if you want the developer to call this method, it should be declared as \`public\`inside the framework. If you want the developer to call the function and override the \`login()\` function, it should be declared as \`open\`. Simple!!
+\*_Ex:_* _If you are creating a framework for facebook login in swift_. The developer will import the framework you created and try to call the \`login()\` function. if you want the developer to call this method, it should be declared as \`public\`inside the framework. If you want the developer to call the function and override the \`login()\` function, it should be declared as \`open\`. Simple!!
 
 \- **What is the default access level in swift?**
 
