@@ -2,15 +2,13 @@
 layout: post
 title: Swift 5 — Access Control
 date: 2019-06-30 21:00:00 +0000
-description: "**Access control** restricts access to parts of your code from code
-  in other source files and modules. This feature enables you to hide the implementation
-  details of your code, and to specify a preferred interface through which that code
-  can be accessed and used."
+description: Access control restricts access to parts of your code from code in other
+  source files and modules. This feature enables you to hide the implementation details
+  of your code, and to specify a preferred interface through which that code can be
+  accessed and used.
 
 ---
-\# Swift 4— Access Control
-
-Access control* restricts access to parts of your code from code in other source files and modules. This feature enables you to hide the implementation details of your code, and to specify a preferred interface through which that code can be accessed and used.
+_Access control_ restricts access to parts of your code from code in other source files and modules. This feature enables you to hide the implementation details of your code, and to specify a preferred interface through which that code can be accessed and used.
 
 You can assign specific access levels to individual types (classes, structures, and enumerations), as well as to properties, methods, initializers, and subscripts belonging to those types. Protocols can be restricted to a certain context, as can global constants, variables, and functions.
 
@@ -18,7 +16,7 @@ In Swift 3 and swift 4, we have **open**, **public**, **internal**, **fileprivat
 
 > Almost all entities in your code have a default access level of **internal** if you do not specify an explicit access level yourself. As a result, in many cases you do not need to specify an explicit access level in your code.
 
-\[As of **Swift 4**, there are 5 **levels of access**\]([https://developer.apple.com/library/content/documentation/Swift/Conceptual/Swift_Programming_Language/AccessControl.html](https://developer.apple.com/library/content/documentation/Swift/Conceptual/Swift_Programming_Language/AccessControl.html "https://developer.apple.com/library/content/documentation/Swift/Conceptual/Swift_Programming_Language/AccessControl.html")), described below from the highest (least restrictive) to the lowest (most restrictive).
+\[As of **Swift 5**, there are 5 **levels of access**\]([https://developer.apple.com/library/content/documentation/Swift/Conceptual/Swift_Pr**rmgaueccessContr**](https://developer.apple.com/library/content/documentation/Swift/Conceptual/Swift_Programming_Language/AccessControl.html), described [below](http://blah "Hello") from the highest (least restrictive) to the lowest (most restrictive).
 
 \### 1. \`open\` and \`public — \`(least restrictive)
 
