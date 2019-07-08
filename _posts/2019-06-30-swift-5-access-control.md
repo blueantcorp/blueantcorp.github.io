@@ -16,7 +16,7 @@ In Swift 3 and swift 4, we have **open**, **public**, **internal**, **fileprivat
 
 > Almost all entities in your code have a default access level of **internal** if you do not specify an explicit access level yourself. As a result, in many cases you do not need to specify an explicit access level in your code.  
 
-\[As of **Swift 4**, there are 5 **levels of access**\] https://developer.apple.com/library/content/documentation/Swift/Conceptual/Swift_Programming_Language/AccessControl.html, described below from the highest (least restrictive) to the lowest (most restrictive).
+[As of **Swift 4**, there are 5 **levels of access**](https://developer.apple.com/library/content/documentation/Swift/Conceptual/Swift_Programming_Language/AccessControl.html "Apple Docs"), described below from the highest (least restrictive) to the lowest (most restrictive).
 
 \### 1. \`open\` and \`public — \`(least restrictive)
 
