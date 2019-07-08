@@ -14,3 +14,6 @@ fields:
 - type: text
   name: description
   label: description
+pages:
+- _posts/2019-06-30-swift-5-access-control.md
+- _posts/2019-06-30-swift-5-access-control.md
