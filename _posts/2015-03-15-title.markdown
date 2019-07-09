@@ -1,8 +1,8 @@
 ---
 layout: post
 title:  swift 5 — access control
-date:   2015-03-15 16:40:16
-description: march & april, looking forward to summer
+date:   2016-06-15 16:40:16
+description: Access control* restricts access to parts of your code from code in other source files and modules. This feature enables you to hide the implementation details of your code, and to specify a preferred interface through which that code can be accessed and used.
 ---
 *Access control* restricts access to parts of your code from code in other source files and modules. This feature enables you to hide the implementation details of your code, and to specify a preferred interface through which that code can be accessed and used.
 
