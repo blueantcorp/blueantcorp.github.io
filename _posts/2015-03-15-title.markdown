@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  a post with formatting and links
+title:  swift 5 — access control
 date:   2015-03-15 16:40:16
 description: march & april, looking forward to summer
 ---
@@ -14,7 +14,7 @@ In Swift 3 and swift 4, we have **open**, **public**, **internal**, **fileprivat
 
 [As of **Swift 4**, there are 5 **levels of access**](https://developer.apple.com/library/content/documentation/Swift/Conceptual/Swift_Programming_Language/AccessControl.html), described below from the highest (least restrictive) to the lowest (most restrictive).
 
-### 1. `open` and `public — `(least restrictive)
+### 1. `open` and `public` — (least restrictive)
 
 Enable an entity to be used outside the defining module (target). You typically use `open` or `public` access when specifying the public interface to a framework.
 
@@ -22,14 +22,14 @@ Let’s consider an example. Everybody (iOS developers) knows about UIKit. We of
 
 We can subclass UITableView from your viewController as it is having an access level of **open**. Just cmf + click on UITableView class and you can see this.
 
-```
+```swift
 @available(iOS 2.0, *)
 open class UITableView : UIScrollView, NSCoding { }
 ```
 
 Since it is open, we can subclass it from our ViewController and use it.
 
-```
+```swift
 tableView: UITableView() {} // some another module
 ```
 
@@ -37,7 +37,7 @@ tableView: UITableView() {} // some another module
 
 Like open access level, public access level enable an entity to be used outside the defining module (target). But open access level allows us to subclass it from another module where in public access level, we can only subclass or overridde it from within the module it is defined. Look at the following example.
 
-```
+```swift
 //module 1
 public func A(){}
 open func B(){}
@@ -48,7 +48,7 @@ override func B(){} // success
 
 Method A declared in module 1 as a public method cannot be accessed from module 2.It gives error . But Method B declared in module 1 as an open method can be accessed from module 2.
 
-So by keeping it simple, `**open**` **access applies only to classes and class members**, and it differs from `public`access as follows:
+So by keeping it simple, **`open`** **access applies only to classes and class members**, and it differs from **`public`** access as follows:
 
 - `public` classes and class members can only be subclassed and overridden within the defining module (target).
 - `open` classes and class members can be subclassed and overridden both within and outside the defining module (target).
@@ -68,7 +68,7 @@ Open access applies only to classes and class members, and it differs from publi
 
 Lets consider another example from UIKit to explain this. Suppose there is an internal method declared inside the UIKit module. Let’s say a method called `internalMethod()` .
 
-```
+```swift
 internal func internalMethod() {
  print("I am inside UIKit")
 }
@@ -80,7 +80,7 @@ Even if we import `UIKit`, we cannot use the `internalMethod()` inside our ViewC
 
 Restricts the use of an entity to its defining source file. You typically use `fileprivate` access to hide the implementation details of a specific piece of functionality when those details are used within an entire file. ie; the functionality defined with a `fileprivate` access level can only be accessed from within the swift file where it is defined.
 
-```
+```swift
 // A.swift
 fileprivate func someFunction() {
  print("I will only be called from inside A.swift file")
@@ -97,7 +97,7 @@ let obj = A()
 
 **Private access restricts the use of an entity to the enclosing declaration, and to extensions of that declaration that are in the same file**. You typically use `private` access to hide the implementation details of a specific piece of functionality when those details are used only within a single declaration.
 
-```
+```swift
 // A.swift
 class A {
  private var name = "First Letter"
@@ -117,7 +117,7 @@ A().name // Error even if accessed from outside the class A{} of A.swift file.
 
 If you are familiar with extensions, you might have already fallen in love with it. Extension is the way by which we can add functionality to a class, enum or struct. Suppose if we have a class called A and we have to add a new functionality to it, use an extension as shown below.
 
-```
+```swift
 extension A {
    // new functionality can be added here
 }
@@ -125,7 +125,7 @@ extension A {
 
 Let’s look at a situation: Suppose I have a view controller that has a property which I do not want to be accessed outside of the source file.
 
-```
+```swift
 class RootViewController: UIViewController {
   private var someFlag = false
 }
@@ -133,7 +133,7 @@ class RootViewController: UIViewController {
 
 Unfortunately, using Swift 3, if I now try to access this property from a class extension, in the same source file, I hit a problem:
 
-```
+```swift
 extension RootViewController: someDelegate {
   func doSomething {
     if someFlag { //error :Use of unresolved identifier 'someFlag'
@@ -145,7 +145,7 @@ extension RootViewController: someDelegate {
 
 The problem is that the `private` access level restricts access to the property to the enclosing class declaration. The extension is not allowed access even though it is in the same source file. The solution is to switch the access level to `fileprivate`:
 
-```
+```swift
 class RootViewController: UIViewController {
   fileprivate var someFlag = false
 }
