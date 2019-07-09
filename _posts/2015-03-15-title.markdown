@@ -37,14 +37,14 @@ tableView: UITableView() {} // some another module
 
 Like open access level, public access level enable an entity to be used outside the defining module (target). But open access level allows us to subclass it from another module where in public access level, we can only subclass or overridde it from within the module it is defined. Look at the following example.
 
-```swift
+{% highlight swift %}
 //module 1
 public func A(){}
 open func B(){}
 //module 2
 override func A(){} // error
 override func B(){} // success
-```
+{% endhighlight %}
 
 Method A declared in module 1 as a public method cannot be accessed from module 2.It gives error . But Method B declared in module 1 as an open method can be accessed from module 2.
 
