@@ -39,7 +39,7 @@ I write my articles in [Markdown](http://daringfireball.net/projects/markdown/) 
 <span class="contacticon center">
 	<a href="mailto:you@example.com"><i class="fa fa-envelope-square"></i></a>
 	<a href="https://github.com" target="_blank"><i class="fa fa-github-square"></i></a>
-	<a href="https://www.linkedin.com" target="_blank"><i class="fa fa-linkedin-square"></i></a>
+	<a href="https://www.linkedin.com" target="_blank"><i class="fa fa-linkedin-in fa-xs"></i></a>
 	<a href="http://tumblr.com" target="_blank"><i class="fa fa-tumblr-square"></i></a>
 	<a href="https://twitter.com" target="_blank"><i class="fa fa-twitter-square"></i></a>
 </span>
@@ -47,3 +47,5 @@ I write my articles in [Markdown](http://daringfireball.net/projects/markdown/) 
 <div class="col three caption">
 	You can even add a little note about which of these is the best way to reach you.
 </div>
+
+<a data-social="facebook" href="https://www.facebook.com/369986870573" target="_blank" rel="noopener"><svg class="icon-social-facebook"><use xlink:href="#icon-social-facebook"></use></svg></a>
