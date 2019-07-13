@@ -18,7 +18,7 @@ I have been writing here about my experiences learning and developing for iOS si
 
 I am happy to share what I **do know** and also what I **don’t know** in the hope of **learning** something myself in the process.
 
-## code cxamples
+## code samples
 
 You can find all of the **example code** from this website in my [CodeExamples](https://github.com/kharrison/CodeExamples) GitHub repository. All code is released using the MIT License.
 
@@ -37,7 +37,7 @@ I write my articles in [Markdown](http://daringfireball.net/projects/markdown/) 
 <span class="contacticon center">
 	<a href="mailto:you@example.com"><i class="fa fa-envelope-square"></i></a>
 	<a href="https://github.com" target="_blank"><i class="fa fa-github-square"></i></a>
-	<a href="https://www.linkedin.com" target="_blank"><i class="fa fa-linkedin-in fa-xs"></i></a>
+	<a href="https://www.linkedin.com" target="_blank"><i class="fa fas-linkedin-in fa-xs"></i></a>
 	<a href="http://tumblr.com" target="_blank"><i class="fa fa-tumblr-square"></i></a>
 	<a href="https://twitter.com" target="_blank"><i class="fa fa-twitter-square"></i></a>
 </span>
