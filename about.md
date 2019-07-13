@@ -18,6 +18,8 @@ I am happy to share what I **do know** and also what I **don’t know** in the h
 
 You can find all of the **example code** from this website in my [CodeExamples](https://github.com/kharrison/CodeExamples) GitHub repository. All code is released using the MIT License.
 
+<script src="https://gist.github.com/blueantcorp/e4468ea10139bd73f0c84d463fd15534.js"></script>
+
 ## about this site
 
 I use [Middleman](https://middlemanapp.com/) to build this site and I’m very happy with it. I tried a number of static site generators and Middleman is among the best in my opinion. I highly recommend it if you like Ruby-based tools for this sort of thing.
