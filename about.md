@@ -4,10 +4,6 @@ title: about
 permalink: "/about/"
 published: true
 ---
-<img class="col one right" src="/img/prof_pic.jpg">
-
-<br/>
-
 Hi, I’m Emile, and I live in London. Thanks for visiting my site.
 
 I build iOS and Mac apps, mostly as a contractor, and I write about software development.
