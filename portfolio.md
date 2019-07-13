@@ -1,9 +1,10 @@
 ---
 layout: page
 title: portfolio
-permalink: /portfolio/
----
+permalink: "/portfolio/"
+published: false
 
+---
 {% for project in site.portfolio %}
 
 {% if project.redirect %}
