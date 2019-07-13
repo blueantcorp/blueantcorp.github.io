@@ -36,8 +36,8 @@ I write my articles in [Markdown](http://daringfireball.net/projects/markdown/) 
 <br/>
 <span class="contacticon center">
 	<a href="mailto:you@example.com"><i class="fa fa-envelope-square fa-xs"></i></a>
-	<a href="https://github.com" target="_blank"><i class="fa fa-github-square fa-xs"></i></a>
-	<a href="https://www.linkedin.com" target="_blank"><i class="fab fa-linkedin-in fa-xs"></i></a>
+	<a href="https://github.com" target="_blank"><i class="fab fa-github-square fa-xs"></i></a>
+	<a href="https://www.linkedin.com" target="_blank"><i class="fab fa-linkedin-in fab-xs"></i></a>
 </span>
 
 <div class="col three caption">
