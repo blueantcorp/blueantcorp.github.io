@@ -26,3 +26,5 @@ collections:
     permalink: /poetry/:path/
 
 
+
+theme: jekyll-theme-minimal
