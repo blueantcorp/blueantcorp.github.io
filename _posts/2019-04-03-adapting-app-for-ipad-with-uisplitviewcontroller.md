@@ -1,6 +1,6 @@
 ---
 title: Adapting app for iPad with UISplitViewController
-description: 
+description: Apple promotes iPad as the primary computer for regular users. This trend is visible during the last couple of years. More and more users start to use iPad as the main device. I think it is essential to support iPad screens and efficiently use that space. This week we will talk about adapting apps for iPad with the help of UISplitViewController.
 layout: post
 published: true
 ---

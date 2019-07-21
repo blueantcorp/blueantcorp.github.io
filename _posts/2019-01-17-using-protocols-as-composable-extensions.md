@@ -1,6 +1,6 @@
 ---
 title: Using protocols as composable extensions
-description: 
+description:  Protocols and Protocol Extensions are my second favorite Swift feature after Optionals. It helps us to create highly composable and reusable codebase without inheritance. For years we were using inheritance as a gold programming standard. But is it so good? Let's take a look for simple BaseViewController which we used to have in every project.
 layout: post
 published: true
 ---

@@ -1,6 +1,6 @@
 ---
 title: Inclusive enums with OptionSet
-description: 
+description: Enums are one of the most powerful features of Swift language. It forms Value-Oriented Programming in conjunction with Structs. Enum is the best way to describe the exclusive state in Swift, but what about the case when you need an inclusive state. Today we will talk about OptionSet protocol and how we can achieve inclusive states with it.
 layout: post
 published: true
 ---

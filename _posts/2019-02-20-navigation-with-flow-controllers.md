@@ -1,6 +1,6 @@
 ---
 title: Navigation with Flow Controllers
-description: 
+description: Last month I started refactoring navigation flow in my pet project. I've been using Coordinator pattern for a while, but now I decide to switch to a more native and simple approach like Flow Controllers. Today we will talk about Flow Controllers and why it is more native than Coordinators.
 layout: post
 published: true
 ---

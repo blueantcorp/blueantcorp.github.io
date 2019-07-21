@@ -1,6 +1,6 @@
 ---
 title: Building complex screens with Child ViewControllers
-description: 
+description: Container view controllers are a way to combine the content from multiple ViewControllers into a single user interface. Child ViewControllers are one of the undervalued features of iOS SDK. We use it every day by use of UINavigationController or UITabBarController.
 layout: post
 published: true
 ---

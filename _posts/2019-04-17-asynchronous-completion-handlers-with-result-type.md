@@ -1,6 +1,6 @@
 ---
 title: Asynchronous completion handlers with Result type
-description: 
+description: This week we will talk about Result enum, which had been a part of the standard library since Swift 5. With Result enum, we can easily describe the resulting state of an asynchronous operation. It can be success or failure at one time not both of them. Let's take a look at Result enum definition in the Swift standard library.
 layout: post
 published: true
 ---

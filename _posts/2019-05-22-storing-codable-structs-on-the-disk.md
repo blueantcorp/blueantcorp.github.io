@@ -1,6 +1,6 @@
 ---
 title: Storing Codable structs on the disk
-description: 
+description: Most of our apps are REST clients for some backends. During the development of this kind of apps, we want to keep it working offline. In this case, we have to cache data somewhere locally on the device to make it readable without an internet connection.
 layout: post
 published: true
 ---

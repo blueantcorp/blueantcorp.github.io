@@ -1,6 +1,6 @@
 ---
 title: Hiding third-party dependencies with protocols and extensions
-description: 
+description: There are plenty of discussions on the Internet about using third-party dependencies in your apps. The first part of developers suggest ignoring the usage of libraries and write all the code yourself. The second part recommends using third-party dependencies to speed up app development.
 layout: post
 published: true
 ---

@@ -1,6 +1,6 @@
 ---
 title: Pattern Matching with case let
-description: 
+description: Pattern Matching is the act of checking a given sequence of tokens for the presence of the constituents of some pattern. Swift has a particular keyword for applying Pattern Matching: case let. Let's dive into examples.
 layout: post
 published: true
 ---
