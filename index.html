@@ -22,17 +22,3 @@ layout: default
       </li>
     {% endfor %}
 </ul>
-
-<div class="pagination">
-  {% if paginator.next_page %}
-    <a class="pagination" href="{{ paginator.next_page_path | prepend: site.baseurl }}">Older</a>
-  {% else %}
-    <span class="pagination">Older</span>
-  {% endif %}
-   | 
-  {% if paginator.previous_page %}
-    <a class="pagination" href="{{ paginator.previous_page_path | prepend: site.baseurl }}">Newer</a>
-  {% else %}
-    <span class="pagination">Newer</span>
-  {% endif %}
-</div>
