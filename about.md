@@ -14,11 +14,11 @@ I have been writing here about my experiences learning and developing for iOS si
 
 I am happy to share what I **do know** and also what I **don’t know** in the hope of **learning** something myself in the process.
 
-## code samples
+### code samples
 
 You can find all of the **example code** from this website in my [CodeExamples](https://github.com/kharrison/CodeExamples) GitHub repository. All code is released using the MIT License.
 
-## about this site
+#### about this site
 
 I use [Middleman](https://middlemanapp.com/) to build this site and I’m very happy with it. I tried a number of static site generators and Middleman is among the best in my opinion. I highly recommend it if you like Ruby-based tools for this sort of thing.
 
