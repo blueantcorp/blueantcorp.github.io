@@ -3,8 +3,8 @@ layout: page
 title: projects
 permalink: "/projects/"
 published: true
-
 ---
+
 {% for project in site.projects %}
     {% if project.redirect %}
     <div class="project">
