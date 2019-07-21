@@ -1,6 +1,7 @@
 ---
 title: Navigation in SwiftUI
 description: 
+meta: SwiftUI, Swift5.1, iOS13, Xcode11
 layout: post
 published: true
 ---
