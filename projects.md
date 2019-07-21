@@ -1,7 +1,7 @@
 ---
 layout: page
 title: projects
-permalink: "/portfolio/"
+permalink: "/projects/"
 published: true
 
 ---
