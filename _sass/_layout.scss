@@ -168,7 +168,8 @@ font-size: 18px;
 }
 .post-meta {
 font-size: $small-font-size;
-color: $grey-color;
+//color: $grey-color;
+color: $theme-color;
 margin-bottom: 0px; 
 }
 .post-link {
