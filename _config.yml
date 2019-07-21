@@ -6,7 +6,7 @@ version: 1.6.0
 copyright: © 2019 blueantcorp
 url:  www.blueantcorp.com
 baseurl: ""
-paginate: 15
+paginate: 150
 permalink: pretty
 theme: jekyll-theme-minimal
 analytics_id: ""
