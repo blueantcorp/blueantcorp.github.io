@@ -6,7 +6,6 @@ published: true
 
 ---
 {% for project in site.projects %}
-
     {% if project.redirect %}
     <div class="project">
         <div class="thumbnail">
@@ -25,7 +24,6 @@ published: true
         </div>
     </div>
     {% else %}
-
     <div class="project ">
         <div class="thumbnail">
             <a href="{{ site.baseurl }}{{ project.url }}">
@@ -42,7 +40,5 @@ published: true
             </a>
         </div>
     </div>
-
     {% endif %}
-
 {% endfor %}
