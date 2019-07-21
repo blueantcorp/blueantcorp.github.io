@@ -1,6 +1,6 @@
 ---
 title: Building forms with SwiftUI
-description: 
+description: Apple finally released Xcode Beta 2 with an updated version of SwiftUI. The current version has a Form component which appeared on WWDC sessions. Today we are going to build form styled layout with SwiftUI. I want to show you a real-life example of the settings screen built with SwiftUI's new Form component.
 layout: post
 published: true
 ---

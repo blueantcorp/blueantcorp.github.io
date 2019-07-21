@@ -1,6 +1,6 @@
 ---
 title: Making real-world app with SwiftUI
-description: 
+description: That is WWDC week, and everybody so excited about so many new things we have this year like SwiftUI, Dark Mode, Updateable CoreML models, etc. I will try to cover all the new stuff during the upcoming weeks. Let's start with SwiftUI. SwiftUI is an entirely new approach to building apps for the Apple ecosystem.
 layout: post
 published: true
 ---
