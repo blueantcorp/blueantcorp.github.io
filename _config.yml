@@ -26,7 +26,7 @@ highlighter: rouge
 paginate_path: "/blog/page:num/"
 
 collections:
-  portfolio:
+  projects:
     output: true
     permalink: /projects/:path/
   poetry:
