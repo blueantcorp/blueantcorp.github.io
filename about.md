@@ -2,7 +2,7 @@
 layout: page
 title: about
 permalink: "/about/"
-published: false
+published: true
 ---
 Hi, I’m Emile, and I live in London. Thanks for visiting my site.
 
@@ -31,9 +31,9 @@ I write my articles in [Markdown](http://daringfireball.net/projects/markdown/) 
 <hr/>
 <br/>
 <span class="contacticon center">
-	<a href="mailto:you@example.com"><i class="fa fa-envelope-square"></i><i class="fas fa-camera fa-xs"></i></a>
-	<a href="https://github.com" target="_blank"><i class="fab fa-github-square"></i></a>
-	<a href="https://www.linkedin.com" target="_blank"><i class="fa fa-linkedin fa-xs"></i></a>
+	<a href="mailto:{{ site.email }}"><i class="fa fa-envelope-square"></i></a>
+	<a href="{{ site.github }}" target="_blank"><i class="fab fa-github-square"></i></a>
+	<a href="{{ site.linkedin }}" target="_blank"><i class="fa fa-linkedin"></i></a>
 </span>
 
 <div class="col three caption">

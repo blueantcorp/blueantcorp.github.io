@@ -2,11 +2,10 @@
 layout: page
 permalink: "/poetry/"
 title: poetry
-description: Showcase your writing, short stories, or poems. Replace this text with
-  your description.
+description: Showcase your writing, short stories, or poems. Replace this text with your description.
 published: false
-
 ---
+
 <ul class="post-list">
 {% for poem in site.poetry reversed %}
     <li>
