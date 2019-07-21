@@ -1,5 +1,7 @@
 ---
 title: Making real-world app with SwiftUI
+description: 
+published: true
 layout: post
 ---
 

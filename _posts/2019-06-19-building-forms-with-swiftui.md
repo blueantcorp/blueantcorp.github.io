@@ -1,5 +1,7 @@
 ---
 title: Building forms with SwiftUI
+description: 
+published: true
 layout: post
 ---
 

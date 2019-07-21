@@ -1,5 +1,7 @@
 ---
 title: Deep dive into Pattern matching with ~= operator 
+description: 
+published: true
 layout: post
 ---
 

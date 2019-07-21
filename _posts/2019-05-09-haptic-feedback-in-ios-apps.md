@@ -1,5 +1,7 @@
 ---
 title: Haptic feedback in iOS apps
+description: 
+published: true
 layout: post
 ---
 

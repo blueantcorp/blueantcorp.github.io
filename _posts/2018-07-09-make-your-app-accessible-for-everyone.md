@@ -1,6 +1,8 @@
 ---
-layout: post
 title: Make your app accessible for everyone
+description: 
+published: true
+layout: post
 ---
 
 Last few months I was working on implementing Accessibility support for my app. During this years WWDC I’ve visited all Accessibility related sessions and Labs to improve my knowledge and catch some best practices from Apple Engineers. So now I’m finished my work and finally ready to share with you story of my Accessibility way.

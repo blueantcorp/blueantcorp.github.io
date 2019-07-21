@@ -1,5 +1,7 @@
 ---
 title: Gestures in SwiftUI
+description: 
+published: true
 layout: post
 ---
 

@@ -1,5 +1,7 @@
 ---
 title: Animating changes in UITableView and UICollectionView
+description: 
+published: true
 layout: post
 ---
 

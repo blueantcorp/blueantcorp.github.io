@@ -1,5 +1,7 @@
 ---
 title: Dependency Injection in Swift with Protocols
+description: 
+published: true
 layout: post
 ---
 

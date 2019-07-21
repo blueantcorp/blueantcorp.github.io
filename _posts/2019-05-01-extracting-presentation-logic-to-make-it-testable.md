@@ -1,5 +1,7 @@
 ---
 title: Extracting presentation logic to make it testable
+description: 
+published: true
 layout: post
 ---
 

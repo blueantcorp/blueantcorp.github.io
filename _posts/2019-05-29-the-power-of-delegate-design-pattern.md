@@ -1,5 +1,7 @@
 ---
 title: The power of Delegate design pattern
+description: 
+published: true
 layout: post
 ---
 

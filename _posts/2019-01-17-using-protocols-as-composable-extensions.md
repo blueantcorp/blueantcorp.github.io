@@ -1,5 +1,7 @@
 ---
 title: Using protocols as composable extensions
+description: 
+published: true
 layout: post
 ---
 

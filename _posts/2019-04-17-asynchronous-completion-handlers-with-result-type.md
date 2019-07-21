@@ -1,5 +1,7 @@
 ---
 title: Asynchronous completion handlers with Result type
+description: 
+published: true
 layout: post
 ---
 

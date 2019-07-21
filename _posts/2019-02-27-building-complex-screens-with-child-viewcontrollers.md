@@ -1,5 +1,7 @@
 ---
 title: Building complex screens with Child ViewControllers
+description: 
+published: true
 layout: post
 ---
 

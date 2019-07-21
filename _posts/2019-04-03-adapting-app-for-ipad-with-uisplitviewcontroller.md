@@ -1,5 +1,7 @@
 ---
 title: Adapting app for iPad with UISplitViewController
+description: 
+published: true
 layout: post
 ---
 

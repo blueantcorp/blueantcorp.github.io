@@ -1,5 +1,7 @@
 ---
 title: Mastering MVVM on iOS
+description: 
+published: true
 layout: post
 ---
 

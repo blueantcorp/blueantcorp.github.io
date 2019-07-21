@@ -1,5 +1,7 @@
 ---
 title: Understanding Property Wrappers in SwiftUI
+description: 
+published: true
 layout: post
 ---
 

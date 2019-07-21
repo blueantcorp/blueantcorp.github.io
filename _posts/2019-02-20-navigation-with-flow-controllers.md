@@ -1,5 +1,7 @@
 ---
 title: Navigation with Flow Controllers
+description: 
+published: true
 layout: post
 ---
 

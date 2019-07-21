@@ -1,5 +1,7 @@
 ---
 title: Navigation in SwiftUI
+description: 
+published: true
 post: layout
 ---
 

@@ -1,5 +1,7 @@
 ---
 title: Animations in SwiftUI
+description: 
+published: true
 layout: post
 ---
 
