@@ -1,8 +1,8 @@
 ---
 layout: page
-title: portfolio
+title: projects
 permalink: "/portfolio/"
-published: false
+published: true
 
 ---
 {% for project in site.portfolio %}
