@@ -4,13 +4,14 @@
 	<nav class="site-nav">
 		<div class="trigger">
 			<!-- {{ site.title }} instead of blog -->
-			<a class="page-link" href="{{ site.baseurl }}/">{{ site.title }}</a>
+			<a class="page-link" href="{{ site.baseurl }}/">blog</a>
 			{% for page in site.pages %}
 				{% if page.title %}
 					<a class="page-link" href="{{ page.url | prepend: site.baseurl }}">{{ page.title }}</a>
 				{% endif %}
 			{% endfor %}
-			
+			<a class="page-link" href="#">about</a>
+			<a class="page-link" href="#">*folio</a>
 			<a href="https://www.linkedin.com/in/emilep/" data-toggle="tooltip" title="LinkedIn"><i class="fa fa-linkedin"></i></a>
 			<a href="https://github.com/blueantcorp" data-toggle="tooltip" title="GitHub"><i class="fa fa-github"></i></a>
 		</div>
