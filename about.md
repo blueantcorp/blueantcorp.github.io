@@ -31,9 +31,9 @@ I write my articles in [Markdown](http://daringfireball.net/projects/markdown/) 
 <hr/>
 <br/>
 <span class="contacticon center">
-	<a href="mailto:{{ site.email }}"><i class="fa fa-envelope-square"></i></a>
-	<a href="{{ site.github }}" target="_blank"><i class="fab fa-github-square"></i></a>
-	<a href="{{ site.linkedin }}" target="_blank"><i class="fa fa-linkedin"></i></a>
+	<a class="page-link" href="mailto:{{ site.email }}"><i class="fa fa-envelope-square"></i></a>
+	<a class="page-link" href="{{ site.github }}" target="_blank"><i class="fa fa-github-square"></i></a>
+	<a class="page-link" href="{{ site.linkedin }}" target="_blank"><i class="fa fa-linked-in"></i></a>
 </span>
 
 <div class="col three caption">
