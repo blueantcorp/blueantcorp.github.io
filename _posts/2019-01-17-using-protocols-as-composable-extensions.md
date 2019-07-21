@@ -136,6 +136,4 @@ extension CustomViewController: ActivityPresentable {
 While adopting CustomViewController to ActivityPresentable protocol, we specify the custom implementation of presentActivity and dismissActivity methods.
 
 #### Conclusion
-As you can see, we can use protocols as simple extensions for our ViewController type. In the future posts, we will continue using protocols to build reusable parts of ViewController. We will touch associated type, and conditional conformance features to develop more generic data based extensions for ViewControllers. 
-
-Feel free to follow me on [Twitter](https://twitter.com/mecid) and ask your questions related to this post. Thanks for the reading and see you next week.
+As you can see, we can use protocols as simple extensions for our ViewController type. In the future posts, we will continue using protocols to build reusable parts of ViewController. We will touch associated type, and conditional conformance features to develop more generic data based extensions for ViewControllers.

@@ -102,5 +102,3 @@ As you can see in the example above, we create AppFlowController which creates U
 
 #### Conclusion
 Today we talked about navigation flow and how we can extract it into Flow Controllers by using ViewController containment feature. It gives us an opportunity to reuse our ViewControllers and make them more testable. We will continue to cover ViewController containment feature in next posts.
-
-Feel free to follow me on [Twitter](https://twitter.com/mecid) and ask your questions related to this post. Thanks for reading and see you next week!

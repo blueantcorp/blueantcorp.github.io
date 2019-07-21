@@ -162,5 +162,3 @@ In the code sample above, you can see the usage of CodableStorage class. We crea
 
 #### Conclusion
 Today we discussed a simple way of storing Codable structs which we can fetch via REST API. Sometimes we don't need complicated features of CoreData for simple JSON caching and it is enough to implement disk storage.
-
-Feel free to follow me on [Twitter](https://twitter.com/mecid) and ask your questions related to this post. Thanks for reading and see you next week!

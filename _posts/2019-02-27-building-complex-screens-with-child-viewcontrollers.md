@@ -103,5 +103,3 @@ As you can see, DayViewController hosts four child ViewControllers. It also acts
 
 #### Conclusion
 We used to create one ViewController per screen, but sometimes this rule leads to buggy Massive-View-Controllers. Today we discussed how we could break this rule and compose complex screens from as many child ViewControllers as we need.
-
-Feel free to follow me on [Twitter](https://twitter.com/mecid) and ask your questions related to this post. Thanks for reading and see you next week!

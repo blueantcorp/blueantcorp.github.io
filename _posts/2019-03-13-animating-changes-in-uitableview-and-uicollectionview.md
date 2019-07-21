@@ -91,4 +91,4 @@ func render(_ newData: [Show]) {
 ![ShowBot-animation](/public/showbot-animation.gif)
 
 #### Conclusion
-Today we discussed how it is easy to add delight to our apps by animating changes. This kind of animations makes apps feel natural and fluid. Feel free to follow me on [Twitter](https://twitter.com/mecid) and ask your questions related to this post. Thanks for reading and see you next week!
+Today we discussed how it is easy to add delight to our apps by animating changes. This kind of animations makes apps feel natural and fluid.

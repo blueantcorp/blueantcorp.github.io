@@ -146,4 +146,4 @@ extension GameViewController {
 
 #### Conclusion
 
-Today we discussed the most powerful and straightforward design pattern in iOS development. I enjoy how simple it is and how useful it can be in composing pieces to make codebase decoupled. Feel free to follow me on [Twitter](https://twitter.com/mecid) and ask your questions related to this post. Thanks for reading and see you next week!
+Today we discussed the most powerful and straightforward design pattern in iOS development. I enjoy how simple it is and how useful it can be in composing pieces to make codebase decoupled.

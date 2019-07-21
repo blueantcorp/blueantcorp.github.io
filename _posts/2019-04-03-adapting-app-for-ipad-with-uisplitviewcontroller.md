@@ -62,4 +62,4 @@ The UISplitViewController has several configuration properties like "preferredPr
 UISplitViewController has a UISplitViewControllerDelegate field, where you can set your own delegate object. By using a delegate object, you can override some default behaviors of UISplitViewControllers. For example, you can replace "show" and "showDetailViewController" methods implementation with your custom one, or implement "collapseSecondary" method where you can decide when you have to collapse or expand Details UIViewController. 
 
 #### Conclusion
-This week we discuss how easily we can adapt our apps to iPad screens by efficiently using all the space. Try to adapt your app for iPad this week and feel free to contact me via [Twitter](https://twitter.com/mecid) in case of any problems. Thanks for reading and see you next week!
+This week we discuss how easily we can adapt our apps to iPad screens by efficiently using all the space.

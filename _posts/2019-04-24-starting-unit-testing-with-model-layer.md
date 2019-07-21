@@ -160,5 +160,3 @@ The important thing here is @testable import, which makes possible to access to 
 
 #### Conclusion
 Today we discussed how to start with Unit Testing in any project which has a Model layer. I think it is the most comfortable place to start. Don't hesitate and start today, you will see a lot of benefits like safe refactoring, keeping codebase stable during adding new features which can break something that you have working before, and much more.
-
-Feel free to follow me on [Twitter](https://twitter.com/mecid) and ask your questions related to this post. Thanks for reading and see you next week!

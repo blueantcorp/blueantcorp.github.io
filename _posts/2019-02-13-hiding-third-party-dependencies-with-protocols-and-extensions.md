@@ -90,4 +90,4 @@ class AuthenticationService {
 The single place which knows about KeychainSwift library should be a dependency container which creates AuthenticationService object. More about Dependency Injection we will talk in the next posts.
 
 #### Conclusion
-Today we discussed how we could use protocols and extensions to build tiny abstractions which hide third-party dependencies and make our codebase safer. Feel free to follow me on [Twitter](https://twitter.com/mecid) and ask your questions related to this post. Thanks for reading and see you next week!
+Today we discussed how we could use protocols and extensions to build tiny abstractions which hide third-party dependencies and make our codebase safer.

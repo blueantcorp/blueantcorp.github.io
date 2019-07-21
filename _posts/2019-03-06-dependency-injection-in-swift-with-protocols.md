@@ -165,5 +165,3 @@ We can create an instance of Dependencies struct in AppDelegate and pass it to t
 
 #### Conclusion
 Today we discussed two Dependency Injection techniques. Both of them use Swift language features without any third-party dependencies. Just take a look at them and choose which will work better for you.
-
-Feel free to follow me on [Twitter](https://twitter.com/mecid) and ask your questions related to this post. Thanks for reading and see you next week!

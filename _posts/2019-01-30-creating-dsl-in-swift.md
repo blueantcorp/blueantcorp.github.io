@@ -164,5 +164,3 @@ Now we achieve declarative, tree-based and type-safe DSL for building UI for iOS
 
 #### Conclusion
 Today we learned how powerful is Swift, and how easy we can create DSL for any specific domain. I suggest you try to develop your DSL for DispatchQueue or any other area.
-
-Feel free to follow me on [Twitter](https://twitter.com/mecid) and ask your questions related to this post. Thanks for reading and see you next week!

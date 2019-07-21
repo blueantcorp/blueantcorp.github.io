@@ -84,4 +84,4 @@ extension UINotificationFeedbackGenerator {
 
 #### Conclusion
 
-Today we discussed a straightforward and accessible feature of iOS SDK. Haptic Feedback can be very useful both for accessible part of your user base and for anyone who engaged in your app. Feel free to follow me on [Twitter](https://twitter.com/mecid) and ask your questions related to this post. Thanks for reading and see you next week!
+Today we discussed a straightforward and accessible feature of iOS SDK. Haptic Feedback can be very useful both for accessible part of your user base and for anyone who engaged in your app.

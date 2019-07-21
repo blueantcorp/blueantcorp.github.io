@@ -90,4 +90,4 @@ func fetch(handler: @escaping Handler<History>) {
 }
 ```
 #### Conclusion
-This week we talked about Result type which comes with Swift 5 standard library. It helps us to make our codebase cleaner and easy to understand. I think it is a perfect time to move our asynchronous code to use Result enum for completion handlers. Feel free to follow me on [Twitter](https://twitter.com/mecid) and ask your questions related to this post. Thanks for reading and see you next week!
+This week we talked about Result type which comes with Swift 5 standard library. It helps us to make our codebase cleaner and easy to understand. I think it is a perfect time to move our asynchronous code to use Result enum for completion handlers.

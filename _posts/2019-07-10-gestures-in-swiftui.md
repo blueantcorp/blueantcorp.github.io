@@ -135,4 +135,4 @@ struct ContentView : View {
 Now we can both drag and long-press our rectangle, and it changes position and scale as expected.
 
 #### Conclusion
-*SwiftUI* has a powerful declarative way of handling gestures. Try to add some delight to your app by adding gestures. Feel free to follow me on [Twitter](https://twitter.com/mecid) and ask your questions related to this post. Thanks for reading and see you next week!  
+*SwiftUI* has a powerful declarative way of handling gestures. Try to add some delight to your app by adding gestures. 

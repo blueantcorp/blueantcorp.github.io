@@ -100,5 +100,4 @@ default: print("default")
 }
 ```
 
-Today we discussed how actually is working Pattern Matching in Swift, how easily we can override the logic for standard types and how we can add the ability for Pattern Matching to custom types. Feel free to follow me on [Twitter](https://twitter.com/mecid) and ask your questions related to this post. Thanks for reading and see you next week!
-
+Today we discussed how actually is working Pattern Matching in Swift, how easily we can override the logic for standard types and how we can add the ability for Pattern Matching to custom types.

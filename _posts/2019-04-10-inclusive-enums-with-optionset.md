@@ -88,4 +88,4 @@ class HistoryFetcher {
 New implementation of HistoryFetcher class is pretty simple. We handle every unique case of FetchSource which is also covering all possible unions of our OptionSet.
 
 #### Conclusion
-Today we learn how to use OptionSet protocol and how it can be useful as Enum replacement with some extra features. We will continue to cover small and powerful types from the Swift Foundation in future posts. Feel free to follow me on [Twitter](https://twitter.com/mecid) and ask your questions related to this post. Thanks for reading and see you next week!
+Today we learn how to use OptionSet protocol and how it can be useful as Enum replacement with some extra features. We will continue to cover small and powerful types from the Swift Foundation in future posts.
