@@ -2,7 +2,7 @@
 layout: page
 title: projects
 permalink: "/projects/"
-published: true
+published: false
 ---
 
 {% for project in site.projects %}

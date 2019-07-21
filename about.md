@@ -2,7 +2,7 @@
 layout: page
 title: about
 permalink: "/about/"
-published: true
+published: false
 ---
 Hi, I’m Emile, and I live in London. Thanks for visiting my site.
 
