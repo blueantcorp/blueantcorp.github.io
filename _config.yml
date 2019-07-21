@@ -1,6 +1,6 @@
 # Site settings
 
-title: folio
+title: "*folio"
 tagline: swift development and more
 version: 1.6.0 
 copyright: © 2019 blueantcorp
@@ -12,20 +12,16 @@ theme: jekyll-theme-minimal
 analytics_id: ""
 
 # About/contact
-
 author:
 name: emile
-url: https://www.blueantcorp.com
 email: emile@blueantcorp.com
 github: https://github.com/blueantcorp
 
 # Build settings
-
 markdown: kramdown
 highlighter: rouge
 
 # Pagination
-
 paginate_path: "/blog/page:num/"
 
 collections:
@@ -37,7 +33,6 @@ collections:
     permalink: /poetry/:path/
 
 # Gems
-
 plugins:
 - jekyll-avatar
 - jekyll-seo-tag
