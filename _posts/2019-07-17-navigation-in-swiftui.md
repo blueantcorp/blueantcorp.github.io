@@ -1,8 +1,8 @@
 ---
 title: Navigation in SwiftUI
 description: 
+layout: post
 published: true
-post: layout
 ---
 
 This week I want to talk about *Navigation in SwiftUI*. *SwiftUI* provides a declarative way of implementing navigation in your apps. Today we will cover different navigation flows available in *SwiftUI* like *Master-Detail* and *Presenting Modals*.

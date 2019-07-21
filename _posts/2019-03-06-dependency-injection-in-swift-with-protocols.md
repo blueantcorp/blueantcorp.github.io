@@ -1,8 +1,8 @@
 ---
 title: Dependency Injection in Swift with Protocols
 description: 
-published: true
 layout: post
+published: true
 ---
 
 There are a lot of third-party libraries which provide Dependency Injection for Swift apps. In my opinion, Swift has a powerful type system which gives us the ability to create type-safe Dependency Injection techniques easily. Today we will talk about creating Dependency Injection in Swift with the power of protocols.

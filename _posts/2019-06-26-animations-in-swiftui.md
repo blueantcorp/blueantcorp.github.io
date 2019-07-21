@@ -1,8 +1,8 @@
 ---
 title: Animations in SwiftUI
 description: 
-published: true
 layout: post
+published: true
 ---
 
 *SwiftUI* brings declarative and straightforward approach in building User Interfaces. We have *List* and *Form* components and *Bindings*. All of these things make *SwiftUI* so easy to use and very powerful. But today we are going to talk about another feature of *SwiftUI*, and it is *Animations*.

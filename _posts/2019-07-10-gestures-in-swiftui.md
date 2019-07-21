@@ -1,8 +1,8 @@
 ---
 title: Gestures in SwiftUI
 description: 
-published: true
 layout: post
+published: true
 ---
 
 *SwiftUI* has a powerful and easy to use approach in building *Gestures*. Today we will talk about how we can use gestures in *SwiftUI*. We will touch special *GestureState Property Wrapper* which is very similar to *State* but works only with gestures. Finally, we will build swipeable Tinder cards as a sample project.

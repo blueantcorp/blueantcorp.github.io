@@ -1,8 +1,8 @@
 ---
 title: Maintaining State in Your ViewControllers
 description: 
-published: true
 layout: post
+published: true
 ---
 
 Last week we talked about [extracting reusable code samples from ViewControllers into Protocols and Protocol extensions](/2019/01/17/using-protocols-as-composable-extensions/). Today I want to show you another nice use case of protocols while maintaining the state of ViewControllers. 

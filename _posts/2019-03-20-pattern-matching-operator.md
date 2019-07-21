@@ -1,8 +1,8 @@
 ---
 title: Deep dive into Pattern matching with ~= operator 
 description: 
-published: true
 layout: post
+published: true
 ---
 
 [In one of my previous posts, we talked about the Pattern Matching feature of Swift language](/2019/02/06/pattern-matching-with-case-let). We discussed how we could use "case let" keyword in our daily development to find patterns in Enums, Turples, and Optionals. But today we are going to talk about particular Pattern Matching operator which hides all of this magic behind it.
