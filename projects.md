@@ -5,8 +5,6 @@ permalink: "/projects/"
 published: true
 
 ---
-{{site.projects}}
-
 {% for project in site.projects %}
 
     {% if project.redirect %}
