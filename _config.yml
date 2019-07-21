@@ -13,10 +13,10 @@ analytics_id: ""
 # About/contact
 
 author:
-	name: emile
-	url: https://www.blueantcorp.com
-	email: emile@blueantcorp.com
-	github: https://github.com/blueantcorp
+name: emile
+url: https://www.blueantcorp.com
+email: emile@blueantcorp.com
+github: https://github.com/blueantcorp
 
 # Build settings
 
@@ -28,17 +28,16 @@ highlighter: rouge
 paginate_path: "/blog/page:num/"
 
 collections:
-	portfolio:
-		output: true
-    	permalink: /portfolio/:path/
-	poetry:
-		output: true
-		permalink: /poetry/:path/
+  portfolio:
+    output: true
+    permalink: /portfolio/:path/
+  poetry:
+    output: true
+    permalink: /poetry/:path/
 
 # Gems
 
 plugins:
-
 - jekyll-avatar
 - jekyll-seo-tag
 - jekyll-sitemap
