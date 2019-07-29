@@ -29,9 +29,9 @@ collections:
   projects:
     output: true
     permalink: /projects/:path/
-  poetry:
+  swiftui:
     output: true
-    permalink: /poetry/:path/
+    permalink: /swiftui/:path/
 
 # Gems
 plugins:

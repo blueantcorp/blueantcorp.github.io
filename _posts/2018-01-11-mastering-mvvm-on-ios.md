@@ -1,6 +1,7 @@
 ---
 title: Mastering MVVM on iOS
 description:
+date: 2015-07-06 17:59:00
 layout: post
 published: true
 ---

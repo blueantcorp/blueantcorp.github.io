@@ -1,6 +1,8 @@
 ---
 title: Understanding Property Wrappers in SwiftUI
 description: SwiftUI gives us @State, @Binding, @ObjectBinding, @EnvironmentObject, and @Environment Property Wrappers. So let's try to understand the differences between them and when and why which one we have to use.
+meta: 
+date: 2019-06-12 07:59:00
 layout: post
 published: true
 ---

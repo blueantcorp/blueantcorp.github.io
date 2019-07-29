@@ -1,6 +1,8 @@
 ---
 title: Managing Data Flow in SwiftUI
 description: 
+meta: 
+date: 2019-07-03 07:59:00
 layout: post
 published: true
 ---
