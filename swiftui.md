@@ -3,7 +3,7 @@ layout: page
 permalink: "/swiftui/"
 title: swiftui
 description: Exploring SwiftUI.
-published: true
+published: false
 ---
 
 <ul class="post-list">
