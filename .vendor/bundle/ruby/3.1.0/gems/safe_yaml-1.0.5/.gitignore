@@ -1,4 +1,0 @@
-*.gem
-.vendor/*
-Gemfile.lock
-spec/store.yaml
