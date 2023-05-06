@@ -1,43 +1,38 @@
 # Site settings
-
-title: "folio"
-tagline: swift development and more
-version: 1.13.5 
-copyright: © 2023 blueantcorp
-url: www.blueantcorp.com
-baseurl: blog.blueantcorp.com
-paginate: 150
-permalink: pretty
-theme: jekyll-theme-minimal
-analytics_id: ""
-
-# About/contact
-author: emile
-name: emile
-email: emile@blueantcorp.com
-github: https://github.com/blueantcorp
-linkedin: https://www.linkedin.com/in/emilep/
+title: blueantcorp.com
+email: info@blueantcorp.com
+author: Emile
+description: descr about blueantcorp.com
+baseurl:  # the subpath of your site, e.g. /blog/
+url:  https://www.blueantcorp.com
+twitter_username: blueantcorp
+github_username:  blueantcorp
 
 # Build settings
 markdown: kramdown
 highlighter: rouge
 
+# Navigation
+header_pages:
+  - development.md
+  # - teams.md
+  # - agile.md
+  - about.md
+
 # Pagination
+paginate: 15
 paginate_path: "/blog/page:num/"
 
-collections-permalink:
-  projects:
+collections:
+  development:
     output: true
-    permalink: /projects/:path/
-  swiftui:
+    permalink: /development/:path/
+  teams:
+    output: false
+    permalink: /teams/:path/
+  agile:
     output: true
-    permalink: /swiftui/:path/
+    permalink: /agile/:path/
 
-# Gems
 plugins:
-- jekyll-avatar
-- jekyll-seo-tag
-- jekyll-sitemap
-- jekyll-feed
-- jekyll-paginate
-- jekyll-gist
+  - jekyll-paginate

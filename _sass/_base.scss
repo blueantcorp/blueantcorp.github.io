@@ -1,4 +1,6 @@
-/* Reset some basic elements */
+/**
+ * Reset some basic elements
+ */
 body, h1, h2, h3, h4, h5, h6,
 p, blockquote, pre, hr,
 dl, dd, ol, ul, figure {
@@ -8,20 +10,20 @@ dl, dd, ol, ul, figure {
 
 
 
-/* Variables */
+/** Variables **********************************************/
 $base-font-family:              Helvetica, sans-serif;
 $base-line-height:              1.5em;
 $horizontal-spacing-unit:       50px;
 $vertical-spacing-unit:         40px;
-$nav-height:                    56px;
+$nav-height:                    26px;
 
-/* Portfolio */
+/* portfolio tinkering */
 $img_spacing: 5px; 
 $img_height: 275px;
 $caption_font_size: 12px;
 $caption_color: #aaa;
 
-/* Colors  */
+/* COLORS  */
 $red:  #FF3636;
 $orange: #F29105;
 $blue: #2698BA;
@@ -29,17 +31,16 @@ $green: #11D68B;
 $lime_green: #B7D12A;
 $purple: #B509AC;
 
-/* Footer */
-$grey-color-dark: #333;   
 
-/* Navigation Bar Border */
-$grey-color-light: #ddd;
-
+$grey-color-dark: #333;   /* footer */
+$grey-color-light: #ddd;  /* navigation bar border */
 $text-color:     #666;
 
-/* Set theme color */
+/* Set theme color *************************/
 $theme-color:   $red;
 
+
+/************************************************************/
 
 /**
  * Basic styling
@@ -53,6 +54,8 @@ body {
     background-color: $background-color;
     -webkit-text-size-adjust: 100%;
 }
+
+
 
 /**
  * Set `margin-bottom` to maintain vertical rhythm
@@ -68,7 +71,7 @@ ul, ol, dl, figure,
 }
 
 
-hr {
+hr{
     /* Inset, by Dan Eden */
     border: 0;
     height: 0;
@@ -89,6 +92,8 @@ figcaption {
     font-size: $small-font-size;
 }
 
+
+
 /**
  * Lists
  */
@@ -103,12 +108,15 @@ li {
     }
 }
 
+
+
 /**
  * Headings
  */
 h1, h2, h3, h4, h5, h6 {
     font-weight: 100;
 }
+
 
 /**
  * Links
@@ -174,7 +182,7 @@ pre {
     overflow-x: scroll;
 
     > code {
-        border: 1;
+        border: 0;
         padding-right: 0;
         padding-left: 0;
     }
