@@ -1,7 +1,7 @@
 ---
 layout: page
 title: about
-permalink: "/about/"
+permalink: /about/
 published: false
 ---
 Hi, I’m Emile, and I live in London. Thanks for visiting my site.

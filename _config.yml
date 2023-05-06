@@ -1,18 +1,18 @@
 # Site settings
 
-title: "*folio"
+title: "folio"
 tagline: swift development and more
-version: 1.6.0 
-copyright: © 2019 blueantcorp
-url:  www.blueantcorp.com
-baseurl: ""
+version: 1.13.5 
+copyright: © 2023 blueantcorp
+url: www.blueantcorp.com
+baseurl: blog.blueantcorp.com
 paginate: 150
 permalink: pretty
 theme: jekyll-theme-minimal
 analytics_id: ""
 
 # About/contact
-author:
+author: emile
 name: emile
 email: emile@blueantcorp.com
 github: https://github.com/blueantcorp
@@ -25,7 +25,7 @@ highlighter: rouge
 # Pagination
 paginate_path: "/blog/page:num/"
 
-collections:
+collections-permalink:
   projects:
     output: true
     permalink: /projects/:path/

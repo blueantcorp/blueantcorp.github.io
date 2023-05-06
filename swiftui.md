@@ -1,6 +1,6 @@
 ---
 layout: page
-permalink: "/swiftui/"
+permalink: /swiftui/
 title: swiftui
 description: Exploring SwiftUI.
 published: false
