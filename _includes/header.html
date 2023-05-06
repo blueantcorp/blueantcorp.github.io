@@ -5,12 +5,12 @@
     <nav class="site-nav">
 
       <div class="trigger">
-        <!-- {{ site.title }} instead of blog -->
+
         <a class="page-link" href="{{ site.baseurl }}/">blog</a>
 
-        {% for page in site.pages %}
-          {% if page.title %}
-          <a class="page-link" href="{{ page.url | prepend: site.baseurl }}">{{ page.title }}</a>
+        {% for link in site.data.topics %}
+          {% if link.title %}
+          <a class="page-link" href="{{ link.url | prepend: site.baseurl }}">{{ link.title }}</a>
           {% endif %}
         {% endfor %}
 

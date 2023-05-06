@@ -1,28 +1,33 @@
 # Site settings
-title: blueantcorp.com
-email: info@blueantcorp.com
-author: Emile
-description: descr about blueantcorp.com
-baseurl:  # the subpath of your site, e.g. /blog/
-url:  https://www.blueantcorp.com
-twitter_username: blueantcorp
-github_username:  blueantcorp
+site:
+  title: blueantcorp.com
+  description: descr about blueantcorp.com
+  email: info@blueantcorp.com
 
-# Build settings
-markdown: kramdown
-highlighter: rouge
+  # Social
+  github: blueantcorp
+  twitter: blueantcorp
+  linkedin: blueantcorp
 
-# Navigation
-header_pages:
-  - development.md
-  # - teams.md
-  # - agile.md
-  - about.md
+  # Build settings
+  baseurl: /
+  url:  https://www.blueantcorp.com
+  markdown: kramdown
+  highlighter: rouge
+
+author:
+  name: emile
+  email: emile@blueantcorp.com
+  github: blueantcorp
+  twitter: blueantcorp
+  linkedin: emilep
+  bio: bio.
 
 # Pagination
 paginate: 15
 paginate_path: "/blog/page:num/"
 
+# Collections
 collections:
   development:
     output: true
@@ -34,5 +39,6 @@ collections:
     output: true
     permalink: /agile/:path/
 
+# Plugins
 plugins:
   - jekyll-paginate
