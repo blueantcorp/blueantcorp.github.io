@@ -1,0 +1,63 @@
+---
+---
+:root {
+ 
+    // Color palette
+    --color-primary:        #3070B6;
+    --color-secondary:      #666666;
+    --color-highlight:      #FF3636;
+    --color-border:         #e6e6e6;
+    --color-text:           #666666;
+    --color-code:           #14263f;
+    
+    // Color theme
+    --color-theme:          #3070B6;
+    --color-theme-light:    #d9d9d9;
+    --color-theme-dark:     #14263f;
+    --color-theme-accent:   #FF3636;
+    --color-theme-text:     #666666;
+    --color-theme-code:     #14263f;
+    --color-theme-border:   #e6e6e6;
+    --color-theme-bg:       #fdfdfd;
+    --color-theme-bg-light: #e6e6e6;
+    --color-theme-bg-dark:  #14263f;
+    --color-theme-bg-code:  #14263f;
+    --color-theme-bg-border:#cccccc;
+    --color-theme-bg-accent:#3070B6;
+    --color-theme-bg-text:  #666666;
+    --color-theme-bg-code:  #14263f;
+
+    // Color scheme
+    --color-scheme:         #fdfdfd;
+    --color-scheme-light:   #e6e6e6;
+    --color-scheme-dark:    #14263f;
+    --color-scheme-accent:  #FF3636;
+    --color-scheme-text:    #666666;
+    --color-scheme-code:    #14263f;
+    --color-scheme-border:  #e6e6e6;
+    --color-scheme-bg:      #fdfdfd;
+    --color-scheme-bg-light:#e6e6e6;
+    --color-scheme-bg-dark: #14263f;
+    --color-scheme-bg-code: #14263f;
+    --color-scheme-bg-border:#cccccc;
+    --color-scheme-bg-accent:#3070B6;
+    --color-scheme-bg-text: #666666;
+    --color-scheme-bg-code: #14263f;
+    
+    // Color
+    --color:                #3070B6;
+    --color-light:          #d9d9d9;
+    --color-dark:           #14263f;
+    --color-accent:         #FF3636;
+    --color-text:           #666666;
+    --color-code:           #14263f;
+    --color-border:         #e6e6e6;
+    --color-bg:             #fdfdfd;
+    --color-bg-light:       #e6e6e6;
+    --color-bg-dark:        #14263f;
+    --color-bg-code:        #14263f;
+    --color-bg-border:      #cccccc;
+    --color-bg-accent:      #3070B6;
+    --color-bg-text:        #666666;
+    --color-bg-code:        #14263f;
+}

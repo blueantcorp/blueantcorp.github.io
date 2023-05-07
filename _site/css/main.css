@@ -1,10 +1,8 @@
-/* COLORS  */
-/* Set theme color *************************/
 /** Reset some basic elements */
 body, h1, h2, h3, h4, h5, h6, p, blockquote, pre, hr, dl, dd, ol, ul, figure { margin: 0; padding: 0; }
 
 /** Basic styling */
-body { font-family: Helvetica, sans-serif; font-size: 18px; line-height: 1.5em; font-weight: 100; color: #666; background-color: #fdfdfd; -webkit-text-size-adjust: 100%; }
+body { font-family: Helvetica, sans-serif; font-size: 18px; line-height: 1.5em; font-weight: 100; -webkit-text-size-adjust: 100%; }
 
 /** Set `margin-bottom` to maintain vertical rhythm */
 p, blockquote, pre, ul, ol, dl, figure { margin-bottom: 10px; }
@@ -27,17 +25,10 @@ li > ul, li > ol { margin-bottom: 0; }
 h1, h2, h3, h4, h5, h6 { font-weight: 100; margin: 30px 0 10px 0; }
 
 /** Links */
-a { color: #666; text-decoration: none; /*
-&:visited { color: darken($brand-color, 15%); 
-}
-*/ }
-a:hover { color: #3070B6; text-decoration: none; }
-
-article a { font-weight: 100; }
-article a:hover { text-decoration: none; }
+article a, article a:hover { font-weight: 100; }
 
 /** Blockquotes */
-blockquote { color: #666; border-left: 10px solid #e8e8e8; padding-left: 25px; font-size: 18px; font-style: italic; }
+blockquote { color: green; border-left: 10px solid green; padding-left: 25px; font-size: 18px; font-style: italic; }
 blockquote > :last-child { margin-bottom: 0; }
 
 /** Wrapper */
@@ -48,10 +39,10 @@ blockquote > :last-child { margin-bottom: 0; }
 .wrapper:before, .wrapper:after { content: ""; display: table; clear: both; }
 
 /** Site header   ********************************************************** */
-.site-header { border-bottom: 1px solid #e8e8e8; background-color: #fff; opacity: 0.75; position: fixed; left: 0px; top: 0px; height: 36px; width: 100%; z-index: 50; }
+.site-header { border-bottom: 1px solid green; background-color: #fff; opacity: 0.75; position: fixed; left: 0px; top: 0px; height: 36px; width: 100%; z-index: 50; }
 
-.site-title { font-size: 24px; line-height: 36px; letter-spacing: -1px; margin-bottom: 0; color: #3070B6; }
-.site-title:hover { text-decoration: none; color: #3070B6; }
+.site-title { font-size: 24px; line-height: 36px; letter-spacing: -1px; margin-bottom: 0; color: accent-color; }
+.site-title:hover { text-decoration: none; color: accent-color; }
 
 .site-nav { float: right; line-height: 36px; }
 .site-nav .page-link { line-height: 1.5em; }
@@ -61,11 +52,11 @@ blockquote > :last-child { margin-bottom: 0; }
   .site-nav .page-link { display: line; } }
 
 .header-bar { left: 0px; top: 0px; position: relative; font-size: 20px; display: block; opacity: 0.75; width: 100%; text-align: center; padding-top: 25px; line-height: 3em; z-index: 25; }
-.header-bar h1 { color: #3070B6; font-size: 75px; }
+.header-bar h1 { color: accent-color; font-size: 75px; }
 .header-bar h2 { font-size: 25px; }
 
 /** Site footer  ********************************************************** */
-.site-footer { border-top: 1px solid #424242; font-size: 10px; background-color: #424242; padding: 2px; color: #aaa; position: fixed; left: 0px; bottom: 0px; width: 100%; }
+.site-footer { border-top: 1px solid green; font-size: 10px; background-color: green; padding: 2px; color: #aaa; position: fixed; left: 0px; bottom: 0px; width: 100%; }
 
 .site-footer p { margin-bottom: 0; }
 
@@ -73,7 +64,7 @@ blockquote > :last-child { margin-bottom: 0; }
 .pagination { max-width: -webkit-calc(800px - (50px * 2)); text-align: center; width: 100%; position: fixed; bottom: 50px; }
 
 .paginationicon { font-size: 50px; }
-.paginationicon a { color: #3070B6; }
+.paginationicon a { color: accent-color; }
 
 /** Page content   ********************************************************** */
 .page-content { padding: 100px 0; /* VERTICAL PADDING FOR TITLE ON EVERY PAGE */ }
@@ -100,9 +91,9 @@ blockquote > :last-child { margin-bottom: 0; }
 .post-content h4 { font-size: 20px; }
 @media screen and (max-width: 800px) { .post-content h4 { font-size: 18px; } }
 
-.post-description { color: #3070B6; margin: 0; }
+.post-description { color: accent-color; margin: 0; }
 
-.post-meta { font-size: 15.75px; color: #828282; margin-bottom: 0px; }
+.post-meta { font-size: 15.75px; color: green; margin-bottom: 0px; }
 
 .post-link { display: block; font-size: 42px; }
 
@@ -284,16 +275,38 @@ blockquote > :last-child { margin-bottom: 0; }
 
 .highlight .language-swift .nv + .o + .n { color: inherit; }
 
-@media (prefers-color-scheme: dark) { body, .site-header, .site-footer { background-color: #fdfdfd; color: #666; font-weight: 500; }
-  a, h1 { color: #3070B6; font-weight: 200; }
-  .post-title { color: #3070B6; }
-  .post-description { color: #666; }
-  .site-header { border-bottom: 1px solid #e8e8e8; }
-  .site-footer { color: #424242; border-top: 1px solid #e8e8e8; }
-  .highlight { border: 1px; border-radius: 20px; background-color: #14263f; } }
-@media (prefers-color-scheme: dark_) { body, .site-header, .site-footer { background-color: #1D2126; color: #AFBAC6; }
-  a, body { color: #AFBAC6; }
-  .paginator { color: #424242; }
-  .site-header { border-bottom: 1px solid #424242; }
-  .site-footer { color: #828282; border-top: 1px solid #424242; }
-  .highlight { border: 1px; border-radius: 20px; background-color: #101010; } }
+:root { --background-primary: #fdfdfd; --background-secondary: #e6e6e6; --background-highlight: #d9d9d9; --background-border: #cccccc; --background-accent: #3070B6; --background-text: #666666; --background-code: #14263f; }
+
+html { color-scheme: light; --page-color: #fdfdfd; --ink-color: #666; --highlight-color: #3070B6; }
+
+.site-header, .site-footer { border-color: #e6e6e6; }
+
+@media (prefers-color-scheme: dark) { html { color-scheme: dark; --page-color: #1D2126; --ink-color: #acbac7; --highlight-color: #FF3636; }
+  .site-header, .site-footer { border-color: #2d333b; } }
+html { background-color: var(--page-color); accent-color: var(--highlight-color); }
+
+body, .site-header, .site-footer { background-color: var(--page-color); color: var(--ink-color); }
+
+a { color: var(--ink-color); text-decoration: none; font-weight: 200; }
+a:hover { color: var(--highlight-color); }
+
+.site-title { color: var(--highlight-color); }
+
+.pagination { color: #2d333b; }
+.pagination a { color: #434c56; }
+.pagination a:hover { color: var(--highlight-color); }
+
+.post-list-title { color: var(--highlight-color); }
+
+.post-description { color: var(--highlight-color); }
+
+.post-meta { color: #434c56; }
+
+.site-header { border: 1px 0 0; }
+
+.site-footer { color: #2d333b; border: 1px 0 0; }
+.site-footer a { color: #434c56; }
+.site-footer a:hover { color: var(--highlight-color); }
+
+.highlight { border: 1px; border-radius: 20px; background-color: #14263f; }
+@media (prefers-color-scheme: dark) { .highlight { background-color: #101010; } }

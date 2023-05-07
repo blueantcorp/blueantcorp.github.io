@@ -2,7 +2,7 @@
 ---
 @charset "utf-8";
 
-// Our variables
+// Presets
 $base-font-family:              Helvetica, sans-serif;
 $base-font-size:                18px;
 $small-font-size: $base-font-size * 0.875;
@@ -14,34 +14,20 @@ $nav-height:                    36px;
 
 $spacing-unit:     30px;
 
-$text-color:       #666;
-$text-color-dark:  #AFBAC6;
-
-$background-color: #fdfdfd;
-$background-color-dark:#1D2126;
 
 $brand-color:      #2a7ae2;
 
-$grey-color:       #828282;
-$grey-color-light: lighten($grey-color, 40%);
-$grey-color-dark:  darken($grey-color, 25%);
 
 $on-palm:          600px;
 $on-laptop:        800px;
+$on-desktop:       1000px;
 
-/* COLORS  */
-$red:  #FF3636;
-$orange: #F29105;
-$blue: #3070B6;
-$green: #11D68B;
-$lime_green: #B7D12A;
-$purple: #B509AC;
-
-/* Set theme color *************************/
-$theme-color: $blue;
-
-
-
+// Device size media queries
+@mixin media-query($device) {
+    @media screen and (max-width: $device) {
+        @content;
+    }
+}
 // Using media queries with like this:
 // @include media-query($palm) {
 //     .wrapper {
@@ -49,70 +35,113 @@ $theme-color: $blue;
 //         padding-left: $spacing-unit / 2;
 //     }
 // }
-@mixin media-query($device) {
-    @media screen and (max-width: $device) {
-        @content;
-    }
+
+// Import partials
+@import "base", "layout", "syntax-highlighting";
+
+:root {
+    --background-primary:   #fdfdfd;
+    --background-secondary: #e6e6e6;
+    --background-highlight: #d9d9d9;
+    --background-border:    #cccccc;
+    --background-accent:    #3070B6;
+    --background-text:      #666666;
+    --background-code:      #14263f;
 }
 
-@import "base",
-        "layout",
-        "syntax-highlighting";
+// Color schemes
+html {
+    color-scheme: light;
+    --page-color: #fdfdfd;
+    --ink-color: #666;
+    --highlight-color: #3070B6;
+}
 
-// Light mode
+.site-header, .site-footer {
+    border-color: #e6e6e6;
+}
+
 @media (prefers-color-scheme: dark) {
+    html {
+        color-scheme: dark;
+        --page-color: #1D2126;
+        --ink-color: #acbac7;
+        --highlight-color: #FF3636;
+    }
 
-    body, .site-header, .site-footer {
-        background-color: $background-color;
-        color: $text-color;
-        font-weight: 500;
-    }
-    a, h1 {
-        color: $theme-color;
-        font-weight: 200;
-    }
-    .post-title {
-        color: $theme-color;
-    }
-    .post-description {
-        color: $text-color;
-    }
-    .site-header {
-        border-bottom: 1px solid $grey-color-light;
-    }
-    .site-footer {
-        color: $grey-color-dark;
-        border-top: 1px solid $grey-color-light;
-    }
-    .highlight {
-        border: 1px;
-        border-radius: 20px;
-        background-color: #14263f;
+    .site-header, .site-footer {
+        border-color: #2d333b;
     }
 }
 
-// Dark mode
-@media (prefers-color-scheme: dark_) {
-    body, .site-header, .site-footer {
-        background-color: $background-color-dark;
-        color: $text-color-dark;
+html {
+    background-color: var(--page-color);
+    accent-color: var(--highlight-color);
+}
+
+body, .site-header, .site-footer {
+    background-color: var(--page-color);
+    color: var(--ink-color);
+}
+
+a {
+    color: var(--ink-color);
+    text-decoration: none;
+    font-weight: 200;
+    &:hover {
+        color: var(--highlight-color);
     }
-    a, body {
-        color: $text-color-dark;
+}
+
+// Header
+.site-title {
+    color: var(--highlight-color);
+}
+
+.pagination {
+    color: #2d333b;
+    a {
+        color: #434c56;
+        &:hover {
+            color: var(--highlight-color);
+        }
     }
-    .paginator {
-        color: $grey-color-dark;
+}
+
+.post-list-title {
+    color: var(--highlight-color)
+}
+
+.post-description {
+    color: var(--highlight-color);
+}
+
+.post-meta {
+    color: #434c56;
+}
+
+.site-header {
+    border: 1px 0 0;
+}
+
+// Footer
+.site-footer {
+    color: #2d333b;
+    border: 1px 0 0;
+    a {
+        color: #434c56;
+        &:hover {
+            color: var(--highlight-color);
+        }
     }
-    .site-header {
-        border-bottom: 1px solid $grey-color-dark;
-    }
-    .site-footer {
-        color: $grey-color;
-        border-top: 1px solid $grey-color-dark;
-    }
-    .highlight {
-        border: 1px;
-        border-radius: 20px;
+}
+
+// Code highlighting
+.highlight {
+    border: 1px;
+    border-radius: 20px;
+    background-color: #14263f;
+    @media (prefers-color-scheme: dark) {
         background-color: #101010;
     }
 }

@@ -16,8 +16,6 @@ body {
     font-size: $base-font-size;
     line-height: $base-line-height;
     font-weight: 100;
-    color: $text-color;
-    background-color: $background-color;
     -webkit-text-size-adjust: 100%;
 }
 
@@ -86,36 +84,16 @@ h1, h2, h3, h4, h5, h6 {
 /**
  * Links
  */
-a {
-    color: $text-color;
-    text-decoration: none;
-    /*
-    &:visited {
-        color: darken($brand-color, 15%); 
-    }
-    */
-    &:hover {
-        color: $theme-color;
-        text-decoration: none;
-    }
-}
-
-article a {
+article a, article a:hover {
     font-weight: 100;
-
-    &:hover {
-        text-decoration: none;
-    }
 }
-
-
 
 /**
  * Blockquotes
  */
 blockquote {
-    color: $text-color;
-    border-left: 10px solid $grey-color-light;
+    color: green;
+    border-left: 10px solid green;
     padding-left: $horizontal-spacing-unit / 2;
     font-size: 18px;
     font-style: italic;

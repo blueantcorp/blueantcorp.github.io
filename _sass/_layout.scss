@@ -2,7 +2,7 @@
  * Site header   **********************************************************
  */
 .site-header {
-border-bottom: 1px solid $grey-color-light;
+border-bottom: 1px solid green;
 background-color: #fff;
 opacity: 0.75;
 position:fixed;
@@ -18,10 +18,10 @@ font-size: 24px;
 line-height: $nav-height;
 letter-spacing: -1px;
 margin-bottom: 0;
-color: $theme-color;
+color: accent-color;
 &:hover {
 text-decoration: none;
-color: $theme-color;
+color: accent-color;
     }
 }
 .site-nav {
@@ -62,7 +62,7 @@ display: line;
     line-height: 3em;
     z-index: 25;
     h1{
-        color: $theme-color;
+        color: accent-color;
         font-size:75px;
     }
     h2{
@@ -74,9 +74,9 @@ display: line;
  * Site footer  **********************************************************
  */
 .site-footer {
-border-top: 1px solid $grey-color-dark;
+border-top: 1px solid green;
 font-size: 10px;
-background-color: $grey-color-dark;
+background-color: green;
 padding: 2px;
 color: #aaa;
 position:fixed;
@@ -102,7 +102,7 @@ bottom: 50px;
 .paginationicon {
 font-size: 50px;
 a {
-color: $theme-color;
+color: accent-color;
     }
 }
 /**
@@ -166,12 +166,12 @@ text-align: center;
     }
 }
 .post-description {
-    color: $theme-color;
+    color: accent-color;
     margin: 0;
 }
 .post-meta {
     font-size: $small-font-size;
-    color: $grey-color;
+    color: green;
     margin-bottom: 0px; 
 }
 .post-link {
