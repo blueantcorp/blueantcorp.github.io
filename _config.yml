@@ -9,7 +9,7 @@ twitter: blueantcorp
 linkedin: blueantcorp
 
 # Build settings
-baseurl: /
+baseurl: 
 url:  https://www.blueantcorp.com
 markdown: kramdown
 highlighter: rouge
