@@ -38,7 +38,7 @@ $lime_green: #B7D12A;
 $purple: #B509AC;
 
 /* Set theme color *************************/
-$theme-color: $red;
+$theme-color: $blue;
 
 
 
@@ -60,7 +60,7 @@ $theme-color: $red;
         "syntax-highlighting";
 
 // Light mode
-@media (prefers-color-scheme: light) {
+@media (prefers-color-scheme: dark) {
 
     body, .site-header, .site-footer {
         background-color: $background-color;
@@ -92,7 +92,7 @@ $theme-color: $red;
 }
 
 // Dark mode
-@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: dark_) {
     body, .site-header, .site-footer {
         background-color: $background-color-dark;
         color: $text-color-dark;
