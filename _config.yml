@@ -42,40 +42,51 @@ author:
 paginate: 5
 paginate_path: "/blog/:num/"
 
-navigation:
+blueantcorp:
+  $schema: "http://json-schema.org/draft-04/schema#"
+  $id: "definitions/schema.json"
+  structure:
+    - title: 'develop'
+      category: 'development'
+      description: 'mobile development'
+      permalink: '/development/'
+      published: true
+      order: 2
 
-  - title: 'development'
-    category: 'development'
-    description: 'development description'
-    permalink: '/development/'
-    published: true
-  
-  - title: 'agile'
-    description: 'agile description'
-    published: true
+    - title: 'build'
+      category: 'toolchain'
+      description: 'build and automation toolchain'
+      published: true
+      order: 3
+    
+    - title: 'plan'
+      category: 'management'
+      description: 'planning and management'
+      published: true
+      order: 1
 
-  - title: 'teams'
-    description: 'teams description'
-    published: false
+    - title: 'teams'
+      description: 'teams description'
+      order: 1
     
 
 # Collections
 collections:
   development:
     output: true
-    permalink: /development/:title
+    permalink: "/development/:title"
+
+  toolchain:
+    output: true
+    permalink: "/toolchain/:title"
+
+  management:
+    output: true
+    permalink: "/management/:title"
 
   teams:
-    output: true
-    permalink: /teams/:title
-
-  agile:
-    output: true
-    permalink: /agile/:title
-
-exclude:
-  - README.md
-  - LICENSE
+    output: false
+    permalink: "/teams/:title"
 
 # Plugins
 plugins:

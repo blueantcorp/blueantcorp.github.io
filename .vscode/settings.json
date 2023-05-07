@@ -1,0 +1,8 @@
+{
+    "yaml.schemas": {
+        "/definitions/schema.json": [
+            "_config.yml",
+            "file:///Users/emile/Projects/Work/blueantcorp.github.io/_config.yml"
+        ]
+    }
+}

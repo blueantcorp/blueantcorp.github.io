@@ -9,7 +9,7 @@ published: true
 
 This week I want to talk about *Navigation in SwiftUI*. *SwiftUI* provides a declarative way of implementing navigation in your apps. Today we will cover different navigation flows available in *SwiftUI* like *Master-Detail* and *Presenting Modals*.
 
-#### Master-Detail flow
+# Master-Detail flow
 Assume that you are working on app which shows a list of some items and you want to move to details screen as soon as the user selects any item. For this type of navigation, *SwiftUI* provides *NavigationView* and *NavigationLink* components. Let's check how we can use them.
 
 ```swift
@@ -49,7 +49,7 @@ Here we have a list of messages, to make navigation possible we embed our *List*
 
 Next, we embed List rows into *NavigationLink*, while creating *NavigationLink*, we have to provide a destination view. *SwiftUI* presents a destination view when the user presses the *List row*. By wrapping *List row* into a *NavigationLink*, *SwiftUI* adds trailing arrow to the view which indicates that there is a details screen next to the view. And this is where the real power of declarative programming comes. *List row* starts appearing in another way only by embedding it into *NavigationLink*. To learn more about environment-based appearance in *SwiftUI*, you can check out ["Building forms with SwiftUI" post](/2019/06/19/building-forms-with-swiftui/).
 
-#### Modals
+# Modals
 Let's change our navigation a little bit. Instead of showing our view as a child in the navigation hierarchy, I want to present it as a modal using new iOS 13 cart interface. To make it possible, all we need to do is embedding *List row* into *PresentationLink* instead of *NavigationLink*.
 
 ```swift

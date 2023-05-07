@@ -1,0 +1,68 @@
+{
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "$ref": "#/definitions/Welcome10",
+    "definitions": {
+        "Welcome10": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "blueantcorp": {
+                    "$ref": "#/definitions/blueantcorp"
+                }
+            },
+            "required": [
+                "blueantcorp"
+            ],
+            "title": "Welcome10"
+        },
+        "blueantcorp": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "structure": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Structure"
+                    }
+                }
+            },
+            "required": [
+                "structure"
+            ],
+            "title": "blueantcorp"
+        },
+        "Structure": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "title": {
+                    "type": "string"
+                },
+                "category": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "permalink": {
+                    "type": "string"
+                },
+                "published": {
+                    "type": "boolean"
+                },
+                "order": {
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "category",
+                "description",
+                "order",
+                "permalink",
+                "published",
+                "title"
+            ],
+            "title": "Structure"
+        }
+    }
+}
