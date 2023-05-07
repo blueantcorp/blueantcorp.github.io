@@ -1,5 +1,5 @@
 lsi: false
-safe: true
+safe: false
 incremental: false
 gist:
   noscript: false
@@ -23,6 +23,7 @@ url:  https://www.blueantcorp.com
 
 
 plugins_dir: _plugins
+whitelist: ['jekyll-paginate']
 
 # Markdown
 encoding: utf-8
@@ -59,7 +60,7 @@ blueantcorp:
     - title: 'develop'
       category: 'development'
       description: 'mobile development'
-      permalink: '/_development/index.html'
+      permalink: '/development/'
       published: true
       order: 2
 

@@ -11,7 +11,7 @@ module IndexPageGenerator
       end
     end
 
-    class CustomCollection < Collection
+    class CustomCollection < Jekyll::Collection
         attr_accessor :order
         def initialize(site, label)
             @site = site
@@ -22,7 +22,7 @@ module IndexPageGenerator
         end
     end
 
-    class CollectionIndexPageGenerator < Jekyll::Generator
+    class IndexPageGenerator < Jekyll::Generator
       safe true
       priority :highest
 
@@ -36,7 +36,7 @@ module IndexPageGenerator
                 permalink = data['permalink'] || "/#{category}/"
                 published = data['published'] || false
                 if title && category && permalink && published
-                    page = Jekyll::CollectionIndexPage.new(site, site.source, permalink, name)
+                    page = CollectionIndexPage.new(site, site.source, permalink, name)
                     page.data['layout'] = data['layout'] || 'page_index'
                     page.data['title'] = title
                     page.data['description'] = data['description'] || ''
