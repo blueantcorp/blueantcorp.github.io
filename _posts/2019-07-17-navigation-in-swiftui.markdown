@@ -28,7 +28,9 @@ struct MasterView: View {
         }
     }
 }
+```
 
+```swift
 struct DetailsView: View {
     let message: String
 

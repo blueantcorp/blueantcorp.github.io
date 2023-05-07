@@ -95,4 +95,9 @@ $theme-color: $red;
         color: $grey-color;
         border-top: 1px solid $grey-color-dark;
     }
+    .highlight {
+        border: 1px;
+        border-radius: 20px;
+        background-color: #101010;
+    }
 }
