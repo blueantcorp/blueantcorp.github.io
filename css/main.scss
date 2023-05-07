@@ -85,6 +85,9 @@ $theme-color: $red;
     body, a {
         color: $text-color-dark;
     }
+    .paginator {
+        color: $grey-color-dark;
+    }
     .site-header {
         border-bottom: 1px solid $grey-color-dark;
     }

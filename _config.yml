@@ -14,6 +14,10 @@ url:  https://www.blueantcorp.com
 
 markdown: kramdown
 highlighter: rouge
+permalink: pretty
+encoding: utf-8
+timezone: Europe/London
+
 
 author:
   name: emile
@@ -24,8 +28,8 @@ author:
   bio: bio.
 
 # Pagination
-paginate: 15
-paginate_path: "/blog/page:num/"
+paginate: 5
+paginate_path: "/blog/:num/"
 
 navigation:
 
