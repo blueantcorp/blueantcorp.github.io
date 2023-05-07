@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Breaking Down Timezone Barriers:<br/>How Automation Streamlined Global Fintech Development"
+title: "Breaking Down Timezone Barriers:<br/>How Automation Streamlined Global Fintech Mobile Project"
 description: "Embark on a journey with a global fintech team that transformed timezones into a competitive edge, working on cutting edge products with an infectious spirit of collaboration and a few surprising plot twists."
 category: toolchain
 author: Emile
