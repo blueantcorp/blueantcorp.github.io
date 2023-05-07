@@ -37,9 +37,7 @@ navigation:
   
   - title: 'agile'
     description: 'agile description'
-    category: 'agile'
-    permalink: '/agile/'
-    published: false
+    published: true
 
   - title: 'teams'
     description: 'teams description'

@@ -5,15 +5,23 @@
 
 
 // Our variables
-$base-font-family: Helvetica, Arial, sans-serif;
-$base-font-size:   18px;
-$small-font-size:  $base-font-size * 0.875;
-$base-line-height: 1.5;
+$base-font-family:              Helvetica, sans-serif;
+$base-font-size:                18px;
+$small-font-size: $base-font-size * 0.875;
+$base-line-height:              1.5em;
+
+$horizontal-spacing-unit:       50px;
+$vertical-spacing-unit:         20px;
+$nav-height:                    36px;
 
 $spacing-unit:     30px;
 
-$text-color:       #111;
+$text-color:       #666;
+$text-color-dark:  #AFBAC6;
+
 $background-color: #fdfdfd;
+$background-color-dark:#1D2126;
+
 $brand-color:      #2a7ae2;
 
 $grey-color:       #828282;
@@ -23,6 +31,16 @@ $grey-color-dark:  darken($grey-color, 25%);
 $on-palm:          600px;
 $on-laptop:        800px;
 
+/* COLORS  */
+$red:  #FF3636;
+$orange: #F29105;
+$blue: #2698BA;
+$green: #11D68B;
+$lime_green: #B7D12A;
+$purple: #B509AC;
+
+/* Set theme color *************************/
+$theme-color: $red;
 
 
 // Using media queries with like this:
@@ -38,11 +56,40 @@ $on-laptop:        800px;
     }
 }
 
-
-
-// Import partials from `sass_dir` (defaults to `_sass`)
-@import
-        "base",
+@import "base",
         "layout",
-        "syntax-highlighting"
-;
+        "syntax-highlighting";
+
+// Light mode
+@media (prefers-color-scheme: light) {
+    body, .site-header, .site-footer {
+        background-color: $background-color;
+    }
+    body, a {
+        color: $text-color;
+    }
+    .site-header {
+        border-bottom: 1px solid $grey-color-light;
+    }
+    .site-footer {
+        color: $grey-color-dark;
+        border-top: 1px solid $grey-color-light;
+    }
+}
+
+// Dark mode
+@media (prefers-color-scheme: dark) {
+    body, .site-header, .site-footer {
+        background-color: $background-color-dark;
+    }
+    body, a {
+        color: $text-color-dark;
+    }
+    .site-header {
+        border-bottom: 1px solid $grey-color-dark;
+    }
+    .site-footer {
+        color: $grey-color;
+        border-top: 1px solid $grey-color-dark;
+    }
+}

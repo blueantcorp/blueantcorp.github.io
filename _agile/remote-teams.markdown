@@ -1,8 +1,8 @@
 ---
 layout: post
 title: Managing distributed teams
-author: Emile
-meta: Distributed Teams
+# author: Emile
+# meta: Distributed Teams
 date: 2022-10-15
 ---
 Agile development was originally imagined for clustered teams, or teams physically located together in the same office. In keeping with the idea that "the most efficient and effective method of conveying information to and within a development team is face-to-face conversation", [early agile](http://agilemanifesto.org/) teams were meant to work together in close proximity.

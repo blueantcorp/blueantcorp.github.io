@@ -8,35 +8,6 @@ dl, dd, ol, ul, figure {
     padding: 0;
 }
 
-
-
-/** Variables **********************************************/
-$base-font-family:              Helvetica, sans-serif;
-$base-line-height:              1.5em;
-$horizontal-spacing-unit:       50px;
-$vertical-spacing-unit:         20px;
-$nav-height:                    36px;
-
-
-/* COLORS  */
-$red:  #FF3636;
-$orange: #F29105;
-$blue: #2698BA;
-$green: #11D68B;
-$lime_green: #B7D12A;
-$purple: #B509AC;
-
-
-$grey-color-dark: #333;   /* footer */
-$grey-color-light: #ddd;  /* navigation bar border */
-$text-color:     #666;
-
-/* Set theme color *************************/
-$theme-color:   $red;
-
-
-/************************************************************/
-
 /**
  * Basic styling
  */
@@ -49,8 +20,6 @@ body {
     background-color: $background-color;
     -webkit-text-size-adjust: 100%;
 }
-
-
 
 /**
  * Set `margin-bottom` to maintain vertical rhythm
@@ -131,7 +100,6 @@ a {
 }
 
 article a {
-    color: $theme-color;
     font-weight: 100;
 
     &:hover {
