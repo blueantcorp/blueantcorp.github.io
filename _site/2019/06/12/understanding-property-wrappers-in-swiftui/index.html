@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Understanding Property Wrappers in SwiftUI</title>
+    <meta name="description" content="descr about blueantcorp.com">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="canonical" href="http://localhost:4000/2019/06/12/understanding-property-wrappers-in-swiftui/">
+
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+</head>
+
+  <body>
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">blueantcorp.com</a>
+    <nav class="site-nav">
+
+      <div class="trigger">
+
+        <a class="page-link" href="/">blog</a>
+
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+          <a class="page-link" href="/management/">plan</a>
+          
+        
+          
+          <a class="page-link" href="/development/">develop</a>
+          
+        
+          
+          <a class="page-link" href="/toolchain/">build</a>
+          
+        
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+  <header class="post-header">
+    <h1 class="post-title">Understanding Property Wrappers in SwiftUI</h1>
+    <p class="post-meta">12 Jun 2019</p>
+  </header>
+  <article class="post-content">
+    <p>Last week we started a new series of <a href="/2019/06/05/swiftui-making-real-world-app">posts</a> about <em>SwiftUI</em> framework. Today I want to continue this topic by covering <em>Property Wrappers</em> provided by <em>SwiftUI</em>. <em>SwiftUI</em> gives us <em>@State</em>, <em>@Binding</em>, <em>@ObjectBinding</em>, <em>@EnvironmentObject</em>, and <em>@Environment</em> <em>Property Wrappers</em>. So let’s try to understand the differences between them and when and why which one we have to use.</p>
+
+<h4 id="property-wrappers">Property Wrappers</h4>
+<p><em>Property Wrappers</em> feature described in <a href="https://github.com/DougGregor/swift-evolution/blob/property-wrappers/proposals/0258-property-wrappers.md">SE-0258</a> proposal. The main goal here is wrapping properties with logic which can be extracted into the separated struct to reuse it across the codebase. This proposal is not accepted yet, but Apple provides <em>Xcode beta with Swift 5.1 snapshot</em>, which has it.</p>
+
+<h4 id="state">@State</h4>
+<p><em>@State</em> is a <em>Property Wrapper</em> which we can use to mark <em>View</em>’s state. <em>SwiftUI</em> will store it in special internal framework memory outside of <em>View</em> struct. Only related <em>View</em> and its children can access it. As soon as the value of @<em>State</em> property change <em>SwiftUI</em> rebuilds <em>View</em> to respect state changes. Here is a simple example.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+</pre></td><td class="rouge-code"><pre><span class="kd">struct</span> <span class="kt">ProductsView</span><span class="p">:</span> <span class="kt">View</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">products</span><span class="p">:</span> <span class="p">[</span><span class="kt">Product</span><span class="p">]</span>
+
+    <span class="kd">@State</span> <span class="kd">private</span> <span class="k">var</span> <span class="nv">showFavorited</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span>
+
+    <span class="k">var</span> <span class="nv">body</span><span class="p">:</span> <span class="kd">some</span> <span class="kt">View</span> <span class="p">{</span>
+        <span class="kt">List</span> <span class="p">{</span>
+            <span class="kt">Button</span><span class="p">(</span>
+                <span class="nv">action</span><span class="p">:</span> <span class="p">{</span> <span class="k">self</span><span class="o">.</span><span class="n">showFavorited</span><span class="o">.</span><span class="nf">toggle</span><span class="p">()</span> <span class="p">},</span>
+                <span class="nv">label</span><span class="p">:</span> <span class="p">{</span> <span class="kt">Text</span><span class="p">(</span><span class="s">"Change filter"</span><span class="p">)</span> <span class="p">}</span>
+            <span class="p">)</span>
+
+            <span class="kt">ForEach</span><span class="p">(</span><span class="n">products</span><span class="p">)</span> <span class="p">{</span> <span class="n">product</span> <span class="k">in</span>
+                <span class="k">if</span> <span class="o">!</span><span class="k">self</span><span class="o">.</span><span class="n">showFavorited</span> <span class="o">||</span> <span class="n">product</span><span class="o">.</span><span class="n">isFavorited</span> <span class="p">{</span>
+                    <span class="kt">Text</span><span class="p">(</span><span class="n">product</span><span class="o">.</span><span class="n">title</span><span class="p">)</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>In the example above we have a straightforward screen with <em>Button</em> and <em>List</em> of products. As soon as we press the button, it changes the value of state property, and <em>SwiftUI</em> recreates <em>View</em>.</p>
+
+<h4 id="binding">@Binding</h4>
+<p>@<em>Binding</em> provides reference like access for a value type. Sometimes we need to make the state of our <em>View</em> accessible for its children. But we can’t simply pass that value because it is a value type and <em>Swift</em> will pass the copy of that value. And this is where we can use <em>@Binding Property Wrapper</em>.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+</pre></td><td class="rouge-code"><pre><span class="kd">struct</span> <span class="kt">FilterView</span><span class="p">:</span> <span class="kt">View</span> <span class="p">{</span>
+    <span class="kd">@Binding</span> <span class="k">var</span> <span class="nv">showFavorited</span><span class="p">:</span> <span class="kt">Bool</span>
+
+    <span class="k">var</span> <span class="nv">body</span><span class="p">:</span> <span class="kd">some</span> <span class="kt">View</span> <span class="p">{</span>
+        <span class="kt">Toggle</span><span class="p">(</span><span class="nv">isOn</span><span class="p">:</span> <span class="err">$</span><span class="n">showFavorited</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="kt">Text</span><span class="p">(</span><span class="s">"Change filter"</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">struct</span> <span class="kt">ProductsView</span><span class="p">:</span> <span class="kt">View</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">products</span><span class="p">:</span> <span class="p">[</span><span class="kt">Product</span><span class="p">]</span>
+
+    <span class="kd">@State</span> <span class="kd">private</span> <span class="k">var</span> <span class="nv">showFavorited</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span>
+
+    <span class="k">var</span> <span class="nv">body</span><span class="p">:</span> <span class="kd">some</span> <span class="kt">View</span> <span class="p">{</span>
+        <span class="kt">List</span> <span class="p">{</span>
+            <span class="kt">FilterView</span><span class="p">(</span><span class="nv">showFavorited</span><span class="p">:</span> <span class="err">$</span><span class="n">showFavorited</span><span class="p">)</span>
+
+            <span class="kt">ForEach</span><span class="p">(</span><span class="n">products</span><span class="p">)</span> <span class="p">{</span> <span class="n">product</span> <span class="k">in</span>
+                <span class="k">if</span> <span class="o">!</span><span class="k">self</span><span class="o">.</span><span class="n">showFavorited</span> <span class="o">||</span> <span class="n">product</span><span class="o">.</span><span class="n">isFavorited</span> <span class="p">{</span>
+                    <span class="kt">Text</span><span class="p">(</span><span class="n">product</span><span class="o">.</span><span class="n">title</span><span class="p">)</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>We use @<em>Binding</em> to mark <em>showFavorited</em> property inside the <em>FilterView</em>. We also use <em>$</em> to pass a binding reference, because without <em>$</em> <em>Swift</em> will pass a copy of the property’s value instead of passing bindable reference. <em>FilterView</em> can read and write the value of <em>ProductsView</em>’s <em>showFavorited</em> property, but it can’t observe the changes using this binding. As soon as <em>FilterView</em> changes value of <em>showFavorited</em> property, <em>SwiftUI</em> will recreate the <em>ProductsView</em> and <em>FilterView</em> as its child.</p>
+
+<h4 id="objectbinding">@ObjectBinding</h4>
+<p>@<em>ObjectBinding</em> work very similarly to @<em>State</em> <em>Property Wrapper</em>, but the main difference is that we can share it between multiple independent <em>Views</em> which can subscribe and observe changes on that object, and as soon as changes appear <em>SwiftUI</em> rebuild all <em>Views</em> bound to this object. Let’s take a look at an example.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+</pre></td><td class="rouge-code"><pre><span class="kd">final</span> <span class="kd">class</span> <span class="kt">PodcastPlayer</span><span class="p">:</span> <span class="kt">BindableObject</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">isPlaying</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span> <span class="p">{</span>
+        <span class="k">willSet</span> <span class="p">{</span>
+            <span class="n">willChange</span><span class="o">.</span><span class="nf">send</span><span class="p">(</span><span class="k">self</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="kd">func</span> <span class="nf">play</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">isPlaying</span> <span class="o">=</span> <span class="kc">true</span>
+    <span class="p">}</span>
+
+    <span class="kd">func</span> <span class="nf">pause</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">isPlaying</span> <span class="o">=</span> <span class="kc">false</span>
+    <span class="p">}</span>
+
+    <span class="k">let</span> <span class="nv">willChange</span> <span class="o">=</span> <span class="kt">PassthroughSubject</span><span class="o">&lt;</span><span class="kt">PodcastPlayer</span><span class="p">,</span> <span class="kt">Never</span><span class="o">&gt;</span><span class="p">()</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>Here we have <em>PodcastPlayer</em> class which we share between the screens of our app. Every screen has to show floating pause button in the case when the app is playing a podcast episode. <em>SwiftUI</em> tracks changes on <em>BindableObject</em> with the help of <em>willChange</em> property, which is the single requirement of <em>BindableObject</em> protocol. More detailed information about <em>BindableObject</em> you can find in my previous <a href="/2019/06/05/swiftui-making-real-world-app">post</a>.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+</pre></td><td class="rouge-code"><pre><span class="kd">struct</span> <span class="kt">EpisodesView</span><span class="p">:</span> <span class="kt">View</span> <span class="p">{</span>
+    <span class="kd">@ObjectBinding</span> <span class="k">var</span> <span class="nv">player</span><span class="p">:</span> <span class="kt">PodcastPlayer</span>
+    <span class="k">let</span> <span class="nv">episodes</span><span class="p">:</span> <span class="p">[</span><span class="kt">Episode</span><span class="p">]</span>
+
+    <span class="k">var</span> <span class="nv">body</span><span class="p">:</span> <span class="kd">some</span> <span class="kt">View</span> <span class="p">{</span>
+        <span class="kt">List</span> <span class="p">{</span>
+            <span class="kt">Button</span><span class="p">(</span>
+                <span class="nv">action</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="k">if</span> <span class="k">self</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="n">isPlaying</span> <span class="p">{</span>
+                        <span class="k">self</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="nf">pause</span><span class="p">()</span>
+                    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                        <span class="k">self</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="nf">play</span><span class="p">()</span>
+                    <span class="p">}</span>
+            <span class="p">},</span> <span class="nv">label</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="kt">Text</span><span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">isPlaying</span> <span class="p">?</span> <span class="s">"Pause"</span><span class="p">:</span> <span class="s">"Play"</span><span class="p">)</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+            <span class="kt">ForEach</span><span class="p">(</span><span class="n">episodes</span><span class="p">)</span> <span class="p">{</span> <span class="n">episode</span> <span class="k">in</span>
+                <span class="kt">Text</span><span class="p">(</span><span class="n">episode</span><span class="o">.</span><span class="n">title</span><span class="p">)</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>Here we use <em>@ObjectBinding Property Wrapper</em> to bind our <em>EpisodesView</em> to <em>PodcastPlayer</em> class, and as soon as current <em>View</em> or any other <em>View</em> attached to <em>PodcastPlayer</em> object change it, <em>SwiftUI</em> will rebuild all <em>Views</em> bound to that <em>PodcastPlayer</em> object.</p>
+
+<h4 id="environmentobject">@EnvironmentObject</h4>
+<p>Instead of passing <em>BindableObject</em> via init method of our View we can implicitly inject it into <em>Environment</em> of our <em>View</em> hierarchy. By doing this, we create the opportunity for all child <em>View</em> of current <em>Environment</em> access to this <em>BindableObject</em>.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+</pre></td><td class="rouge-code"><pre><span class="kd">class</span> <span class="kt">SceneDelegate</span><span class="p">:</span> <span class="kt">UIResponder</span><span class="p">,</span> <span class="kt">UIWindowSceneDelegate</span> <span class="p">{</span>
+
+    <span class="k">var</span> <span class="nv">window</span><span class="p">:</span> <span class="kt">UIWindow</span><span class="p">?</span>
+
+    <span class="kd">func</span> <span class="nf">scene</span><span class="p">(</span><span class="n">_</span> <span class="nv">scene</span><span class="p">:</span> <span class="kt">UIScene</span><span class="p">,</span> <span class="n">willConnectTo</span> <span class="nv">session</span><span class="p">:</span> <span class="kt">UISceneSession</span><span class="p">,</span> <span class="n">options</span> <span class="nv">connectionOptions</span><span class="p">:</span> <span class="kt">UIScene</span><span class="o">.</span><span class="kt">ConnectionOptions</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">let</span> <span class="nv">window</span> <span class="o">=</span> <span class="kt">UIWindow</span><span class="p">(</span><span class="nv">frame</span><span class="p">:</span> <span class="kt">UIScreen</span><span class="o">.</span><span class="n">main</span><span class="o">.</span><span class="n">bounds</span><span class="p">)</span>
+        <span class="k">let</span> <span class="nv">episodes</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="kt">Episode</span><span class="p">(</span><span class="nv">id</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="nv">title</span><span class="p">:</span> <span class="s">"First episode"</span><span class="p">),</span>
+            <span class="kt">Episode</span><span class="p">(</span><span class="nv">id</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="nv">title</span><span class="p">:</span> <span class="s">"Second episode"</span><span class="p">)</span>
+        <span class="p">]</span>
+
+        <span class="k">let</span> <span class="nv">player</span> <span class="o">=</span> <span class="kt">PodcastPlayer</span><span class="p">()</span>
+        <span class="n">window</span><span class="o">.</span><span class="n">rootViewController</span> <span class="o">=</span> <span class="kt">UIHostingController</span><span class="p">(</span>
+            <span class="nv">rootView</span><span class="p">:</span> <span class="kt">EpisodesView</span><span class="p">(</span><span class="nv">episodes</span><span class="p">:</span> <span class="n">episodes</span><span class="p">)</span>
+                <span class="o">.</span><span class="nf">environmentObject</span><span class="p">(</span><span class="n">player</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">window</span> <span class="o">=</span> <span class="n">window</span>
+        <span class="n">window</span><span class="o">.</span><span class="nf">makeKeyAndVisible</span><span class="p">()</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">struct</span> <span class="kt">EpisodesView</span><span class="p">:</span> <span class="kt">View</span> <span class="p">{</span>
+    <span class="kd">@EnvironmentObject</span> <span class="k">var</span> <span class="nv">player</span><span class="p">:</span> <span class="kt">PodcastPlayer</span>
+    <span class="k">let</span> <span class="nv">episodes</span><span class="p">:</span> <span class="p">[</span><span class="kt">Episode</span><span class="p">]</span>
+
+    <span class="k">var</span> <span class="nv">body</span><span class="p">:</span> <span class="kd">some</span> <span class="kt">View</span> <span class="p">{</span>
+        <span class="kt">List</span> <span class="p">{</span>
+            <span class="kt">Button</span><span class="p">(</span>
+                <span class="nv">action</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="k">if</span> <span class="k">self</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="n">isPlaying</span> <span class="p">{</span>
+                        <span class="k">self</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="nf">pause</span><span class="p">()</span>
+                    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                        <span class="k">self</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="nf">play</span><span class="p">()</span>
+                    <span class="p">}</span>
+            <span class="p">},</span> <span class="nv">label</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="kt">Text</span><span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">isPlaying</span> <span class="p">?</span> <span class="s">"Pause"</span><span class="p">:</span> <span class="s">"Play"</span><span class="p">)</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+            <span class="kt">ForEach</span><span class="p">(</span><span class="n">episodes</span><span class="p">)</span> <span class="p">{</span> <span class="n">episode</span> <span class="k">in</span>
+                <span class="kt">Text</span><span class="p">(</span><span class="n">episode</span><span class="o">.</span><span class="n">title</span><span class="p">)</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>As you can see, we have to pass <em>PodcastPlayer</em> object via <em>environmentObject</em> method on our <em>View</em>. By doing this, we can easily access to <em>PodcastPlayer</em> by defining it with <em>@EnvironmentObject Property Wrapper</em>. @<em>EnvironmentObject</em> uses dynamic member lookup feature to find <em>PodcastPlayer</em> class instance in the <em>Environment</em>, that’s why you even don’t need to pass it via init method of <em>EpisodesView</em>. The <em>Environment</em> is the right way of <em>Dependency Injection in SwiftUI</em>. It works like magic.</p>
+
+<h4 id="environment">@Environment</h4>
+<p>As we discussed in the previous chapter, we can pass custom objects into the <em>Environment</em> of a <em>View</em> hierarchy inside <em>SwiftUI</em>. But <em>SwiftUI</em> already has an <em>Environment</em> populated with system-wide settings. We can easily access them with <em>@Environment Property Wrapper</em>.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre></td><td class="rouge-code"><pre><span class="kd">struct</span> <span class="kt">CalendarView</span><span class="p">:</span> <span class="kt">View</span> <span class="p">{</span>
+    <span class="kd">@Environment</span><span class="p">(\</span><span class="o">.</span><span class="n">calendar</span><span class="p">)</span> <span class="k">var</span> <span class="nv">calendar</span><span class="p">:</span> <span class="kt">Calendar</span>
+    <span class="kd">@Environment</span><span class="p">(\</span><span class="o">.</span><span class="n">locale</span><span class="p">)</span> <span class="k">var</span> <span class="nv">locale</span><span class="p">:</span> <span class="kt">Locale</span>
+    <span class="kd">@Environment</span><span class="p">(\</span><span class="o">.</span><span class="n">colorScheme</span><span class="p">)</span> <span class="k">var</span> <span class="nv">colorScheme</span><span class="p">:</span> <span class="kt">ColorScheme</span>
+
+    <span class="k">var</span> <span class="nv">body</span><span class="p">:</span> <span class="kd">some</span> <span class="kt">View</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="kt">Text</span><span class="p">(</span><span class="n">locale</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>By marking our properties with <em>@Environment Property Wrapper</em>, we access and subscribe to changes of system-wide settings. As soon as <em>Locale</em>, <em>Calendar</em> or <em>ColorScheme</em> of the system change, <em>SwiftUI</em> recreates our <em>CalendarView</em>.</p>
+
+<h4 id="conclusion">Conclusion</h4>
+<p>Today we talked about <em>Property Wrappers</em> provided by <em>SwiftUI</em>. <em>@State, @Binding, @EnvironmentObject, and @ObjectBinding</em> play huge role in <em>SwiftUI</em> development.</p>
+
+  </article>
+</div>
+
+      </div>
+    </div>
+    <footer class="site-footer">
+
+  <div class="wrapper">
+  	<p>This site was built using <a href="http://jekyllrb.com" target="_blank">Jekyll</a> and is hosted on <a href="https://github.com" target="_blank">Github</a> Photos from <a href="https://unsplash.com" target="_blank">Unsplash</a> and text generated with <a href="http://hipsum.co" target="_blank">Hipster Ipsum</a>. &#169; 2015</p>
+  </div>
+
+</footer>
+
+  </body>
+</html>

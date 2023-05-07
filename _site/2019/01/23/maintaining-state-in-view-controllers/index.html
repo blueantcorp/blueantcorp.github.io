@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Maintaining State in Your ViewControllers</title>
+    <meta name="description" content="descr about blueantcorp.com">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="canonical" href="http://localhost:4000/2019/01/23/maintaining-state-in-view-controllers/">
+
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+</head>
+
+  <body>
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">blueantcorp.com</a>
+    <nav class="site-nav">
+
+      <div class="trigger">
+
+        <a class="page-link" href="/">blog</a>
+
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+          <a class="page-link" href="/management/">plan</a>
+          
+        
+          
+          <a class="page-link" href="/development/">develop</a>
+          
+        
+          
+          <a class="page-link" href="/toolchain/">build</a>
+          
+        
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+  <header class="post-header">
+    <h1 class="post-title">Maintaining State in Your ViewControllers</h1>
+    <p class="post-meta">23 Jan 2019</p>
+  </header>
+  <article class="post-content">
+    <p>Last week we talked about <a href="/2019/01/17/using-protocols-as-composable-extensions/">extracting reusable code samples from ViewControllers into Protocols and Protocol extensions</a>. Today I want to show you another nice use case of protocols while maintaining the state of ViewControllers.</p>
+
+<p>Assume that we have a screen for presenting the list of user watched shows — our app downloads it from the web service like Trakt. We can describe the state of ViewController within three variables:</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+</pre></td><td class="rouge-code"><pre><span class="kd">class</span> <span class="kt">HistoryViewController</span><span class="p">:</span> <span class="kt">UIViewController</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">loading</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span> <span class="p">{</span>
+        <span class="k">didSet</span> <span class="p">{</span>
+            <span class="nf">renderLoading</span><span class="p">()</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="k">var</span> <span class="nv">shows</span><span class="p">:</span> <span class="p">[</span><span class="kt">Show</span><span class="p">]?</span> <span class="p">{</span>
+        <span class="k">didSet</span> <span class="p">{</span>
+            <span class="nf">renderShows</span><span class="p">()</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="k">var</span> <span class="nv">error</span><span class="p">:</span> <span class="kt">Error</span><span class="p">?</span> <span class="p">{</span>
+        <span class="k">didSet</span> <span class="p">{</span>
+            <span class="nf">renderError</span><span class="p">()</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<ol>
+  <li>loading indicates whether the ViewController loading the data or already finished the job.</li>
+  <li>shows variable stores the actual history of watched TV shows.</li>
+  <li>error property reports whether the request ended with an error.</li>
+</ol>
+
+<p>Here is fetch method, which used to request data from Trakt web service:</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+</pre></td><td class="rouge-code"><pre>    <span class="kd">private</span> <span class="kd">func</span> <span class="nf">fetch</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">loading</span> <span class="o">=</span> <span class="kc">true</span>
+        <span class="n">historyService</span><span class="o">.</span><span class="n">fetch</span> <span class="p">{</span> <span class="p">[</span><span class="k">weak</span> <span class="k">self</span><span class="p">]</span> <span class="n">result</span> <span class="k">in</span>
+            <span class="k">self</span><span class="p">?</span><span class="o">.</span><span class="n">loading</span> <span class="o">=</span> <span class="kc">false</span>
+            <span class="k">switch</span> <span class="n">result</span> <span class="p">{</span>
+            <span class="k">case</span> <span class="o">.</span><span class="nf">success</span><span class="p">(</span><span class="k">let</span> <span class="nv">shows</span><span class="p">):</span> <span class="k">self</span><span class="p">?</span><span class="o">.</span><span class="n">shows</span> <span class="o">=</span> <span class="n">shows</span>
+            <span class="k">case</span> <span class="o">.</span><span class="nf">failure</span><span class="p">(</span><span class="k">let</span> <span class="nv">error</span><span class="p">):</span> <span class="k">self</span><span class="p">?</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="n">error</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>Before starting our request to Trakt web service, we set loading to true, which calls renderLoading() method. After that, we initiate the API request to fetch the history of watched TV shows. In the completion handler, we set shows or error variables accordingly to the result of the request. At first glance, it should work pretty well, but here we have a couple of downsides.</p>
+
+<ol>
+  <li>We have to reset loading, error, shows variables on every request to avoid an invalid state. For example, in case of the first request fails and user retries it with the successful request, we still have value in the error property.</li>
+  <li>We want an exclusive state, at any point, we need only one state of the screen: error or loading or shows. Right now we introduce more state variations than we have, and this can leads to ambiguous situations.</li>
+</ol>
+
+<h4 id="enums">Enums</h4>
+<p>We want the exclusive state, and this is about enums. Enums give the opportunity to have only one case at any point in time. Let’s refactor our code with enum.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+</pre></td><td class="rouge-code"><pre><span class="kd">enum</span> <span class="kt">State</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="n">loading</span>
+    <span class="k">case</span> <span class="nf">error</span><span class="p">(</span><span class="kt">Error</span><span class="p">)</span>
+    <span class="k">case</span> <span class="nf">loaded</span><span class="p">([</span><span class="kt">Show</span><span class="p">])</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="kt">HistoryViewController</span><span class="p">:</span> <span class="kt">UIViewController</span> <span class="p">{</span>
+    <span class="kd">private</span> <span class="k">var</span> <span class="nv">state</span><span class="p">:</span> <span class="kt">State</span> <span class="p">{</span>
+        <span class="k">didSet</span> <span class="p">{</span>
+            <span class="nf">render</span><span class="p">()</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">extension</span> <span class="kt">HistoryViewController</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">render</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">switch</span> <span class="n">state</span> <span class="p">{</span>
+        <span class="k">case</span> <span class="o">.</span><span class="nv">loading</span><span class="p">:</span> <span class="c1">// render loading</span>
+        <span class="k">case</span> <span class="o">.</span><span class="nf">error</span><span class="p">(</span><span class="k">let</span> <span class="nv">error</span><span class="p">):</span> <span class="c1">// render error</span>
+        <span class="k">case</span> <span class="nf">loaded</span><span class="p">(</span><span class="k">let</span> <span class="nv">shows</span><span class="p">):</span> <span class="c1">// render shows</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>Here we declare State enum which exclusively describes our state cases. As soon as state variable changes, it calls the render method. Inside the render method, we switch state to display it. Another positive change here is clean access to screen state. We don’t need to check all the three variables to understand what’s happening on the screen right now.</p>
+
+<h4 id="protocols-with-associated-types">Protocols with associated types</h4>
+<p>We already made nice refactoring, but it is very bounded to current screen, which presents the list of the shows. Let’s add a generic constraint to State enum, to make it more usable across the app screens, which also have loading and error states, but present other data entities.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre></td><td class="rouge-code"><pre><span class="kd">enum</span> <span class="kt">State</span><span class="o">&lt;</span><span class="kt">Data</span><span class="o">&gt;</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="n">loading</span>
+    <span class="k">case</span> <span class="nf">loaded</span><span class="p">(</span><span class="kt">Data</span><span class="p">)</span>
+    <span class="k">case</span> <span class="nf">error</span><span class="p">(</span><span class="kt">Error</span><span class="p">)</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>Let’s go beyond and extract state handling into a generic protocol with protocol extension, which any ViewController can adapt to add this logic.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+</pre></td><td class="rouge-code"><pre><span class="kd">protocol</span> <span class="kt">StatePresentable</span><span class="p">:</span> <span class="kt">ActivityPresentable</span><span class="p">,</span> <span class="kt">ErrorPresentable</span> <span class="p">{</span>
+    <span class="kd">associatedtype</span> <span class="kt">Data</span>
+
+    <span class="k">var</span> <span class="nv">state</span><span class="p">:</span> <span class="kt">State</span><span class="o">&lt;</span><span class="kt">Data</span><span class="o">&gt;</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span>
+    <span class="kd">func</span> <span class="nf">render</span><span class="p">()</span>
+    <span class="kd">func</span> <span class="nf">render</span><span class="p">(</span><span class="n">_</span> <span class="nv">data</span><span class="p">:</span> <span class="kt">Data</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kd">extension</span> <span class="kt">StatePresentable</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">render</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">switch</span> <span class="n">state</span> <span class="p">{</span>
+        <span class="k">case</span> <span class="o">.</span><span class="nv">loading</span><span class="p">:</span>
+            <span class="nf">setActivityStatus</span><span class="p">(</span><span class="o">.</span><span class="n">visible</span><span class="p">)</span>
+        <span class="k">case</span> <span class="o">.</span><span class="nf">error</span><span class="p">(</span><span class="k">let</span> <span class="nv">error</span><span class="p">):</span>
+            <span class="nf">setActivityStatus</span><span class="p">(</span><span class="o">.</span><span class="n">hidden</span><span class="p">)</span>
+            <span class="nf">present</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+        <span class="k">case</span> <span class="o">.</span><span class="nf">loaded</span><span class="p">(</span><span class="k">let</span> <span class="nv">data</span><span class="p">):</span>
+            <span class="nf">setActivityStatus</span><span class="p">(</span><span class="o">.</span><span class="n">hidden</span><span class="p">)</span>
+            <span class="nf">render</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>Here we have StatePresentable protocol which extends from Activity and Error Presentable protocols. We described these two protocols in the previous <a href="https://mecid.github.io/2019/01/17/using-protocols-as-composable-extensions/">post</a>.
+StatePresentable protocol has associated type Data, which we use as generic constraint for State enum, to make it usable for any type of data. We also added the default implementation for render method which handles state changes.</p>
+
+<p>Here is the usage example of StatePresentable protocol.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre></td><td class="rouge-code"><pre><span class="kd">class</span> <span class="kt">HistoryViewController</span><span class="p">:</span> <span class="kt">UIViewController</span> <span class="p">{</span>
+    <span class="kd">private</span> <span class="k">var</span> <span class="nv">state</span><span class="p">:</span> <span class="kt">State</span><span class="o">&lt;</span><span class="p">[</span><span class="kt">Show</span><span class="p">]</span><span class="o">&gt;</span> <span class="p">{</span>
+        <span class="k">didSet</span> <span class="p">{</span>
+            <span class="nf">render</span><span class="p">()</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">extension</span> <span class="kt">HistoryViewController</span><span class="p">:</span> <span class="kt">StatePresentable</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">render</span><span class="p">(</span><span class="n">_</span> <span class="nv">data</span><span class="p">:</span> <span class="p">[</span><span class="kt">Show</span><span class="p">])</span> <span class="p">{</span>
+        <span class="c1">// render your data here</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>All we need is to conform StatePresentable protocol, add the didSet observer for state property and implement render method, where we add data presenting logic for the actual screen.</p>
+
+<h4 id="conclusion">Conclusion</h4>
+<p>Protocol with associated types can be robust by enabling the power of generic constraints and making codebase more reusable. I really suggest to read great <a href="https://www.natashatherobot.com/swift-what-are-protocols-with-associated-types/">post</a> by NatashaTheRobot about Protocols with associated types.</p>
+
+  </article>
+</div>
+
+      </div>
+    </div>
+    <footer class="site-footer">
+
+  <div class="wrapper">
+  	<p>This site was built using <a href="http://jekyllrb.com" target="_blank">Jekyll</a> and is hosted on <a href="https://github.com" target="_blank">Github</a> Photos from <a href="https://unsplash.com" target="_blank">Unsplash</a> and text generated with <a href="http://hipsum.co" target="_blank">Hipster Ipsum</a>. &#169; 2015</p>
+  </div>
+
+</footer>
+
+  </body>
+</html>

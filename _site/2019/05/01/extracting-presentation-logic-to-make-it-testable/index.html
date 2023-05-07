@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Extracting presentation logic to make it testable</title>
+    <meta name="description" content="descr about blueantcorp.com">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="canonical" href="http://localhost:4000/2019/05/01/extracting-presentation-logic-to-make-it-testable/">
+
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+</head>
+
+  <body>
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">blueantcorp.com</a>
+    <nav class="site-nav">
+
+      <div class="trigger">
+
+        <a class="page-link" href="/">blog</a>
+
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+          <a class="page-link" href="/management/">plan</a>
+          
+        
+          
+          <a class="page-link" href="/development/">develop</a>
+          
+        
+          
+          <a class="page-link" href="/toolchain/">build</a>
+          
+        
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+  <header class="post-header">
+    <h1 class="post-title">Extracting presentation logic to make it testable</h1>
+    <p class="post-meta">01 May 2019</p>
+  </header>
+  <article class="post-content">
+    <p><a href="/2019/04/24/starting-unit-testing-with-model-layer/">Last week we touched the entirely new topic on my blog. This week we will continue the Unit Testing subject</a>. One of the smells of a good architecture is the ability to cover it with Unit Tests. Today we will talk about extracting Presentation logic into testable and straightforward pieces of code.</p>
+
+<p><img src="/public/showbot.jpg" alt="ShowBot" /></p>
+
+<h4 id="typical-issues">Typical issues</h4>
+<p>Assume that you have a screen presenting a list of the progress of your TV show collection. Every cell presents TV show poster, title, and next episode number and title. Let’s see on typical ShowCell code:</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+</pre></td><td class="rouge-code"><pre><span class="kd">struct</span> <span class="kt">Show</span><span class="p">:</span> <span class="kt">Decodable</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">title</span><span class="p">:</span> <span class="kt">String</span>
+    <span class="k">let</span> <span class="nv">images</span><span class="p">:</span> <span class="kt">Images</span>
+    <span class="k">let</span> <span class="nv">unwatched</span><span class="p">:</span> <span class="p">[</span><span class="kt">Episode</span><span class="p">]</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="kt">ShowCell</span><span class="p">:</span> <span class="kt">UICollectionViewCell</span> <span class="p">{</span>
+    <span class="kd">@IBOutlet</span> <span class="kd">private</span> <span class="k">weak</span> <span class="k">var</span> <span class="nv">titleLabel</span><span class="p">:</span> <span class="kt">UILabel</span><span class="o">!</span>
+    <span class="kd">@IBOutlet</span> <span class="kd">private</span> <span class="k">weak</span> <span class="k">var</span> <span class="nv">nextEpisodeLabel</span><span class="p">:</span> <span class="kt">UILabel</span><span class="o">!</span>
+    <span class="kd">@IBOutlet</span> <span class="kd">private</span> <span class="k">weak</span> <span class="k">var</span> <span class="nv">posterImageView</span><span class="p">:</span> <span class="kt">UIImageView</span><span class="o">!</span>
+
+    <span class="k">var</span> <span class="nv">show</span><span class="p">:</span> <span class="kt">Show</span><span class="p">?</span> <span class="p">{</span>
+        <span class="k">didSet</span> <span class="p">{</span>
+            <span class="k">guard</span> <span class="k">let</span> <span class="nv">show</span> <span class="o">=</span> <span class="n">show</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="k">return</span>
+            <span class="p">}</span>
+
+            <span class="n">posterImageView</span><span class="o">.</span><span class="nf">setImage</span><span class="p">(</span><span class="nv">from</span><span class="p">:</span> <span class="n">show</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">poster</span><span class="p">)</span>
+            <span class="n">titleLabel</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">show</span><span class="o">.</span><span class="n">title</span>
+
+            <span class="k">if</span> <span class="k">let</span> <span class="nv">nextEpisode</span> <span class="o">=</span> <span class="n">show</span><span class="o">.</span><span class="n">unwatched</span><span class="o">.</span><span class="n">first</span> <span class="p">{</span>
+                <span class="n">nextEpisodeLabel</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">"S</span><span class="se">\(</span><span class="n">nextEpisode</span><span class="o">.</span><span class="n">season</span><span class="se">)</span><span class="s">E</span><span class="se">\(</span><span class="n">nextEpisode</span><span class="o">.</span><span class="n">number</span><span class="se">)</span><span class="s"> </span><span class="se">\(</span><span class="n">nextEpisode</span><span class="o">.</span><span class="n">title</span><span class="se">)</span><span class="s">"</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>This code looks very simple, and at first glance, there are no huge problems. But there are probably a few downsides:</p>
+
+<ol>
+  <li>
+    <p>We are breaking SOLID principles by mixing presentation logic with view logic inside ShowCell. Our cell is responsible for laying out views and formatting show data into user presentable format.</p>
+  </li>
+  <li>
+    <p>We want to test our data formatting logic to be sure that we are presenting the correct information to the user. But it is hard to cover UIViews with Unit Tests, and there is no clear intention on what you test, layout or presentation logic (we will talk about UI testing in next posts).</p>
+  </li>
+</ol>
+
+<h4 id="refactoring">Refactoring</h4>
+<p>Let’s start to refactor our codebase. First of all, I want to reuse this ShowCell across the app for presenting search response, TV shows collection progress, etc.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+</pre></td><td class="rouge-code"><pre><span class="kd">protocol</span> <span class="kt">PosterPresentable</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">title</span><span class="p">:</span> <span class="kt">String</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span>
+    <span class="k">var</span> <span class="nv">subtitle</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span>
+    <span class="k">var</span> <span class="nv">poster</span><span class="p">:</span> <span class="kt">URL</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="kt">PosterCell</span><span class="p">:</span> <span class="kt">UICollectionViewCell</span> <span class="p">{</span>
+    <span class="kd">@IBOutlet</span> <span class="kd">private</span> <span class="k">weak</span> <span class="k">var</span> <span class="nv">titleLabel</span><span class="p">:</span> <span class="kt">UILabel</span><span class="o">!</span>
+    <span class="kd">@IBOutlet</span> <span class="kd">private</span> <span class="k">weak</span> <span class="k">var</span> <span class="nv">subtitleLabel</span><span class="p">:</span> <span class="kt">UILabel</span><span class="o">!</span>
+    <span class="kd">@IBOutlet</span> <span class="kd">private</span> <span class="k">weak</span> <span class="k">var</span> <span class="nv">posterImageView</span><span class="p">:</span> <span class="kt">UIImageView</span><span class="o">!</span>
+
+    <span class="k">var</span> <span class="nv">presentation</span><span class="p">:</span> <span class="kt">PosterPresentable</span><span class="p">?</span> <span class="p">{</span>
+        <span class="k">didSet</span> <span class="p">{</span>
+            <span class="k">guard</span> <span class="k">let</span> <span class="nv">presentation</span> <span class="o">=</span> <span class="n">presentation</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="k">return</span>
+            <span class="p">}</span>
+
+            <span class="n">posterImageView</span><span class="o">.</span><span class="nf">setImage</span><span class="p">(</span><span class="nv">from</span><span class="p">:</span> <span class="n">presentation</span><span class="o">.</span><span class="n">poster</span><span class="p">)</span>
+            <span class="n">titleLabel</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">presentation</span><span class="o">.</span><span class="n">title</span>
+            <span class="n">subtitleLabel</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">presentation</span><span class="o">.</span><span class="n">subtitle</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>Here we have refactored version of our ShowCell, now it is called PosterCell, and it can render any data which conforms PosterPresentable protocol. Let’s go ahead and create a separated struct which will contain presentation logic for Show model and which we will pass to our cell instead of Show model struct.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+</pre></td><td class="rouge-code"><pre><span class="kd">struct</span> <span class="kt">ShowPresentation</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">show</span><span class="p">:</span> <span class="kt">Show</span>
+<span class="p">}</span>
+
+<span class="kd">extension</span> <span class="kt">ShowPresentation</span><span class="p">:</span> <span class="kt">PosterPresentable</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">title</span><span class="p">:</span> <span class="kt">String</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">show</span><span class="o">.</span><span class="n">title</span>
+    <span class="p">}</span>
+
+    <span class="k">var</span> <span class="nv">subtitle</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span> <span class="p">{</span>
+        <span class="k">guard</span>
+            <span class="k">let</span> <span class="nv">nextEpisode</span> <span class="o">=</span> <span class="n">show</span><span class="o">.</span><span class="n">unwatched</span><span class="o">.</span><span class="n">first</span>
+            <span class="k">else</span> <span class="p">{</span> <span class="k">return</span> <span class="kc">nil</span> <span class="p">}</span>
+        <span class="k">return</span> <span class="s">"S</span><span class="se">\(</span><span class="n">nextEpisode</span><span class="o">.</span><span class="n">season</span><span class="se">)</span><span class="s">E</span><span class="se">\(</span><span class="n">nextEpisode</span><span class="o">.</span><span class="n">number</span><span class="se">)</span><span class="s"> </span><span class="se">\(</span><span class="n">nextEpisode</span><span class="o">.</span><span class="n">title</span><span class="se">)</span><span class="s">"</span>
+    <span class="p">}</span>
+
+    <span class="k">var</span> <span class="nv">poster</span><span class="p">:</span> <span class="kt">URL</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">show</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">poster</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>By extracting Show model formatting logic into ShowPresentation struct, we fix the encapsulation problem when Cell class responsible for formatting own data model. Another positive effect here is that we can easily cover ShowPresentation with Unit Testing to make sure it works correctly. So, let’s continue with implementing tests for our presentation logic.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+</pre></td><td class="rouge-code"><pre><span class="kd">class</span> <span class="kt">ShowPresentationTests</span><span class="p">:</span> <span class="kt">XCTestCase</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">testShowPresentation</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">let</span> <span class="nv">mockedImages</span> <span class="o">=</span> <span class="kt">Images</span><span class="p">(</span>
+            <span class="nv">poster</span><span class="p">:</span> <span class="kt">URL</span><span class="p">(</span><span class="nv">string</span><span class="p">:</span> <span class="s">"https://image.tmdb.org/t/p/original/fbtaoynlPpENx3Ss2laC7wgqLIP.jpg"</span><span class="p">)</span><span class="o">!</span><span class="p">,</span>
+            <span class="nv">banner</span><span class="p">:</span> <span class="kt">URL</span><span class="p">(</span><span class="nv">string</span><span class="p">:</span> <span class="s">"https://image.tmdb.org/t/p/original/fbtaoynlPpENx3Ss2laC7wgqLIP.jpg"</span><span class="p">)</span><span class="o">!</span><span class="p">,</span>
+            <span class="nv">background</span><span class="p">:</span> <span class="kt">URL</span><span class="p">(</span><span class="nv">string</span><span class="p">:</span> <span class="s">"https://image.tmdb.org/t/p/original/fbtaoynlPpENx3Ss2laC7wgqLIP.jpg"</span><span class="p">)</span><span class="o">!</span>
+        <span class="p">)</span>
+
+        <span class="k">let</span> <span class="nv">mockedEpisode</span> <span class="o">=</span> <span class="kt">Episode</span><span class="p">(</span>
+            <span class="nv">title</span><span class="p">:</span> <span class="s">"The One Where Monica Gets A Roommate"</span><span class="p">,</span>
+            <span class="nv">season</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="nv">number</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">let</span> <span class="nv">mockedShow</span> <span class="o">=</span> <span class="kt">Show</span><span class="p">(</span>
+            <span class="nv">title</span><span class="p">:</span> <span class="s">"Friends"</span><span class="p">,</span>
+            <span class="nv">images</span><span class="p">:</span> <span class="n">mockedImages</span><span class="p">,</span>
+            <span class="nv">unwatched</span><span class="p">:</span> <span class="p">[</span><span class="n">mockedEpisode</span><span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="k">let</span> <span class="nv">presentation</span> <span class="o">=</span> <span class="kt">ShowPresentation</span><span class="p">(</span><span class="nv">show</span><span class="p">:</span> <span class="n">mockedShow</span><span class="p">)</span>
+        <span class="kt">XCTAssertEqual</span><span class="p">(</span><span class="n">presentation</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="s">"Friends"</span><span class="p">)</span>
+        <span class="kt">XCTAssertEqual</span><span class="p">(</span><span class="n">presentation</span><span class="o">.</span><span class="n">subtitle</span><span class="p">,</span>  <span class="s">"S1E1 The One Where Monica Gets A Roommate"</span><span class="p">)</span>
+        <span class="kt">XCTAssertEqual</span><span class="p">(</span><span class="n">presentation</span><span class="o">.</span><span class="n">poster</span><span class="o">.</span><span class="n">absoluteString</span><span class="p">,</span> <span class="s">"https://image.tmdb.org/t/p/original/fbtaoynlPpENx3Ss2laC7wgqLIP.jpg"</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>Here we have a Unit Test which is checking the way of how our Presentation struct formats the data. You might have more fields and more complex logic there. This Unit Test will keep you from breaking the presentation rules of your data in the future during refactoring or any other changes.</p>
+
+<h4 id="conclusion">Conclusion</h4>
+<p>Today we discussed how easily we could follow the Single responsibility principle during UI development and how we can extract data presentation and formatting logic into testable and reusable pieces of code. We will continue the Unit Testing topic on my blog through the next posts. Just try to refactor your codebase by following the Single responsibility principle.</p>
+
+  </article>
+</div>
+
+      </div>
+    </div>
+    <footer class="site-footer">
+
+  <div class="wrapper">
+  	<p>This site was built using <a href="http://jekyllrb.com" target="_blank">Jekyll</a> and is hosted on <a href="https://github.com" target="_blank">Github</a> Photos from <a href="https://unsplash.com" target="_blank">Unsplash</a> and text generated with <a href="http://hipsum.co" target="_blank">Hipster Ipsum</a>. &#169; 2015</p>
+  </div>
+
+</footer>
+
+  </body>
+</html>

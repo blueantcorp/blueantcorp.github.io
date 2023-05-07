@@ -5,6 +5,7 @@ ruby File.read(".ruby-version").strip
 
 gem "jekyll"
 gem "webrick"
+gem "faraday-retry"
 
 # Bundle Jekyll for GitHub Pages.
 group :jekyll_plugins do

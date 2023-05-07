@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Hiding third-party dependencies with protocols and extensions</title>
+    <meta name="description" content="descr about blueantcorp.com">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="canonical" href="http://localhost:4000/2019/02/13/hiding-third-party-dependencies-with-protocols-and-extensions/">
+
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+</head>
+
+  <body>
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">blueantcorp.com</a>
+    <nav class="site-nav">
+
+      <div class="trigger">
+
+        <a class="page-link" href="/">blog</a>
+
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+          <a class="page-link" href="/management/">plan</a>
+          
+        
+          
+          <a class="page-link" href="/development/">develop</a>
+          
+        
+          
+          <a class="page-link" href="/toolchain/">build</a>
+          
+        
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+  <header class="post-header">
+    <h1 class="post-title">Hiding third-party dependencies with protocols and extensions</h1>
+    <p class="post-meta">13 Feb 2019</p>
+  </header>
+  <article class="post-content">
+    <p>There are plenty of discussions on the Internet about using third-party dependencies in your apps. The first part of developers suggest ignoring the usage of libraries and write all the code yourself. The second part recommends using third-party dependencies to speed up app development.</p>
+
+<p>Sometimes it is better to use a well-tested library, rather than implementing it yourself. A good example here is Cryptography. Cryptography is hard, and it is effortless to make a mistake during the implementation of some common cryptography algorithms. It is an excellent example of a situation where we should use a third-party library.</p>
+
+<p>But here we can face another problem when the author of the library abandoned it or didn’t update for the next Swift version. In this case, we have to replace this library with another one or implement our solution. It can be tough to remove the library if you use it across the codebase.</p>
+
+<p>So this week we will talk about two techniques which help us to hide our third-party dependencies and make them easy to replace and refactor.</p>
+
+<h4 id="extensions">Extensions</h4>
+<p>Most of our apps fetch and display some data via API, very often we have some image URLs which should be downloaded and cached on the disk/memory. There are a lot of great libraries for downloading and caching images from the internet. Most famous is Kingfisher.</p>
+
+<p>It has an extension for UIImageView class which brings setImage method. We can easily use this method anywhere in our codebase by importing Kingfisher framework and calling setImage method on UIImageView.</p>
+
+<p>Assume that we need to replace KingFisher with another library like AlamofireImage. In this case, we have to go through the codebase, replace all Kingfisher imports and setImage method calls to AlamofireImage import and af_setImage method calls respectively. It is going to be tremendous work in case of a huge codebase. Let’s check how we can use extensions to fix this problem.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre></td><td class="rouge-code"><pre><span class="kd">import</span> <span class="kt">UIKit</span>
+<span class="kd">import</span> <span class="kt">Kingfisher</span>
+
+<span class="kd">extension</span> <span class="kt">UIImageView</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">setImage</span><span class="p">(</span><span class="n">from</span> <span class="nv">url</span><span class="p">:</span> <span class="kt">URL</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">kf</span><span class="o">.</span><span class="nf">setImage</span><span class="p">(</span><span class="nv">with</span><span class="p">:</span> <span class="n">url</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>As you can see in the code sample above, we create an UIImageView extension with setImage method, which calls KingFisher framework’s setImage method. Using this extension across the project give us an opportunity to replace KingFisher framework with any other library with a single file change. The only thing we need to change is the implementation of our setImage method.</p>
+
+<h4 id="protocols">Protocols</h4>
+<p>Another excellent example of a third-party dependency can be a Keychain access library. Keychain is the safest place on iOS device to keep user sensitive data like access tokens and passwords. Apple provides us with such ugly string based API for Keychain access, that’s why I decide to use third-party wrapper around Apple’s API. Here is an example of KeychainSwift library usage.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre></td><td class="rouge-code"><pre><span class="k">let</span> <span class="nv">keychain</span> <span class="o">=</span> <span class="kt">KeychainSwift</span><span class="p">()</span>
+<span class="n">keychain</span><span class="o">.</span><span class="nf">set</span><span class="p">(</span><span class="s">"hello world"</span><span class="p">,</span> <span class="nv">forKey</span><span class="p">:</span> <span class="s">"my key"</span><span class="p">)</span>
+<span class="n">keychain</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"my key"</span><span class="p">)</span> <span class="c1">// Returns "hello world"</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>KeychainSwift library provides nice key-value API for Keychain access. But I don’t want to expose library usage across the codebase. Let’s create a protocol which defines user sensitive datastore and hides library usage.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre></td><td class="rouge-code"><pre><span class="kd">protocol</span> <span class="kt">TokenStore</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">accessToken</span><span class="p">:</span> <span class="kt">String</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span>
+    <span class="k">var</span> <span class="nv">refreshToken</span><span class="p">:</span> <span class="kt">String</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>Next step is adding TokenStore protocol conformance to KeychainSwift library.</p>
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+</pre></td><td class="rouge-code"><pre><span class="kd">extension</span> <span class="kt">KeychainSwift</span><span class="p">:</span> <span class="kt">TokenStore</span> <span class="p">{</span>
+    <span class="kd">private</span> <span class="kd">enum</span> <span class="kt">Keys</span> <span class="p">{</span>
+        <span class="kd">static</span> <span class="k">let</span> <span class="nv">accessToken</span> <span class="o">=</span> <span class="s">"accessToken"</span>
+        <span class="kd">static</span> <span class="k">let</span> <span class="nv">refreshToken</span> <span class="o">=</span> <span class="s">"refreshToken"</span>
+    <span class="p">}</span>
+
+    <span class="k">var</span> <span class="nv">accessToken</span><span class="p">:</span> <span class="kt">String</span> <span class="p">{</span>
+        <span class="k">get</span> <span class="p">{</span> <span class="k">return</span> <span class="nf">get</span><span class="p">(</span><span class="kt">Keys</span><span class="o">.</span><span class="n">accessToken</span><span class="p">)</span> <span class="p">}</span>
+        <span class="k">set</span> <span class="p">{</span> <span class="nf">set</span><span class="p">(</span><span class="n">newValue</span><span class="p">,</span> <span class="nv">forKey</span><span class="p">:</span> <span class="kt">Keys</span><span class="o">.</span><span class="n">accessToken</span><span class="p">)</span> <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="k">var</span> <span class="nv">refreshToken</span><span class="p">:</span> <span class="kt">String</span> <span class="p">{</span>
+        <span class="k">get</span> <span class="p">{</span> <span class="k">return</span> <span class="nf">get</span><span class="p">(</span><span class="kt">Keys</span><span class="o">.</span><span class="n">refreshToken</span><span class="p">)</span> <span class="p">}</span>
+        <span class="k">set</span> <span class="p">{</span> <span class="nf">set</span><span class="p">(</span><span class="n">newValue</span><span class="p">,</span> <span class="nv">forKey</span><span class="p">:</span> <span class="kt">Keys</span><span class="o">.</span><span class="n">refreshToken</span><span class="p">)}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>And now we can pass TokenStore protocol across our codebase instead of exposing usage of KeychainSwift library.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre></td><td class="rouge-code"><pre><span class="kd">class</span> <span class="kt">AuthenticationService</span> <span class="p">{</span>
+    <span class="kd">private</span> <span class="k">let</span> <span class="nv">tokenStore</span><span class="p">:</span> <span class="kt">TokenStore</span>
+
+    <span class="nf">init</span><span class="p">(</span><span class="nv">tokenStore</span><span class="p">:</span> <span class="kt">TokenStore</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">tokenStore</span> <span class="o">=</span> <span class="n">tokenStore</span>
+    <span class="p">}</span>
+
+    <span class="kd">func</span> <span class="nf">fetchToken</span><span class="p">(</span><span class="k">for</span> <span class="nv">credentials</span><span class="p">:</span> <span class="kt">Credentials</span><span class="p">)</span> <span class="p">{</span>
+<span class="c1">//        Save tokens here</span>
+<span class="c1">//        tokenStore.accessToken =</span>
+<span class="c1">//        tokenStore.refreshToken =</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>The single place which knows about KeychainSwift library should be a dependency container which creates AuthenticationService object. More about Dependency Injection we will talk in the next posts.</p>
+
+<h4 id="conclusion">Conclusion</h4>
+<p>Today we discussed how we could use protocols and extensions to build tiny abstractions which hide third-party dependencies and make our codebase safer.</p>
+
+  </article>
+</div>
+
+      </div>
+    </div>
+    <footer class="site-footer">
+
+  <div class="wrapper">
+  	<p>This site was built using <a href="http://jekyllrb.com" target="_blank">Jekyll</a> and is hosted on <a href="https://github.com" target="_blank">Github</a> Photos from <a href="https://unsplash.com" target="_blank">Unsplash</a> and text generated with <a href="http://hipsum.co" target="_blank">Hipster Ipsum</a>. &#169; 2015</p>
+  </div>
+
+</footer>
+
+  </body>
+</html>

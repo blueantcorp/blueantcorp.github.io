@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Dependency Injection in Swift with Protocols</title>
+    <meta name="description" content="descr about blueantcorp.com">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="canonical" href="http://localhost:4000/2019/03/06/dependency-injection-in-swift-with-protocols/">
+
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+</head>
+
+  <body>
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">blueantcorp.com</a>
+    <nav class="site-nav">
+
+      <div class="trigger">
+
+        <a class="page-link" href="/">blog</a>
+
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+          <a class="page-link" href="/management/">plan</a>
+          
+        
+          
+          <a class="page-link" href="/development/">develop</a>
+          
+        
+          
+          <a class="page-link" href="/toolchain/">build</a>
+          
+        
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+  <header class="post-header">
+    <h1 class="post-title">Dependency Injection in Swift with Protocols</h1>
+    <p class="post-meta">06 Mar 2019</p>
+  </header>
+  <article class="post-content">
+    <p>There are a lot of third-party libraries which provide Dependency Injection for Swift apps. In my opinion, Swift has a powerful type system which gives us the ability to create type-safe Dependency Injection techniques easily. Today we will talk about creating Dependency Injection in Swift with the power of protocols.</p>
+
+<h4 id="protocol-composition">Protocol Composition</h4>
+<p>As I said before Protocols are one of <a href="/2019/01/23/maintaining-state-in-view-controllers/">my favorite language features in Swift</a>, especially Protocol Composition, which gives us an opportunity to compose multiple Protocols together in one type. Let’s take a look at the implementation of the “Service Locator” pattern in Swift and how we can improve it with the usage of Protocol Composition.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+</pre></td><td class="rouge-code"><pre><span class="kd">protocol</span> <span class="kt">HasUserDefaults</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">userDefaults</span><span class="p">:</span> <span class="kt">UserDefaults</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">protocol</span> <span class="kt">HasUrlSession</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">session</span><span class="p">:</span> <span class="kt">URLSession</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">protocol</span> <span class="kt">HasHealthStore</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">store</span><span class="p">:</span> <span class="kt">HKHealthStore</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">struct</span> <span class="kt">Dependencies</span><span class="p">:</span> <span class="kt">HasUserDefaults</span><span class="p">,</span> <span class="kt">HasUrlSession</span><span class="p">,</span> <span class="kt">HasHealthStore</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">userDefaults</span><span class="p">:</span> <span class="kt">UserDefaults</span>
+    <span class="k">let</span> <span class="nv">session</span><span class="p">:</span> <span class="kt">URLSession</span>
+    <span class="k">let</span> <span class="nv">store</span><span class="p">:</span> <span class="kt">HKHealthStore</span>
+
+    <span class="nf">init</span><span class="p">(</span>
+        <span class="nv">userDefaults</span><span class="p">:</span> <span class="kt">UserDefaults</span> <span class="o">=</span> <span class="o">.</span><span class="n">standard</span><span class="p">,</span>
+        <span class="nv">session</span><span class="p">:</span> <span class="kt">URLSession</span> <span class="o">=</span> <span class="o">.</span><span class="n">shared</span><span class="p">,</span>
+        <span class="nv">store</span><span class="p">:</span> <span class="kt">HKHealthStore</span> <span class="o">=</span> <span class="o">.</span><span class="nf">init</span><span class="p">()</span>
+    <span class="p">)</span> <span class="p">{</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">userDefaults</span> <span class="o">=</span> <span class="n">userDefaults</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="n">session</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">store</span> <span class="o">=</span> <span class="n">store</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>Here we have a bunch of protocols which describes our dependencies. Dependencies struct contains all of our dependencies in the app. Generally, we can create and store our Dependencies struct instance in AppDelegate or root <a href="/2019/02/20/navigation-with-flow-controllers">Coordinator/FlowController</a>. Now let’s take a look at the usage of our dependency container.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+</pre></td><td class="rouge-code"><pre><span class="kd">class</span> <span class="kt">ViewController</span><span class="p">:</span> <span class="kt">UIViewController</span> <span class="p">{</span>
+    <span class="kd">typealias</span> <span class="kt">Dependencies</span> <span class="o">=</span> <span class="kt">HasUserDefaults</span> <span class="o">&amp;</span> <span class="kt">HasUrlSession</span>
+
+    <span class="kd">private</span> <span class="k">let</span> <span class="nv">userDefaults</span><span class="p">:</span> <span class="kt">UserDefaults</span>
+    <span class="kd">private</span> <span class="k">let</span> <span class="nv">session</span><span class="p">:</span> <span class="kt">URLSession</span>
+
+    <span class="nf">init</span><span class="p">(</span><span class="nv">dependencies</span><span class="p">:</span> <span class="kt">Dependencies</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">userDefaults</span> <span class="o">=</span> <span class="n">dependencies</span><span class="o">.</span><span class="n">userDefaults</span>
+        <span class="n">session</span> <span class="o">=</span> <span class="n">dependencies</span><span class="o">.</span><span class="n">session</span>
+        <span class="k">super</span><span class="o">.</span><span class="nf">init</span><span class="p">(</span><span class="nv">nibName</span><span class="p">:</span> <span class="kc">nil</span><span class="p">,</span> <span class="nv">bundle</span><span class="p">:</span> <span class="kc">nil</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>Here we have ViewController which describes its dependencies via Typealias and Protocol Composition. In the Init method, we easily extract our dependencies into field variables. All we need is the passing instance of our Dependencies struct to ViewController, and ViewController will be able to access only defined in Typealias dependencies. Next time when your ViewController will need another dependency all you need to do is add it to Typealias and extract it into the variable. You don’t need to change the creation of ViewController, because you already pass all the dependencies.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre></td><td class="rouge-code"><pre><span class="kd">extension</span> <span class="kt">Dependencies</span> <span class="p">{</span>
+    <span class="kd">static</span> <span class="k">var</span> <span class="nv">mocked</span><span class="p">:</span> <span class="kt">Dependencies</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="kt">Dependencies</span><span class="p">(</span>
+            <span class="nv">userDefaults</span><span class="p">:</span> <span class="kt">UserDefaults</span><span class="p">(</span><span class="nv">suiteName</span><span class="p">:</span> <span class="kd">#file</span><span class="p">),</span>
+            <span class="nv">session</span><span class="p">:</span> <span class="kt">MockedUrlSession</span><span class="p">(),</span>
+            <span class="nv">store</span><span class="p">:</span> <span class="kt">MockedHealthStore</span><span class="p">()</span>
+        <span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>The example above shows how we can create the mocked version of dependencies to use it for Unit-Testing.</p>
+
+<h4 id="abstract-factory">Abstract Factory</h4>
+<p>Another option for Dependency Injection is the “Abstract Factory” pattern. I love to use it to extract the creation of complex objects like ViewControllers and its dependencies. Let’s take a look at the Swift version of the “Abstract Factory” pattern by using Protocols and Extensions.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+</pre></td><td class="rouge-code"><pre><span class="kd">protocol</span> <span class="kt">DependencyFactory</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">makeHealthService</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">HealthService</span>
+    <span class="kd">func</span> <span class="nf">makeSettingsSevice</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">SettingsService</span>
+<span class="p">}</span>
+
+<span class="kd">struct</span> <span class="kt">Dependencies</span> <span class="p">{</span>
+    <span class="kd">private</span> <span class="k">let</span> <span class="nv">healthStore</span><span class="p">:</span> <span class="kt">HKHealthStore</span>
+    <span class="kd">private</span> <span class="k">let</span> <span class="nv">userDefaults</span><span class="p">:</span> <span class="kt">UserDefaults</span>
+
+    <span class="nf">init</span><span class="p">(</span>
+        <span class="nv">healthStore</span><span class="p">:</span> <span class="kt">HKHealthStore</span> <span class="o">=</span> <span class="o">.</span><span class="nf">init</span><span class="p">(),</span>
+        <span class="nv">userDefaults</span><span class="p">:</span> <span class="kt">UserDefaults</span> <span class="o">=</span> <span class="o">.</span><span class="n">standard</span>
+    <span class="p">)</span> <span class="p">{</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">healthStore</span> <span class="o">=</span> <span class="n">healthStore</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">userDefaults</span> <span class="o">=</span> <span class="n">userDefaults</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">extension</span> <span class="kt">Dependencies</span><span class="p">:</span> <span class="kt">DependencyFactory</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">makeHealthService</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">HealthService</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="kt">HealthService</span><span class="p">(</span><span class="nv">store</span><span class="p">:</span> <span class="n">healthStore</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="kd">func</span> <span class="nf">makeSettingsSevice</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">SettingsService</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="kt">Settings</span><span class="p">(</span><span class="n">defaults</span><span class="p">:</span> <span class="n">userDefaults</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>Here we have DependencyFactory protocol which describes factory methods for every dependency in our app. We also have small Dependencies struct which stores low-level dependencies. By using the extension, we add DependencyFactory protocol conformance to Dependencies struct. Now let’s take a look at ViewControllerFactory, which describes ViewController creation process.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+</pre></td><td class="rouge-code"><pre><span class="kd">protocol</span> <span class="kt">ViewControllerFactory</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">makeCalendarViewController</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">CalendarViewController</span>
+    <span class="kd">func</span> <span class="nf">makeDayViewController</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">DayViewController</span>
+    <span class="kd">func</span> <span class="nf">makeSettingsViewController</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">SettingsViewController</span>
+<span class="p">}</span>
+
+<span class="kd">extension</span> <span class="kt">Dependencies</span><span class="p">:</span> <span class="kt">ViewControllerFactory</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">makeCalendarViewController</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">CalendarViewController</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="kt">CalendarViewController</span><span class="p">(</span>
+            <span class="nv">healthService</span><span class="p">:</span> <span class="nf">makeHealthService</span><span class="p">()</span>
+        <span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="kd">func</span> <span class="nf">makeDayViewController</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">DayViewController</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="kt">DayViewController</span><span class="p">(</span>
+            <span class="nv">healthService</span><span class="p">:</span> <span class="nf">makeHealthService</span><span class="p">(),</span>
+            <span class="nv">settingsService</span><span class="p">:</span> <span class="nf">makeSettingsSevice</span><span class="p">()</span>
+        <span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="kd">func</span> <span class="nf">makeSettingsViewController</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">SettingsViewController</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="kt">SettingsViewController</span><span class="p">(</span>
+            <span class="nv">settingsService</span><span class="p">:</span> <span class="nf">makeSettingsSevice</span><span class="p">()</span>
+        <span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>We use ViewControllerFactory to create every ViewController in our app, for more complex apps we can have more ViewController factories based on the user flow. Here we also use an extension to add protocol conformance to Dependencies struct. It is time to see how we can use these factories while using Coordinators or FlowControllers.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+</pre></td><td class="rouge-code"><pre><span class="kd">protocol</span> <span class="kt">FlowControllerDelegate</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">startSettings</span><span class="p">()</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="kt">FlowController</span><span class="p">:</span> <span class="kt">UIViewController</span> <span class="p">{</span>
+    <span class="kd">private</span> <span class="k">let</span> <span class="nv">factory</span><span class="p">:</span> <span class="kt">ViewControllerFactory</span>
+    <span class="nf">init</span><span class="p">(</span><span class="nv">factory</span><span class="p">:</span> <span class="kt">ViewControllerFactory</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">factory</span> <span class="o">=</span> <span class="n">factory</span>
+    <span class="p">}</span>
+
+    <span class="k">override</span> <span class="kd">func</span> <span class="nf">viewDidLoad</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">super</span><span class="o">.</span><span class="nf">viewDidLoad</span><span class="p">()</span>
+        <span class="nf">add</span><span class="p">(</span><span class="n">factory</span><span class="o">.</span><span class="nf">makeCalendarViewController</span><span class="p">())</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">extension</span> <span class="kt">FlowController</span><span class="p">:</span> <span class="kt">FlowControllerDelegate</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">startSettings</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nf">show</span><span class="p">(</span><span class="n">factory</span><span class="o">.</span><span class="nf">makeSettingsViewController</span><span class="p">(),</span> <span class="nv">sender</span><span class="p">:</span> <span class="k">self</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>We can create an instance of Dependencies struct in AppDelegate and pass it to the main FlowController in the app. By extracting creation of ViewControllers into factories, we keep our FlowControllers small and responsible only for controlling user-flow.</p>
+
+<h4 id="conclusion">Conclusion</h4>
+<p>Today we discussed two Dependency Injection techniques. Both of them use Swift language features without any third-party dependencies. Just take a look at them and choose which will work better for you.</p>
+
+  </article>
+</div>
+
+      </div>
+    </div>
+    <footer class="site-footer">
+
+  <div class="wrapper">
+  	<p>This site was built using <a href="http://jekyllrb.com" target="_blank">Jekyll</a> and is hosted on <a href="https://github.com" target="_blank">Github</a> Photos from <a href="https://unsplash.com" target="_blank">Unsplash</a> and text generated with <a href="http://hipsum.co" target="_blank">Hipster Ipsum</a>. &#169; 2015</p>
+  </div>
+
+</footer>
+
+  </body>
+</html>

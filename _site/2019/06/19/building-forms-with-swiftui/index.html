@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Building forms with SwiftUI</title>
+    <meta name="description" content="descr about blueantcorp.com">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="canonical" href="http://localhost:4000/2019/06/19/building-forms-with-swiftui/">
+
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+</head>
+
+  <body>
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">blueantcorp.com</a>
+    <nav class="site-nav">
+
+      <div class="trigger">
+
+        <a class="page-link" href="/">blog</a>
+
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+          <a class="page-link" href="/management/">plan</a>
+          
+        
+          
+          <a class="page-link" href="/development/">develop</a>
+          
+        
+          
+          <a class="page-link" href="/toolchain/">build</a>
+          
+        
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+  <header class="post-header">
+    <h1 class="post-title">Building forms with SwiftUI</h1>
+    <p class="post-meta">19 Jun 2019</p>
+  </header>
+  <article class="post-content">
+    <p>Apple finally released <a href="http://developer.apple.com/download/">Xcode Beta 2</a> with an updated version of <em>SwiftUI</em>. The current version has a <em>Form</em> component which appeared on <em>WWDC</em> sessions. Today we are going to build form styled layout with <em>SwiftUI</em>. I want to show you a real-life example of the settings screen built with <em>SwiftUI</em>’s new Form component.</p>
+
+<p>I work on a sleep tracking app, which needs settings screen. Settings screen should contain multiple toggles for enabling and disabling some features, buttons for in-app purchases, and a picker for tuning sleep tracking sensitivity level.</p>
+
+<h4 id="bindableobject-for-settings-logic">BindableObject for Settings logic</h4>
+<p>Let’s start by creating <em>BindableObject</em> representing our Settings logic. I’ve talked about <em>BindableObject</em> in my previous <a href="/2019/06/12/understanding-property-wrappers-in-swiftui/">post</a>, and you can check it to learn how to use it.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+</pre></td><td class="rouge-code"><pre><span class="kd">import</span> <span class="kt">SwiftUI</span>
+<span class="kd">import</span> <span class="kt">Combine</span>
+
+<span class="kd">class</span> <span class="kt">SettingsStore</span><span class="p">:</span> <span class="kt">BindableObject</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">willChange</span> <span class="o">=</span> <span class="kt">PassthroughSubject</span><span class="o">&lt;</span><span class="kt">Void</span><span class="p">,</span> <span class="kt">Never</span><span class="o">&gt;</span><span class="p">()</span>
+
+    <span class="kd">private</span> <span class="kd">enum</span> <span class="kt">Keys</span> <span class="p">{</span>
+        <span class="kd">static</span> <span class="k">let</span> <span class="nv">pro</span> <span class="o">=</span> <span class="s">"pro"</span>
+        <span class="kd">static</span> <span class="k">let</span> <span class="nv">sleepGoal</span> <span class="o">=</span> <span class="s">"sleep_goal"</span>
+        <span class="kd">static</span> <span class="k">let</span> <span class="nv">notificationEnabled</span> <span class="o">=</span> <span class="s">"notifications_enabled"</span>
+        <span class="kd">static</span> <span class="k">let</span> <span class="nv">sleepTrackingEnabled</span> <span class="o">=</span> <span class="s">"sleep_tracking_enabled"</span>
+        <span class="kd">static</span> <span class="k">let</span> <span class="nv">sleepTrackingMode</span> <span class="o">=</span> <span class="s">"sleep_tracking_mode"</span>
+    <span class="p">}</span>
+
+    <span class="kd">private</span> <span class="k">let</span> <span class="nv">cancellable</span><span class="p">:</span> <span class="kt">Cancellable</span>
+    <span class="kd">private</span> <span class="k">let</span> <span class="nv">defaults</span><span class="p">:</span> <span class="kt">UserDefaults</span>
+
+    <span class="nf">init</span><span class="p">(</span><span class="n">defaults</span><span class="p">:</span> <span class="kt">UserDefaults</span> <span class="o">=</span> <span class="o">.</span><span class="n">standard</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">defaults</span> <span class="o">=</span> <span class="n">defaults</span>
+
+        <span class="n">defaults</span><span class="o">.</span><span class="nf">register</span><span class="p">(</span><span class="n">defaults</span><span class="p">:</span> <span class="p">[</span>
+            <span class="kt">Keys</span><span class="o">.</span><span class="nv">sleepGoal</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
+            <span class="kt">Keys</span><span class="o">.</span><span class="nv">sleepTrackingEnabled</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+            <span class="kt">Keys</span><span class="o">.</span><span class="nv">sleepTrackingMode</span><span class="p">:</span> <span class="kt">SleepTrackingMode</span><span class="o">.</span><span class="n">moderate</span><span class="o">.</span><span class="n">rawValue</span>
+            <span class="p">])</span>
+
+        <span class="n">cancellable</span> <span class="o">=</span> <span class="kt">NotificationCenter</span><span class="o">.</span><span class="k">default</span>
+            <span class="o">.</span><span class="nf">publisher</span><span class="p">(</span><span class="nv">for</span><span class="p">:</span> <span class="kt">UserDefaults</span><span class="o">.</span><span class="n">didChangeNotification</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="n">_</span> <span class="nf">in</span> <span class="p">()</span> <span class="p">}</span>
+            <span class="o">.</span><span class="nf">subscribe</span><span class="p">(</span><span class="n">willChange</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="k">var</span> <span class="nv">isNotificationEnabled</span><span class="p">:</span> <span class="kt">Bool</span> <span class="p">{</span>
+        <span class="k">set</span> <span class="p">{</span> <span class="n">defaults</span><span class="o">.</span><span class="nf">set</span><span class="p">(</span><span class="n">newValue</span><span class="p">,</span> <span class="nv">forKey</span><span class="p">:</span> <span class="kt">Keys</span><span class="o">.</span><span class="n">notificationEnabled</span><span class="p">)</span> <span class="p">}</span>
+        <span class="k">get</span> <span class="p">{</span> <span class="n">defaults</span><span class="o">.</span><span class="nf">bool</span><span class="p">(</span><span class="nv">forKey</span><span class="p">:</span> <span class="kt">Keys</span><span class="o">.</span><span class="n">notificationEnabled</span><span class="p">)</span> <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="k">var</span> <span class="nv">isPro</span><span class="p">:</span> <span class="kt">Bool</span> <span class="p">{</span>
+        <span class="k">set</span> <span class="p">{</span> <span class="n">defaults</span><span class="o">.</span><span class="nf">set</span><span class="p">(</span><span class="n">newValue</span><span class="p">,</span> <span class="nv">forKey</span><span class="p">:</span> <span class="kt">Keys</span><span class="o">.</span><span class="n">pro</span><span class="p">)</span> <span class="p">}</span>
+        <span class="k">get</span> <span class="p">{</span> <span class="n">defaults</span><span class="o">.</span><span class="nf">bool</span><span class="p">(</span><span class="nv">forKey</span><span class="p">:</span> <span class="kt">Keys</span><span class="o">.</span><span class="n">pro</span><span class="p">)</span> <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="k">var</span> <span class="nv">isSleepTrackingEnabled</span><span class="p">:</span> <span class="kt">Bool</span> <span class="p">{</span>
+        <span class="k">set</span> <span class="p">{</span> <span class="n">defaults</span><span class="o">.</span><span class="nf">set</span><span class="p">(</span><span class="n">newValue</span><span class="p">,</span> <span class="nv">forKey</span><span class="p">:</span> <span class="kt">Keys</span><span class="o">.</span><span class="n">sleepTrackingEnabled</span><span class="p">)</span> <span class="p">}</span>
+        <span class="k">get</span> <span class="p">{</span> <span class="n">defaults</span><span class="o">.</span><span class="nf">bool</span><span class="p">(</span><span class="nv">forKey</span><span class="p">:</span> <span class="kt">Keys</span><span class="o">.</span><span class="n">sleepTrackingEnabled</span><span class="p">)</span> <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="k">var</span> <span class="nv">sleepGoal</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span>
+        <span class="k">set</span> <span class="p">{</span> <span class="n">defaults</span><span class="o">.</span><span class="nf">set</span><span class="p">(</span><span class="n">newValue</span><span class="p">,</span> <span class="nv">forKey</span><span class="p">:</span> <span class="kt">Keys</span><span class="o">.</span><span class="n">sleepGoal</span><span class="p">)</span> <span class="p">}</span>
+        <span class="k">get</span> <span class="p">{</span> <span class="n">defaults</span><span class="o">.</span><span class="nf">integer</span><span class="p">(</span><span class="nv">forKey</span><span class="p">:</span> <span class="kt">Keys</span><span class="o">.</span><span class="n">sleepGoal</span><span class="p">)</span> <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="kd">enum</span> <span class="kt">SleepTrackingMode</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="kt">CaseIterable</span> <span class="p">{</span>
+        <span class="k">case</span> <span class="n">low</span>
+        <span class="k">case</span> <span class="n">moderate</span>
+        <span class="k">case</span> <span class="n">aggressive</span>
+    <span class="p">}</span>
+
+    <span class="k">var</span> <span class="nv">sleepTrackingMode</span><span class="p">:</span> <span class="kt">SleepTrackingMode</span> <span class="p">{</span>
+        <span class="k">get</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="n">defaults</span><span class="o">.</span><span class="nf">string</span><span class="p">(</span><span class="nv">forKey</span><span class="p">:</span> <span class="kt">Keys</span><span class="o">.</span><span class="n">sleepTrackingMode</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">flatMap</span> <span class="p">{</span> <span class="kt">SleepTrackingMode</span><span class="p">(</span><span class="nv">rawValue</span><span class="p">:</span> <span class="nv">$0</span><span class="p">)</span> <span class="p">}</span> <span class="p">??</span> <span class="o">.</span><span class="n">moderate</span>
+        <span class="p">}</span>
+
+        <span class="k">set</span> <span class="p">{</span>
+            <span class="n">defaults</span><span class="o">.</span><span class="nf">set</span><span class="p">(</span><span class="n">newValue</span><span class="o">.</span><span class="n">rawValue</span><span class="p">,</span> <span class="nv">forKey</span><span class="p">:</span> <span class="kt">Keys</span><span class="o">.</span><span class="n">sleepTrackingMode</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">extension</span> <span class="kt">SettingsStore</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">unlockPro</span><span class="p">()</span> <span class="p">{</span>
+        <span class="c1">// You can do your in-app transactions here</span>
+        <span class="n">isPro</span> <span class="o">=</span> <span class="kc">true</span>
+    <span class="p">}</span>
+
+    <span class="kd">func</span> <span class="nf">restorePurchase</span><span class="p">()</span> <span class="p">{</span>
+        <span class="c1">// You can do you in-app purchase restore here</span>
+        <span class="n">isPro</span> <span class="o">=</span> <span class="kc">true</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>Here we have a simple <em>SettingsStore</em> class which conforms to <em>BindableObject</em> protocol. The single requirement is <em>willChange</em> property. <em>SwiftUI</em> uses this property to understand when something is changed, and as soon as changes appear, it rebuilds the depending views.</p>
+
+<p>Another interesting point here is the usage of <em>Combine</em> framework. We use notification center publisher to subscribe on <em>UserDefaults</em> changes. As soon as <em>UserDefault</em> values change we get a notification and then we send it to <em>willChange</em> property. I will try to cover an introduction to <em>Combine</em> framework in future posts. But for now, you have to know that every change in <em>UserDefaults</em> sends <em>Void</em> value to <em>willChange</em> property, which triggers <em>View</em> rebuild process.</p>
+
+<p>We can replace usage of <em>NotificationCenter</em> publisher by calling send method of <em>willChange</em> property in the every property setter inside the <em>SettingsStore</em>, but it looks like boilerplate. So let’s keep it like this.</p>
+
+<h4 id="settingsview">SettingsView</h4>
+<p>Let’s start to build our settings screen UI. We will use <em>Text</em>, <em>Toggle</em>, <em>Stepper</em>, <em>Picker</em>, and <em>Button</em> components. Here is the source code of our <em>SettingsView</em>.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+</pre></td><td class="rouge-code"><pre><span class="kd">import</span> <span class="kt">SwiftUI</span>
+
+<span class="kd">struct</span> <span class="kt">SettingsView</span><span class="p">:</span> <span class="kt">View</span> <span class="p">{</span>
+    <span class="kd">@EnvironmentObject</span> <span class="k">var</span> <span class="nv">settings</span><span class="p">:</span> <span class="kt">SettingsStore</span>
+
+    <span class="k">var</span> <span class="nv">body</span><span class="p">:</span> <span class="kd">some</span> <span class="kt">View</span> <span class="p">{</span>
+        <span class="kt">NavigationView</span> <span class="p">{</span>
+            <span class="kt">Form</span> <span class="p">{</span>
+                <span class="kt">Section</span><span class="p">(</span><span class="nv">header</span><span class="p">:</span> <span class="kt">Text</span><span class="p">(</span><span class="s">"Notifications settings"</span><span class="p">))</span> <span class="p">{</span>
+                    <span class="kt">Toggle</span><span class="p">(</span><span class="nv">isOn</span><span class="p">:</span> <span class="err">$</span><span class="n">settings</span><span class="o">.</span><span class="n">isNotificationEnabled</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="kt">Text</span><span class="p">(</span><span class="s">"Notification:"</span><span class="p">)</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+
+                <span class="kt">Section</span><span class="p">(</span><span class="nv">header</span><span class="p">:</span> <span class="kt">Text</span><span class="p">(</span><span class="s">"Sleep tracking settings"</span><span class="p">))</span> <span class="p">{</span>
+                    <span class="kt">Toggle</span><span class="p">(</span><span class="nv">isOn</span><span class="p">:</span> <span class="err">$</span><span class="n">settings</span><span class="o">.</span><span class="n">isSleepTrackingEnabled</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="kt">Text</span><span class="p">(</span><span class="s">"Sleep tracking:"</span><span class="p">)</span>
+                    <span class="p">}</span>
+
+                    <span class="kt">Picker</span><span class="p">(</span>
+                        <span class="nv">selection</span><span class="p">:</span> <span class="err">$</span><span class="n">settings</span><span class="o">.</span><span class="n">sleepTrackingMode</span><span class="p">,</span>
+                        <span class="nv">label</span><span class="p">:</span> <span class="kt">Text</span><span class="p">(</span><span class="s">"Sleep tracking mode"</span><span class="p">)</span>
+                    <span class="p">)</span> <span class="p">{</span>
+                        <span class="kt">ForEach</span><span class="p">(</span><span class="kt">SettingsStore</span><span class="o">.</span><span class="kt">SleepTrackingMode</span><span class="o">.</span><span class="n">allCases</span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="p">\</span><span class="o">.</span><span class="k">self</span><span class="p">)</span> <span class="p">{</span>
+                            <span class="kt">Text</span><span class="p">(</span><span class="nv">$0</span><span class="o">.</span><span class="n">rawValue</span><span class="p">)</span><span class="o">.</span><span class="nf">tag</span><span class="p">(</span><span class="nv">$0</span><span class="p">)</span>
+                        <span class="p">}</span>
+                    <span class="p">}</span>
+
+                    <span class="kt">Stepper</span><span class="p">(</span><span class="nv">value</span><span class="p">:</span> <span class="err">$</span><span class="n">settings</span><span class="o">.</span><span class="n">sleepGoal</span><span class="p">,</span> <span class="nv">in</span><span class="p">:</span> <span class="mi">6</span><span class="o">...</span><span class="mi">12</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="kt">Text</span><span class="p">(</span><span class="s">"Sleep goal is </span><span class="se">\(</span><span class="n">settings</span><span class="o">.</span><span class="n">sleepGoal</span><span class="se">)</span><span class="s"> hours"</span><span class="p">)</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+
+                <span class="k">if</span> <span class="o">!</span><span class="n">settings</span><span class="o">.</span><span class="n">isPro</span> <span class="p">{</span>
+                    <span class="kt">Section</span> <span class="p">{</span>
+                        <span class="kt">Button</span><span class="p">(</span><span class="nv">action</span><span class="p">:</span> <span class="p">{</span>
+                            <span class="k">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="nf">unlockPro</span><span class="p">()</span>
+                        <span class="p">})</span> <span class="p">{</span>
+                            <span class="kt">Text</span><span class="p">(</span><span class="s">"Unlock PRO"</span><span class="p">)</span>
+                        <span class="p">}</span>
+
+                        <span class="kt">Button</span><span class="p">(</span><span class="nv">action</span><span class="p">:</span> <span class="p">{</span>
+                            <span class="k">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="nf">restorePurchase</span><span class="p">()</span>
+                        <span class="p">})</span> <span class="p">{</span>
+                            <span class="kt">Text</span><span class="p">(</span><span class="s">"Restore purchase"</span><span class="p">)</span>
+                        <span class="p">}</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+                <span class="p">}</span>
+                <span class="o">.</span><span class="nf">navigationBarTitle</span><span class="p">(</span><span class="kt">Text</span><span class="p">(</span><span class="s">"Settings"</span><span class="p">))</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>As you can see we are wrapping our layout code inside the <em>Form</em> component. <em>Form</em> component uses grouped <em>List</em> to present every child inside the cell. By wrapping layout inside the <em>Form</em>, <em>SwiftUI</em> changes the visual appearance for every element. You can simply replace the <em>Form</em> with <em>VStack</em> to check the difference between them. Even <em>Picker</em> looks different. It uses a separated screen with <em>List</em> to show the items. We don’t need to do something, and we have this behavior out of the box. This is where the real power of declarative programming is coming. Every component has different adaptive appearances, which we can easily change by wrapping it into another container. Here is the screenshot of the final result.</p>
+
+<p><img src="/public/settings.jpg" alt="Settings screen" /></p>
+
+<h4 id="conclusion">Conclusion</h4>
+
+<p>I enjoy how easy we can build apps with <em>SwiftUI</em>. You can use <em>Form</em> component for making complex Form layouts with a lot of sections and choices for data entry. I hope you love <em>SwiftUI</em> as much as me because I’m going to cover more <em>SwiftUI</em> topics soon.</p>
+
+  </article>
+</div>
+
+      </div>
+    </div>
+    <footer class="site-footer">
+
+  <div class="wrapper">
+  	<p>This site was built using <a href="http://jekyllrb.com" target="_blank">Jekyll</a> and is hosted on <a href="https://github.com" target="_blank">Github</a> Photos from <a href="https://unsplash.com" target="_blank">Unsplash</a> and text generated with <a href="http://hipsum.co" target="_blank">Hipster Ipsum</a>. &#169; 2015</p>
+  </div>
+
+</footer>
+
+  </body>
+</html>

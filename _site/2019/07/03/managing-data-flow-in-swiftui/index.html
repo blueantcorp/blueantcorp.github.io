@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Managing Data Flow in SwiftUI</title>
+    <meta name="description" content="descr about blueantcorp.com">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="canonical" href="http://localhost:4000/2019/07/03/managing-data-flow-in-swiftui/">
+
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+</head>
+
+  <body>
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">blueantcorp.com</a>
+    <nav class="site-nav">
+
+      <div class="trigger">
+
+        <a class="page-link" href="/">blog</a>
+
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+          <a class="page-link" href="/management/">plan</a>
+          
+        
+          
+          <a class="page-link" href="/development/">develop</a>
+          
+        
+          
+          <a class="page-link" href="/toolchain/">build</a>
+          
+        
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+  <header class="post-header">
+    <h1 class="post-title">Managing Data Flow in SwiftUI</h1>
+    <p class="post-meta">03 Jul 2019</p>
+  </header>
+  <article class="post-content">
+    <p>Last week we talked about <a href="/2019/06/26/animations-in-swiftui/">Animations and Transitions in SwiftUI</a>. But it’s time to touch the crucial aspect of every app, and it is data. All the apps have data to present or mutate. Data plays a vital role in apps using <em>SwiftUI</em>. Every view in <em>SwiftUI</em> is just a function of some state, where the state is our data.</p>
+
+<h4 id="fetching-data-from-localremote-storage">Fetching data from local/remote storage</h4>
+<p>Today we will build a small app which uses core <em>SwiftUI</em> concepts like <em>Binding</em> and <em>BindableObject</em>. Assume that you work on the app, which has two primary responsibilities:</p>
+
+<ol>
+  <li>Fetch and show the list of employees from local or remote storage</li>
+  <li>Edit personal information about selected employee</li>
+</ol>
+
+<p>Let’s start with describing our model layer.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+</pre></td><td class="rouge-code"><pre><span class="kd">import</span> <span class="kt">SwiftUI</span>
+<span class="kd">import</span> <span class="kt">Combine</span>
+
+<span class="kd">struct</span> <span class="kt">Person</span><span class="p">:</span> <span class="kt">Identifiable</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">UUID</span>
+    <span class="k">var</span> <span class="nv">name</span><span class="p">:</span> <span class="kt">String</span>
+    <span class="k">var</span> <span class="nv">age</span><span class="p">:</span> <span class="kt">Int</span>
+<span class="p">}</span>
+
+<span class="kd">final</span> <span class="kd">class</span> <span class="kt">PersonStore</span><span class="p">:</span> <span class="kt">BindableObject</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">willChange</span> <span class="o">=</span> <span class="kt">PassthroughSubject</span><span class="o">&lt;</span><span class="kt">Void</span><span class="p">,</span> <span class="kt">Never</span><span class="o">&gt;</span><span class="p">()</span>
+
+    <span class="k">var</span> <span class="nv">persons</span><span class="p">:</span> <span class="p">[</span><span class="kt">Person</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span> <span class="p">{</span>
+        <span class="k">willSet</span> <span class="p">{</span>
+            <span class="kt">DispatchQueue</span><span class="o">.</span><span class="n">main</span><span class="o">.</span><span class="n">async</span> <span class="p">{</span>
+                <span class="k">self</span><span class="o">.</span><span class="n">willChange</span><span class="o">.</span><span class="nf">send</span><span class="p">()</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="kd">func</span> <span class="nf">fetch</span><span class="p">()</span> <span class="p">{</span>
+        <span class="c1">// Fetch your data from real storage here</span>
+        <span class="n">persons</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="o">.</span><span class="nf">init</span><span class="p">(</span><span class="nv">id</span><span class="p">:</span> <span class="o">.</span><span class="nf">init</span><span class="p">(),</span> <span class="nv">name</span><span class="p">:</span> <span class="s">"Majid"</span><span class="p">,</span> <span class="nv">age</span><span class="p">:</span> <span class="mi">27</span><span class="p">),</span>
+            <span class="o">.</span><span class="nf">init</span><span class="p">(</span><span class="nv">id</span><span class="p">:</span> <span class="o">.</span><span class="nf">init</span><span class="p">(),</span> <span class="nv">name</span><span class="p">:</span> <span class="s">"John"</span><span class="p">,</span> <span class="nv">age</span><span class="p">:</span> <span class="mi">31</span><span class="p">),</span>
+            <span class="o">.</span><span class="nf">init</span><span class="p">(</span><span class="nv">id</span><span class="p">:</span> <span class="o">.</span><span class="nf">init</span><span class="p">(),</span> <span class="nv">name</span><span class="p">:</span> <span class="s">"Fred"</span><span class="p">,</span> <span class="nv">age</span><span class="p">:</span> <span class="mi">25</span><span class="p">)</span>
+        <span class="p">]</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>Here we have simple <em>Person</em> struct which conforms <em>Identifiable</em> protocol. The single requirement of <em>Identifiable</em> is <em>Hashable</em> <em>id</em> field. We implement it by defining <em>id</em> as <em>UUID</em>. We also can use <em>Int</em> instead of <em>UUID</em>.</p>
+
+<p>Next, we can implement <em>PersonStore</em> class, which is providing data for our view. <em>PersonStore</em> type conforms to <em>BindableObject</em> it will allow <em>SwiftUI</em> to refresh the view as soon as we notify it by using <em>willChange</em> <em>Subject</em>. We send a <em>Void</em> value to <em>willChange</em> <em>Subject</em> before every mutation on <em>persons array</em>.</p>
+
+<p>Now let’s take a look at <em>PersonListView</em>.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+</pre></td><td class="rouge-code"><pre><span class="kd">struct</span> <span class="kt">PersonsView</span> <span class="p">:</span> <span class="kt">View</span> <span class="p">{</span>
+    <span class="kd">@ObjectBinding</span> <span class="k">var</span> <span class="nv">store</span><span class="p">:</span> <span class="kt">PersonStore</span>
+
+    <span class="k">var</span> <span class="nv">body</span><span class="p">:</span> <span class="kd">some</span> <span class="kt">View</span> <span class="p">{</span>
+        <span class="kt">NavigationView</span> <span class="p">{</span>
+            <span class="kt">List</span><span class="p">(</span><span class="n">store</span><span class="o">.</span><span class="n">persons</span><span class="p">)</span> <span class="p">{</span> <span class="n">person</span> <span class="k">in</span>
+                <span class="kt">VStack</span><span class="p">(</span><span class="nv">alignment</span><span class="p">:</span> <span class="o">.</span><span class="n">leading</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="kt">Text</span><span class="p">(</span><span class="n">person</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                        <span class="o">.</span><span class="nf">font</span><span class="p">(</span><span class="o">.</span><span class="n">headline</span><span class="p">)</span>
+                    <span class="kt">Text</span><span class="p">(</span><span class="s">"Age: </span><span class="se">\(</span><span class="n">person</span><span class="o">.</span><span class="n">age</span><span class="se">)</span><span class="s">"</span><span class="p">)</span>
+                        <span class="o">.</span><span class="nf">font</span><span class="p">(</span><span class="o">.</span><span class="n">subheadline</span><span class="p">)</span>
+                        <span class="o">.</span><span class="nf">foregroundColor</span><span class="p">(</span><span class="o">.</span><span class="n">secondary</span><span class="p">)</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+                <span class="o">.</span><span class="nf">onAppear</span><span class="p">(</span><span class="nv">perform</span><span class="p">:</span> <span class="p">{</span> <span class="k">self</span><span class="o">.</span><span class="n">store</span><span class="o">.</span><span class="nf">fetch</span><span class="p">()</span> <span class="p">})</span>
+                <span class="o">.</span><span class="nf">navigationBarTitle</span><span class="p">(</span><span class="kt">Text</span><span class="p">(</span><span class="s">"Persons"</span><span class="p">))</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>We use <em>List</em> component to present an array of <em>Person</em> structs. Every row in <em>List</em> contains <em>VStack</em> with two <em>Text</em> components representing the name and age of a <em>Person</em>. We call <em>fetch</em> method on store object as soon as List appears. As you remember, our <em>PersonStore</em> object notifies <em>SwiftUI</em> about data change by using <em>Subject</em>, and <em>SwiftUI</em> rebuilds the view to present newly fetched data.</p>
+
+<h4 id="editing">Editing</h4>
+<p>Next step is creating a new view which allows us to edit personal information of selected <em>Person</em>. We will use <em>Form</em> component to show nice form for data entry. You can check my <a href="/2019/06/19/building-forms-with-swiftui/">previous post</a> to learn more about <em>Form</em> component and its advantages. Let’s dive into code which represents editing view.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+</pre></td><td class="rouge-code"><pre><span class="kd">struct</span> <span class="kt">EditingView</span><span class="p">:</span> <span class="kt">View</span> <span class="p">{</span>
+    <span class="kd">@Environment</span><span class="p">(\</span><span class="o">.</span><span class="n">isPresented</span><span class="p">)</span> <span class="k">var</span> <span class="nv">isPresented</span><span class="p">:</span> <span class="kt">Binding</span><span class="o">&lt;</span><span class="kt">Bool</span><span class="o">&gt;</span>
+    <span class="kd">@Binding</span> <span class="k">var</span> <span class="nv">person</span><span class="p">:</span> <span class="kt">Person</span>
+
+    <span class="k">var</span> <span class="nv">body</span><span class="p">:</span> <span class="kd">some</span> <span class="kt">View</span> <span class="p">{</span>
+        <span class="kt">NavigationView</span> <span class="p">{</span>
+            <span class="kt">Form</span> <span class="p">{</span>
+                <span class="kt">Section</span><span class="p">(</span><span class="nv">header</span><span class="p">:</span> <span class="kt">Text</span><span class="p">(</span><span class="s">"Personal information"</span><span class="p">))</span> <span class="p">{</span>
+                    <span class="kt">TextField</span><span class="p">(</span><span class="err">$</span><span class="n">person</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                    <span class="kt">Stepper</span><span class="p">(</span><span class="nv">value</span><span class="p">:</span> <span class="err">$</span><span class="n">person</span><span class="o">.</span><span class="n">age</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="kt">Text</span><span class="p">(</span><span class="s">"Age: </span><span class="se">\(</span><span class="n">person</span><span class="o">.</span><span class="n">age</span><span class="se">)</span><span class="s">"</span><span class="p">)</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+
+                <span class="kt">Section</span> <span class="p">{</span>
+                    <span class="kt">Button</span><span class="p">(</span><span class="nv">action</span><span class="p">:</span> <span class="p">{</span> <span class="k">self</span><span class="o">.</span><span class="n">isPresented</span><span class="p">?</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="nf">toggle</span><span class="p">()</span> <span class="p">})</span> <span class="p">{</span>
+                        <span class="kt">Text</span><span class="p">(</span><span class="s">"Save"</span><span class="p">)</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+            <span class="p">}</span><span class="o">.</span><span class="nf">navigationBarTitle</span><span class="p">(</span><span class="kt">Text</span><span class="p">(</span><span class="n">person</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>Here we use <em>Binding</em> for selected person item. <em>Binding Property Wrapper</em> allows passing a reference to a value type. By using <em>Binding</em> property, <em>EditingView</em> can read and write to the <em>Person</em> struct, but it doesn’t store a copy of it. We use this <em>Binding</em> to mutate value inside <em>PersonsStore</em> and as soon as we do that <em>SwiftUI</em> will update the view with the updated list of <em>Persons</em>. If you want to learn more about <em>Property Wrappers</em> available in <em>SwiftUI</em> like @<em>Binding</em>, @<em>Environment</em>, @<em>EnvironmentObject</em>, @<em>ObjectBinding</em>, please take a look at the <a href="/2019/06/12/understanding-property-wrappers-in-swiftui/">dedicated post</a>.</p>
+
+<p>Now let’s refactor our <em>PersonsView</em> to support editing by passing <em>Binding</em> to a selected <em>Person</em> inside <em>EditingView</em>. For that, we will use <em>PresentationButton</em> to present a view in a new beautiful cart interface available in iOS 13.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+</pre></td><td class="rouge-code"><pre><span class="kd">struct</span> <span class="kt">PersonsView</span> <span class="p">:</span> <span class="kt">View</span> <span class="p">{</span>
+    <span class="kd">@ObjectBinding</span> <span class="k">var</span> <span class="nv">store</span><span class="p">:</span> <span class="kt">PersonStore</span>
+
+    <span class="k">var</span> <span class="nv">body</span><span class="p">:</span> <span class="kd">some</span> <span class="kt">View</span> <span class="p">{</span>
+        <span class="kt">NavigationView</span> <span class="p">{</span>
+            <span class="kt">List</span> <span class="p">{</span>
+                <span class="kt">ForEach</span><span class="p">(</span><span class="mi">0</span><span class="o">..&lt;</span><span class="n">store</span><span class="o">.</span><span class="n">persons</span><span class="o">.</span><span class="n">count</span><span class="p">)</span> <span class="p">{</span> <span class="n">index</span> <span class="k">in</span>
+                    <span class="kt">PresentationButton</span><span class="p">(</span><span class="nv">destination</span><span class="p">:</span> <span class="kt">EditingView</span><span class="p">(</span><span class="nv">person</span><span class="p">:</span> <span class="k">self</span><span class="o">.</span><span class="err">$</span><span class="n">store</span><span class="o">.</span><span class="n">persons</span><span class="p">[</span><span class="n">index</span><span class="p">]))</span> <span class="p">{</span>
+                        <span class="kt">VStack</span><span class="p">(</span><span class="nv">alignment</span><span class="p">:</span> <span class="o">.</span><span class="n">leading</span><span class="p">)</span> <span class="p">{</span>
+                            <span class="kt">Text</span><span class="p">(</span><span class="k">self</span><span class="o">.</span><span class="n">store</span><span class="o">.</span><span class="n">persons</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                                <span class="o">.</span><span class="nf">font</span><span class="p">(</span><span class="o">.</span><span class="n">headline</span><span class="p">)</span>
+                            <span class="kt">Text</span><span class="p">(</span><span class="s">"Age: </span><span class="se">\(</span><span class="k">self</span><span class="o">.</span><span class="n">store</span><span class="o">.</span><span class="n">persons</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">age</span><span class="se">)</span><span class="s">"</span><span class="p">)</span>
+                                <span class="o">.</span><span class="nf">font</span><span class="p">(</span><span class="o">.</span><span class="n">subheadline</span><span class="p">)</span>
+                                <span class="o">.</span><span class="nf">foregroundColor</span><span class="p">(</span><span class="o">.</span><span class="n">secondary</span><span class="p">)</span>
+                            <span class="p">}</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+                <span class="o">.</span><span class="nf">onAppear</span><span class="p">(</span><span class="nv">perform</span><span class="p">:</span> <span class="p">{</span> <span class="k">self</span><span class="o">.</span><span class="n">store</span><span class="o">.</span><span class="nf">fetch</span><span class="p">()</span> <span class="p">})</span>
+                <span class="o">.</span><span class="nf">navigationBarTitle</span><span class="p">(</span><span class="kt">Text</span><span class="p">(</span><span class="s">"Persons"</span><span class="p">))</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<h4 id="and-here-is-the-screenshot-of-our-app-you-can-see-how-it-looks">And here is the screenshot of our app, you can see how it looks.</h4>
+<p><img src="/public/managing-data-flow-in-swiftui.png" alt="managing-data-flow-in-swiftui" /></p>
+
+<h4 id="conclusion">Conclusion</h4>
+<p>Today we built simple Master-Detail flow in <em>SwiftUI</em>. I’ve tried to show the power of <em>Bindings</em> in <em>SwiftUI</em>. You don’t need to post notifications or observe key-value to indicate changes in your User Interface, all you need is using correct <em>Property Wrapper provided by SwiftUI</em>. Again, if you want to learn when and which one should be used, check out my <a href="/2019/06/12/understanding-property-wrappers-in-swiftui/">post about Property Wrappers in SwiftUI</a>.</p>
+
+  </article>
+</div>
+
+      </div>
+    </div>
+    <footer class="site-footer">
+
+  <div class="wrapper">
+  	<p>This site was built using <a href="http://jekyllrb.com" target="_blank">Jekyll</a> and is hosted on <a href="https://github.com" target="_blank">Github</a> Photos from <a href="https://unsplash.com" target="_blank">Unsplash</a> and text generated with <a href="http://hipsum.co" target="_blank">Hipster Ipsum</a>. &#169; 2015</p>
+  </div>
+
+</footer>
+
+  </body>
+</html>

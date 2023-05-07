@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Navigation in SwiftUI</title>
+    <meta name="description" content="descr about blueantcorp.com">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="canonical" href="http://localhost:4000/2019/07/17/navigation-in-swiftui/">
+
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+</head>
+
+  <body>
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">blueantcorp.com</a>
+    <nav class="site-nav">
+
+      <div class="trigger">
+
+        <a class="page-link" href="/">blog</a>
+
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+          <a class="page-link" href="/management/">plan</a>
+          
+        
+          
+          <a class="page-link" href="/development/">develop</a>
+          
+        
+          
+          <a class="page-link" href="/toolchain/">build</a>
+          
+        
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+  <header class="post-header">
+    <h1 class="post-title">Navigation in SwiftUI</h1>
+    <p class="post-meta">17 Jul 2019 • SwiftUI, Swift5.1, iOS13, Xcode11</p>
+  </header>
+  <article class="post-content">
+    <p>This week I want to talk about <em>Navigation in SwiftUI</em>. <em>SwiftUI</em> provides a declarative way of implementing navigation in your apps. Today we will cover different navigation flows available in <em>SwiftUI</em> like <em>Master-Detail</em> and <em>Presenting Modals</em>.</p>
+
+<h1 id="master-detail-flow">Master-Detail flow</h1>
+<p>Assume that you are working on app which shows a list of some items and you want to move to details screen as soon as the user selects any item. For this type of navigation, <em>SwiftUI</em> provides <em>NavigationView</em> and <em>NavigationLink</em> components. Let’s check how we can use them.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+</pre></td><td class="rouge-code"><pre><span class="kd">struct</span> <span class="kt">MasterView</span><span class="p">:</span> <span class="kt">View</span> <span class="p">{</span>
+    <span class="kd">private</span> <span class="k">let</span> <span class="nv">messages</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s">"Hello"</span><span class="p">,</span> <span class="s">"How are you?"</span>
+    <span class="p">]</span>
+
+    <span class="k">var</span> <span class="nv">body</span><span class="p">:</span> <span class="kd">some</span> <span class="kt">View</span> <span class="p">{</span>
+        <span class="kt">NavigationView</span> <span class="p">{</span>
+            <span class="kt">List</span><span class="p">(</span><span class="n">messages</span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="p">\</span><span class="o">.</span><span class="k">self</span><span class="p">)</span> <span class="p">{</span> <span class="n">message</span> <span class="k">in</span>
+                <span class="kt">NavigationLink</span><span class="p">(</span><span class="nv">destination</span><span class="p">:</span> <span class="kt">DetailsView</span><span class="p">(</span><span class="nv">message</span><span class="p">:</span> <span class="n">message</span><span class="p">))</span> <span class="p">{</span>
+                    <span class="kt">Text</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+                <span class="p">}</span>
+            <span class="p">}</span><span class="o">.</span><span class="nf">navigationBarTitle</span><span class="p">(</span><span class="s">"Messages"</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+</pre></td><td class="rouge-code"><pre><span class="kd">struct</span> <span class="kt">DetailsView</span><span class="p">:</span> <span class="kt">View</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">message</span><span class="p">:</span> <span class="kt">String</span>
+
+    <span class="k">var</span> <span class="nv">body</span><span class="p">:</span> <span class="kd">some</span> <span class="kt">View</span> <span class="p">{</span>
+        <span class="kt">VStack</span> <span class="p">{</span>
+            <span class="kt">Text</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+                <span class="o">.</span><span class="nf">font</span><span class="p">(</span><span class="o">.</span><span class="n">largeTitle</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>Here we have a list of messages, to make navigation possible we embed our <em>List</em> into a <em>NavigationView</em>, it adds standard <em>NavigationBar</em> on top of our <em>List</em>. We can also set text as a title of <em>NavigationBar</em> by adding <em>navigationBarTitle</em> modifier to a <em>List</em>. Please make sure that you add the <em>navigationBarTitle</em> modifier to a <em>List</em> component, and not to a <em>NavigationView</em> because multiple views can share same <em>NavigationView</em> and every view can have a different title.</p>
+
+<p><strong>Hidden gem: You can embed two views into NavigationView to achieve Split on iPadOS and MacOS</strong></p>
+
+<p>Next, we embed List rows into <em>NavigationLink</em>, while creating <em>NavigationLink</em>, we have to provide a destination view. <em>SwiftUI</em> presents a destination view when the user presses the <em>List row</em>. By wrapping <em>List row</em> into a <em>NavigationLink</em>, <em>SwiftUI</em> adds trailing arrow to the view which indicates that there is a details screen next to the view. And this is where the real power of declarative programming comes. <em>List row</em> starts appearing in another way only by embedding it into <em>NavigationLink</em>. To learn more about environment-based appearance in <em>SwiftUI</em>, you can check out <a href="/2019/06/19/building-forms-with-swiftui/">“Building forms with SwiftUI” post</a>.</p>
+
+<h1 id="modals">Modals</h1>
+<p>Let’s change our navigation a little bit. Instead of showing our view as a child in the navigation hierarchy, I want to present it as a modal using new iOS 13 cart interface. To make it possible, all we need to do is embedding <em>List row</em> into <em>PresentationLink</em> instead of <em>NavigationLink</em>.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+</pre></td><td class="rouge-code"><pre><span class="kd">struct</span> <span class="kt">MasterView</span><span class="p">:</span> <span class="kt">View</span> <span class="p">{</span>
+    <span class="kd">private</span> <span class="k">let</span> <span class="nv">messages</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s">"Hello"</span><span class="p">,</span> <span class="s">"How are you?"</span>
+    <span class="p">]</span>
+
+    <span class="k">var</span> <span class="nv">body</span><span class="p">:</span> <span class="kd">some</span> <span class="kt">View</span> <span class="p">{</span>
+        <span class="kt">NavigationView</span> <span class="p">{</span>
+            <span class="kt">List</span><span class="p">(</span><span class="n">messages</span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="p">\</span><span class="o">.</span><span class="k">self</span><span class="p">)</span> <span class="p">{</span> <span class="n">message</span> <span class="k">in</span>
+                <span class="kt">PresentationLink</span><span class="p">(</span><span class="nv">destination</span><span class="p">:</span> <span class="kt">DetailsView</span><span class="p">(</span><span class="nv">message</span><span class="p">:</span> <span class="n">message</span><span class="p">))</span> <span class="p">{</span>
+                    <span class="kt">Text</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+                <span class="p">}</span>
+            <span class="p">}</span><span class="o">.</span><span class="nf">navigationBarTitle</span><span class="p">(</span><span class="s">"Messages"</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>Now, the user gets an excellent card interface which we have in iOS 13. You can dismiss it by swiping down. But what if you want to add a button which dismisses the modal? To do that we have to use <em>Environment Property Wrapper</em>.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+</pre></td><td class="rouge-code"><pre><span class="kd">struct</span> <span class="kt">DetailsView</span><span class="p">:</span> <span class="kt">View</span> <span class="p">{</span>
+    <span class="kd">@Environment</span><span class="p">(\</span><span class="o">.</span><span class="n">isPresented</span><span class="p">)</span> <span class="k">var</span> <span class="nv">isPresented</span>
+    <span class="k">let</span> <span class="nv">message</span><span class="p">:</span> <span class="kt">String</span>
+
+    <span class="k">var</span> <span class="nv">body</span><span class="p">:</span> <span class="kd">some</span> <span class="kt">View</span> <span class="p">{</span>
+        <span class="kt">VStack</span> <span class="p">{</span>
+            <span class="kt">Text</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+                <span class="o">.</span><span class="nf">font</span><span class="p">(</span><span class="o">.</span><span class="n">largeTitle</span><span class="p">)</span>
+            <span class="kt">Button</span><span class="p">(</span><span class="s">"Close"</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">self</span><span class="o">.</span><span class="n">isPresented</span><span class="p">?</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">false</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p><em>isPresented</em> is an <em>Environment</em> binding to whether <em>self</em> is part of a hierarchy that is currently being presented. In other words, <em>SwiftUI</em> uses this binding to show/hide presented views. By setting the value of this binding to false, <em>SwiftUI</em> dismisses the modal. To learn more about <em>Property Wrappers provided by SwiftUI and Environment values</em>, you can check my <a href="/2019/06/12/understanding-property-wrappers-in-swiftui/">“Understanding Property Wrappers in SwiftUI” post</a>.</p>
+
+<h4 id="conclusion">Conclusion</h4>
+<p>As you can see, there are no manual calls to push or present any views. All you need to do is wrapping your view into <em>NavigationLink</em> or <em>PresentationLink</em>, and as soon as the user presses it, <em>SwiftUI</em> moves it to next destination, and this is the really excellent declarative approach.</p>
+
+  </article>
+</div>
+
+      </div>
+    </div>
+    <footer class="site-footer">
+
+  <div class="wrapper">
+  	<p>This site was built using <a href="http://jekyllrb.com" target="_blank">Jekyll</a> and is hosted on <a href="https://github.com" target="_blank">Github</a> Photos from <a href="https://unsplash.com" target="_blank">Unsplash</a> and text generated with <a href="http://hipsum.co" target="_blank">Hipster Ipsum</a>. &#169; 2015</p>
+  </div>
+
+</footer>
+
+  </body>
+</html>

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Inclusive enums with OptionSet</title>
+    <meta name="description" content="descr about blueantcorp.com">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="canonical" href="http://localhost:4000/2019/04/10/inclusive-enums-with-optionset/">
+
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+</head>
+
+  <body>
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">blueantcorp.com</a>
+    <nav class="site-nav">
+
+      <div class="trigger">
+
+        <a class="page-link" href="/">blog</a>
+
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+          <a class="page-link" href="/management/">plan</a>
+          
+        
+          
+          <a class="page-link" href="/development/">develop</a>
+          
+        
+          
+          <a class="page-link" href="/toolchain/">build</a>
+          
+        
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+  <header class="post-header">
+    <h1 class="post-title">Inclusive enums with OptionSet</h1>
+    <p class="post-meta">10 Apr 2019</p>
+  </header>
+  <article class="post-content">
+    <p>Enums are one of the most powerful features of Swift language. It forms Value-Oriented Programming in conjunction with Structs. Enum is the best way to describe the exclusive state in Swift, but what about the case when you need an inclusive state. Today we will talk about OptionSet protocol and how we can achieve inclusive states with it.</p>
+
+<h4 id="exclusive-enums">Exclusive Enums</h4>
+<p>Assume that we have some HistoryFetcher class, which can fetch data from a cache or make a network request or both of them. Let’s start with describing very simple source enum.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre></td><td class="rouge-code"><pre><span class="kd">enum</span> <span class="kt">FetchSource</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="n">memory</span>
+    <span class="k">case</span> <span class="n">disk</span>
+    <span class="k">case</span> <span class="n">remote</span>
+    <span class="k">case</span> <span class="n">cache</span>
+    <span class="k">case</span> <span class="n">all</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>Now we can work on our history fetch method which will take a source as a parameter and make request accordingly to the source.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+</pre></td><td class="rouge-code"><pre><span class="kd">class</span> <span class="kt">HistoryFetcher</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">fetch</span><span class="p">(</span><span class="n">from</span> <span class="nv">source</span><span class="p">:</span> <span class="kt">FetchSource</span> <span class="o">=</span> <span class="o">.</span><span class="n">all</span><span class="p">,</span> <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="kt">Handler</span><span class="o">&lt;</span><span class="kt">History</span><span class="o">&gt;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">switch</span> <span class="n">source</span> <span class="p">{</span>
+        <span class="k">case</span> <span class="o">.</span><span class="nv">memory</span><span class="p">:</span>
+            <span class="nf">fetchMemory</span><span class="p">(</span><span class="nv">handler</span><span class="p">:</span> <span class="n">handler</span><span class="p">)</span>
+        <span class="k">case</span> <span class="o">.</span><span class="nv">disk</span><span class="p">:</span>
+            <span class="nf">fetchDisk</span><span class="p">(</span><span class="nv">handler</span><span class="p">:</span> <span class="n">handler</span><span class="p">)</span>
+        <span class="k">case</span> <span class="o">.</span><span class="nv">remote</span><span class="p">:</span>
+            <span class="nf">fetchRemote</span><span class="p">(</span><span class="nv">handler</span><span class="p">:</span> <span class="n">handler</span><span class="p">)</span>
+        <span class="k">case</span> <span class="o">.</span><span class="nv">cache</span><span class="p">:</span>
+            <span class="nf">fetchMemory</span><span class="p">(</span><span class="nv">handler</span><span class="p">:</span> <span class="n">handler</span><span class="p">)</span>
+            <span class="nf">fetchDisk</span><span class="p">(</span><span class="nv">handler</span><span class="p">:</span> <span class="n">handler</span><span class="p">)</span>
+        <span class="k">case</span> <span class="o">.</span><span class="nv">all</span><span class="p">:</span>
+            <span class="nf">fetchMemory</span><span class="p">(</span><span class="nv">handler</span><span class="p">:</span> <span class="n">handler</span><span class="p">)</span>
+            <span class="nf">fetchDisk</span><span class="p">(</span><span class="nv">handler</span><span class="p">:</span> <span class="n">handler</span><span class="p">)</span>
+            <span class="nf">fetchRemote</span><span class="p">(</span><span class="nv">handler</span><span class="p">:</span> <span class="n">handler</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>There are possible downsides of this approach.</p>
+<ol>
+  <li>As soon as we increase the count of the sources, we have to add a separated case for that and add it to “all” case handling.</li>
+  <li>We can’t easily create some unions of sources, like memory and remote, or disk and remote, etc. We need a lot of additional logic here to make it possible.</li>
+</ol>
+
+<h4 id="optionset-for-the-rescue">OptionSet for the rescue</h4>
+
+<p>OptionSet is a protocol which represents bitset types, where individual bits represent members of a set. Adopting this protocol in your custom types lets you perform set-related operations such as membership tests, unions, and intersections on those types.</p>
+
+<p>OptionSet protocol is very straightforward. All we need is rawValue property which should be a type conforming FixedWidthInteger. So basically in most cases, we can use Int type. Next, we have to create unique options using the unique power of two for every case. Here we can use bit shifting operators. Let’s refactor our FetchSource enum to use OptionSet.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+</pre></td><td class="rouge-code"><pre><span class="kd">struct</span> <span class="kt">FetchSource</span><span class="p">:</span> <span class="kt">OptionSet</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">rawValue</span><span class="p">:</span> <span class="kt">Int</span>
+
+    <span class="kd">static</span> <span class="k">let</span> <span class="nv">memory</span> <span class="o">=</span> <span class="kt">FetchSource</span><span class="p">(</span><span class="nv">rawValue</span><span class="p">:</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="kd">static</span> <span class="k">let</span> <span class="nv">disk</span> <span class="o">=</span> <span class="kt">FetchSource</span><span class="p">(</span><span class="nv">rawValue</span><span class="p">:</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="kd">static</span> <span class="k">let</span> <span class="nv">remote</span> <span class="o">=</span> <span class="kt">FetchSource</span><span class="p">(</span><span class="nv">rawValue</span><span class="p">:</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">2</span><span class="p">)</span>
+
+    <span class="kd">static</span> <span class="k">let</span> <span class="nv">cache</span><span class="p">:</span> <span class="kt">FetchSource</span> <span class="o">=</span> <span class="p">[</span><span class="o">.</span><span class="n">memory</span><span class="p">,</span> <span class="o">.</span><span class="n">disk</span><span class="p">]</span>
+    <span class="kd">static</span> <span class="k">let</span> <span class="nv">all</span><span class="p">:</span> <span class="kt">FetchSource</span> <span class="o">=</span> <span class="p">[</span><span class="o">.</span><span class="n">cache</span><span class="p">,</span> <span class="o">.</span><span class="n">remote</span><span class="p">]</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>As you see above, we can create multiple union members, which contains other members. It brings real power while handling this OptionSets. Here is the refactored version of our HistoryFetcher class.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+</pre></td><td class="rouge-code"><pre><span class="kd">class</span> <span class="kt">HistoryFetcher</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">fetch</span><span class="p">(</span><span class="n">from</span> <span class="nv">source</span><span class="p">:</span> <span class="kt">FetchSource</span> <span class="o">=</span> <span class="o">.</span><span class="n">all</span><span class="p">,</span> <span class="nv">handler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="kt">Handler</span><span class="o">&lt;</span><span class="kt">History</span><span class="o">&gt;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="n">source</span><span class="o">.</span><span class="nf">contains</span><span class="p">(</span><span class="o">.</span><span class="n">memory</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nf">fetchMemory</span><span class="p">(</span><span class="nv">handler</span><span class="p">:</span> <span class="n">handler</span><span class="p">)</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">source</span><span class="o">.</span><span class="nf">contains</span><span class="p">(</span><span class="o">.</span><span class="n">disk</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nf">fetchDisk</span><span class="p">(</span><span class="nv">handler</span><span class="p">:</span> <span class="n">handler</span><span class="p">)</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">source</span><span class="o">.</span><span class="nf">contains</span><span class="p">(</span><span class="o">.</span><span class="n">remote</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nf">fetchRemote</span><span class="p">(</span><span class="nv">handler</span><span class="p">:</span> <span class="n">handler</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>New implementation of HistoryFetcher class is pretty simple. We handle every unique case of FetchSource which is also covering all possible unions of our OptionSet.</p>
+
+<h4 id="conclusion">Conclusion</h4>
+<p>Today we learn how to use OptionSet protocol and how it can be useful as Enum replacement with some extra features. We will continue to cover small and powerful types from the Swift Foundation in future posts.</p>
+
+  </article>
+</div>
+
+      </div>
+    </div>
+    <footer class="site-footer">
+
+  <div class="wrapper">
+  	<p>This site was built using <a href="http://jekyllrb.com" target="_blank">Jekyll</a> and is hosted on <a href="https://github.com" target="_blank">Github</a> Photos from <a href="https://unsplash.com" target="_blank">Unsplash</a> and text generated with <a href="http://hipsum.co" target="_blank">Hipster Ipsum</a>. &#169; 2015</p>
+  </div>
+
+</footer>
+
+  </body>
+</html>

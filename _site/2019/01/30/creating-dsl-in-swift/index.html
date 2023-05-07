@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Creating DSL in Swift</title>
+    <meta name="description" content="descr about blueantcorp.com">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="canonical" href="http://localhost:4000/2019/01/30/creating-dsl-in-swift/">
+
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+</head>
+
+  <body>
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">blueantcorp.com</a>
+    <nav class="site-nav">
+
+      <div class="trigger">
+
+        <a class="page-link" href="/">blog</a>
+
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+          <a class="page-link" href="/management/">plan</a>
+          
+        
+          
+          <a class="page-link" href="/development/">develop</a>
+          
+        
+          
+          <a class="page-link" href="/toolchain/">build</a>
+          
+        
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+  <header class="post-header">
+    <h1 class="post-title">Creating DSL in Swift</h1>
+    <p class="post-meta">30 Jan 2019</p>
+  </header>
+  <article class="post-content">
+    <p>This week we will talk about creating DSL in Swift. Let’s start with the understanding of DSL acronym. Domain Specific Language is a language hosted by parent language to solve any specific area. An excellent example of DSL can be HTML which is DSL for creating web page markup.</p>
+
+<p>There are some requirements for a language in which you want to create DSL. A host language should have first-class functions, trailing closures and operator overloading to make DSL possible. The great news is that Swift has all of these features.</p>
+
+<p>We are going to simplify User Interface development on iOS by creating UIKit specific DSL. We have two ways of building UI in iOS. The first one is by using Interface Builder, and the second one is via code. Both of them have pros and cons. For instance, building UI by Interface Builder is a high-speed and visual process, but you have to deal with a problematic code review process, because of the format of Xibs and Storyboards. In case of building your UI by code, you get the reusability and clean code review process, but you deal with the imperative and error-prone codebase, without a visual understanding of view hierarchy.</p>
+
+<p>Let’s set our goals in building UIKit DSL in Swift:</p>
+<ol>
+  <li>Visual view hierarchy</li>
+  <li>Declarative like HTML</li>
+  <li>Type-safe and compile-time guarantee of correctness.</li>
+</ol>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+</pre></td><td class="rouge-code"><pre><span class="k">let</span> <span class="nv">rootView</span> <span class="o">=</span> <span class="n">stack</span> <span class="p">{</span>
+    <span class="nv">$0</span><span class="o">.</span><span class="n">spacing</span> <span class="o">=</span> <span class="mi">16</span>
+    <span class="nv">$0</span><span class="o">.</span><span class="n">axis</span> <span class="o">=</span> <span class="o">.</span><span class="n">vertical</span>
+    <span class="nv">$0</span><span class="o">.</span><span class="n">isLayoutMarginsRelativeArrangement</span> <span class="o">=</span> <span class="kc">true</span>
+
+    <span class="nv">$0</span><span class="o">.</span><span class="n">stack</span> <span class="p">{</span>
+        <span class="nv">$0</span><span class="o">.</span><span class="n">distribution</span> <span class="o">=</span> <span class="o">.</span><span class="n">fillEqually</span>
+        <span class="nv">$0</span><span class="o">.</span><span class="n">axis</span> <span class="o">=</span> <span class="o">.</span><span class="n">horizontal</span>
+
+        <span class="nv">$0</span><span class="o">.</span><span class="n">label</span> <span class="p">{</span>
+            <span class="nv">$0</span><span class="o">.</span><span class="n">textAlignment</span> <span class="o">=</span> <span class="o">.</span><span class="n">center</span>
+            <span class="nv">$0</span><span class="o">.</span><span class="n">textColor</span> <span class="o">=</span> <span class="o">.</span><span class="n">white</span>
+            <span class="nv">$0</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">"Hello"</span>
+        <span class="p">}</span>
+
+        <span class="nv">$0</span><span class="o">.</span><span class="n">label</span> <span class="p">{</span>
+            <span class="nv">$0</span><span class="o">.</span><span class="n">textAlignment</span> <span class="o">=</span> <span class="o">.</span><span class="n">center</span>
+            <span class="nv">$0</span><span class="o">.</span><span class="n">textColor</span> <span class="o">=</span> <span class="o">.</span><span class="n">white</span>
+            <span class="nv">$0</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">"World"</span>
+        <span class="p">}</span>
+
+        <span class="nv">$0</span><span class="o">.</span><span class="n">customLabel</span> <span class="p">{</span>
+            <span class="nv">$0</span><span class="o">.</span><span class="n">textAlignment</span> <span class="o">=</span> <span class="o">.</span><span class="n">center</span>
+            <span class="nv">$0</span><span class="o">.</span><span class="n">textColor</span> <span class="o">=</span> <span class="o">.</span><span class="n">white</span>
+            <span class="nv">$0</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">"!!!"</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="k">let</span> <span class="nv">messageButton</span> <span class="o">=</span> <span class="nv">$0</span><span class="o">.</span><span class="n">button</span> <span class="p">{</span>
+        <span class="nv">$0</span><span class="o">.</span><span class="n">tintColor</span> <span class="o">=</span> <span class="o">.</span><span class="n">white</span>
+        <span class="nv">$0</span><span class="o">.</span><span class="nf">setTitle</span><span class="p">(</span><span class="s">"Say Hi!"</span><span class="p">,</span> <span class="nv">for</span><span class="p">:</span> <span class="o">.</span><span class="n">normal</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="nv">$0</span><span class="o">.</span><span class="n">view</span> <span class="p">{</span>
+        <span class="nv">$0</span><span class="o">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="o">.</span><span class="n">clear</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>The code above is our target, and this is how we want our DSL to be. Generally, everything in this example is a function with a trailing closure parameter. For more details let’s dive into implementation.</p>
+
+<h4 id="root-elements">Root elements</h4>
+<p>We have to create a function stack which returns UIStackView and accepting closure which we apply to this new created UIStackView.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre></td><td class="rouge-code"><pre><span class="kd">public</span> <span class="kd">func</span> <span class="nf">stack</span><span class="p">(</span><span class="n">apply</span> <span class="nv">closure</span><span class="p">:</span> <span class="p">(</span><span class="kt">UIStackView</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">UIStackView</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">stack</span> <span class="o">=</span> <span class="kt">UIStackView</span><span class="p">()</span>
+    <span class="nf">closure</span><span class="p">(</span><span class="n">stack</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">stack</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>These lines give us an opportunity to use stack function similar to HTML tag.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre></td><td class="rouge-code"><pre><span class="n">stack</span> <span class="p">{</span>
+    <span class="nv">$0</span><span class="o">.</span><span class="n">axis</span> <span class="o">=</span> <span class="o">.</span><span class="n">vertical</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>As the first parameter of the trailing closure, we get created UIStackView on which we can call customization functions like changing axis, alignment, etc. Next, we want to call $0.label to configure new UILabel and add to previous UIStackView. Let’s create an extension for UIStackView which provides us with label function.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre></td><td class="rouge-code"><pre><span class="kd">extension</span> <span class="kt">UIStackView</span> <span class="p">{</span>
+    <span class="kd">@discardableResult</span>
+    <span class="kd">public</span> <span class="kd">func</span> <span class="nf">label</span><span class="p">(</span><span class="n">apply</span> <span class="nv">closure</span><span class="p">:</span> <span class="p">(</span><span class="kt">UILabel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">UILabel</span> <span class="p">{</span>
+        <span class="k">let</span> <span class="nv">label</span> <span class="o">=</span> <span class="kt">UILabel</span><span class="p">()</span>
+        <span class="nf">addArrangedSubview</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+        <span class="nf">closure</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">label</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>We use @discardableResult annotation to disable swift compiler warning on ignoring the result of this function because we already added it to UIStackView. Here is the example of label function usage.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre></td><td class="rouge-code"><pre><span class="n">stack</span> <span class="p">{</span>
+    <span class="nv">$0</span><span class="o">.</span><span class="n">axis</span> <span class="o">=</span> <span class="o">.</span><span class="n">vertical</span>
+    <span class="nv">$0</span><span class="o">.</span><span class="n">label</span> <span class="p">{</span>
+        <span class="nv">$0</span><span class="o">.</span><span class="n">adjustsFontForContentSizeCategory</span> <span class="o">=</span> <span class="kc">true</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>We have one problem here, and this is the extension on UIStackView, only UIStackView will have this function. But we need it in any UIView subclass, so let’s move it to UIView extension.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre></td><td class="rouge-code"><pre><span class="kd">extension</span> <span class="kt">UIView</span> <span class="p">{</span>
+    <span class="kd">@discardableResult</span>
+    <span class="kd">public</span> <span class="kd">func</span> <span class="nf">label</span><span class="p">(</span><span class="n">apply</span> <span class="nv">closure</span><span class="p">:</span> <span class="p">(</span><span class="kt">UILabel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">UILabel</span> <span class="p">{</span>
+        <span class="k">let</span> <span class="nv">label</span> <span class="o">=</span> <span class="kt">UILabel</span><span class="p">()</span>
+        <span class="k">if</span> <span class="k">let</span> <span class="nv">stack</span> <span class="o">=</span> <span class="k">self</span> <span class="k">as?</span> <span class="kt">UIStackView</span> <span class="p">{</span>
+            <span class="n">stack</span><span class="o">.</span><span class="nf">addArrangedSubview</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="nf">addSubview</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+        <span class="p">}</span>
+        <span class="nf">closure</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">label</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>We try here to cast self to UIStackView, which give us the ability to use addArrangedSubview in case of UIStackView, if not we add it with the addSubview method. Next step is populating our UIView extension with functions for all UIKit components to make above usage possible for every UIKit component. I’ve added DSL support for all UIKit components. You can check it out on <a href="https://github.com/mecid/UIKitSwiftDSL">Github</a>.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+</pre></td><td class="rouge-code"><pre><span class="k">let</span> <span class="nv">rootView</span> <span class="o">=</span> <span class="n">stack</span> <span class="p">{</span>
+    <span class="nv">$0</span><span class="o">.</span><span class="n">spacing</span> <span class="o">=</span> <span class="mi">16</span>
+    <span class="nv">$0</span><span class="o">.</span><span class="n">axis</span> <span class="o">=</span> <span class="o">.</span><span class="n">vertical</span>
+    <span class="nv">$0</span><span class="o">.</span><span class="n">isLayoutMarginsRelativeArrangement</span> <span class="o">=</span> <span class="kc">true</span>
+
+    <span class="nv">$0</span><span class="o">.</span><span class="n">stack</span> <span class="p">{</span>
+        <span class="nv">$0</span><span class="o">.</span><span class="n">distribution</span> <span class="o">=</span> <span class="o">.</span><span class="n">fillEqually</span>
+        <span class="nv">$0</span><span class="o">.</span><span class="n">axis</span> <span class="o">=</span> <span class="o">.</span><span class="n">horizontal</span>
+
+        <span class="nv">$0</span><span class="o">.</span><span class="n">label</span> <span class="p">{</span>
+            <span class="nv">$0</span><span class="o">.</span><span class="n">textAlignment</span> <span class="o">=</span> <span class="o">.</span><span class="n">center</span>
+            <span class="nv">$0</span><span class="o">.</span><span class="n">textColor</span> <span class="o">=</span> <span class="o">.</span><span class="n">white</span>
+            <span class="nv">$0</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">"Hello"</span>
+        <span class="p">}</span>
+
+        <span class="nv">$0</span><span class="o">.</span><span class="n">label</span> <span class="p">{</span>
+            <span class="nv">$0</span><span class="o">.</span><span class="n">textAlignment</span> <span class="o">=</span> <span class="o">.</span><span class="n">center</span>
+            <span class="nv">$0</span><span class="o">.</span><span class="n">textColor</span> <span class="o">=</span> <span class="o">.</span><span class="n">white</span>
+            <span class="nv">$0</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">"World"</span>
+        <span class="p">}</span>
+
+        <span class="nv">$0</span><span class="o">.</span><span class="n">customLabel</span> <span class="p">{</span>
+            <span class="nv">$0</span><span class="o">.</span><span class="n">textAlignment</span> <span class="o">=</span> <span class="o">.</span><span class="n">center</span>
+            <span class="nv">$0</span><span class="o">.</span><span class="n">textColor</span> <span class="o">=</span> <span class="o">.</span><span class="n">white</span>
+            <span class="nv">$0</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">"!!!"</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="k">let</span> <span class="nv">messageButton</span> <span class="o">=</span> <span class="nv">$0</span><span class="o">.</span><span class="n">button</span> <span class="p">{</span>
+        <span class="nv">$0</span><span class="o">.</span><span class="n">tintColor</span> <span class="o">=</span> <span class="o">.</span><span class="n">white</span>
+        <span class="nv">$0</span><span class="o">.</span><span class="nf">setTitle</span><span class="p">(</span><span class="s">"Say Hi!"</span><span class="p">,</span> <span class="nv">for</span><span class="p">:</span> <span class="o">.</span><span class="n">normal</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="nv">$0</span><span class="o">.</span><span class="n">view</span> <span class="p">{</span>
+        <span class="nv">$0</span><span class="o">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="o">.</span><span class="n">clear</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>Now we achieve declarative, tree-based and type-safe DSL for building UI for iOS. <a href="https://github.com/mecid/UIKitSwiftDSL">It is available via CocoaPods and Carthage</a>.</p>
+
+<h4 id="conclusion">Conclusion</h4>
+<p>Today we learned how powerful is Swift, and how easy we can create DSL for any specific domain. I suggest you try to develop your DSL for DispatchQueue or any other area.</p>
+
+  </article>
+</div>
+
+      </div>
+    </div>
+    <footer class="site-footer">
+
+  <div class="wrapper">
+  	<p>This site was built using <a href="http://jekyllrb.com" target="_blank">Jekyll</a> and is hosted on <a href="https://github.com" target="_blank">Github</a> Photos from <a href="https://unsplash.com" target="_blank">Unsplash</a> and text generated with <a href="http://hipsum.co" target="_blank">Hipster Ipsum</a>. &#169; 2015</p>
+  </div>
+
+</footer>
+
+  </body>
+</html>

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Adapting app for iPad with UISplitViewController</title>
+    <meta name="description" content="descr about blueantcorp.com">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="canonical" href="http://localhost:4000/2019/04/03/adapting-app-for-ipad-with-uisplitviewcontroller/">
+
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+</head>
+
+  <body>
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">blueantcorp.com</a>
+    <nav class="site-nav">
+
+      <div class="trigger">
+
+        <a class="page-link" href="/">blog</a>
+
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+          <a class="page-link" href="/management/">plan</a>
+          
+        
+          
+          <a class="page-link" href="/development/">develop</a>
+          
+        
+          
+          <a class="page-link" href="/toolchain/">build</a>
+          
+        
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+  <header class="post-header">
+    <h1 class="post-title">Adapting app for iPad with UISplitViewController</h1>
+    <p class="post-meta">03 Apr 2019</p>
+  </header>
+  <article class="post-content">
+    <p>Apple promotes iPad as the primary computer for regular users. This trend is visible during the last couple of years. More and more users start to use iPad as the main device. I think it is essential to support iPad screens and efficiently use that space. This week we will talk about adapting apps for iPad with the help of UISplitViewController.</p>
+
+<h4 id="adaptive-presentation">Adaptive presentation</h4>
+<p>As a part of iOS 9 SDK, Apple released an adaptive “show” method on UIViewController. We have to use this method to present another UIViewController, here is a quote from Apple Documentation which describes how it works:</p>
+
+<blockquote>
+  <p>You use this method to decouple the need to display a view controller from the process of actually presenting that view controller onscreen. Using this method, a view controller does not need to know whether it is embedded inside a navigation controller or split-view controller. It calls the same method for both. For example, a navigation controller overrides this method and uses it to push UIViewController onto its navigation stack.</p>
+</blockquote>
+
+<p>This method uses the Responder Chain pattern to find the object which overrides the “show” method to run it. For example, the UINavigationController overrides “show” method and calls the “pushViewController” method. When your UIViewController wrapped in UINavigationController, the “show” will find UINavigationController’s “show” method in Responder Chain. In the case when there is no overridden “show” method, it presents UIViewController modally using root UIViewController.</p>
+
+<h4 id="uisplitviewcontroller">UISplitViewController</h4>
+<p>Apple provides us with the UISplitViewController which uses the UIViewController containment feature to show UIViewControllers in Master-Details flow side-by-side. UISplitViewController uses adaptive “show” and “showDetailViewController” methods together with trait collection to understand when there is enough space to show UIViewControllers side-by-side or shows the master UIViewController only.</p>
+
+<p>Let’s take a look at the UISplitViewController usage sample.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+</pre></td><td class="rouge-code"><pre><span class="kd">@UIApplicationMain</span>
+<span class="kd">class</span> <span class="kt">AppDelegate</span><span class="p">:</span> <span class="kt">UIResponder</span><span class="p">,</span> <span class="kt">UIApplicationDelegate</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">window</span><span class="p">:</span> <span class="kt">UIWindow</span><span class="p">?</span>
+    <span class="k">let</span> <span class="nv">splitViewController</span> <span class="o">=</span> <span class="kt">UISplitViewController</span><span class="p">()</span>
+
+    <span class="kd">func</span> <span class="nf">application</span><span class="p">(</span><span class="n">_</span> <span class="nv">application</span><span class="p">:</span> <span class="kt">UIApplication</span><span class="p">,</span> <span class="n">didFinishLaunchingWithOptions</span> <span class="nv">launchOptions</span><span class="p">:</span> <span class="p">[</span><span class="kt">UIApplication</span><span class="o">.</span><span class="kt">LaunchOptionsKey</span><span class="p">:</span> <span class="kt">Any</span><span class="p">]?)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span> <span class="p">{</span>
+        <span class="k">let</span> <span class="nv">masterVC</span> <span class="o">=</span> <span class="kt">MasterViewController</span><span class="p">()</span>
+        <span class="n">masterVC</span><span class="o">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="k">self</span>
+
+        <span class="n">splitViewController</span><span class="o">.</span><span class="n">preferredDisplayMode</span> <span class="o">=</span> <span class="o">.</span><span class="n">automatic</span>
+        <span class="n">splitViewController</span><span class="o">.</span><span class="n">viewControllers</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="kt">UINavigationController</span><span class="p">(</span><span class="nv">rootViewController</span><span class="p">:</span> <span class="n">masterVC</span><span class="p">),</span>
+            <span class="kt">UINavigationController</span><span class="p">(</span><span class="nv">rootViewController</span><span class="p">:</span> <span class="kt">EmptyViewController</span><span class="p">())</span>
+        <span class="p">]</span>
+        <span class="n">window</span> <span class="o">=</span> <span class="kt">UIWindow</span><span class="p">(</span><span class="nv">frame</span><span class="p">:</span> <span class="kt">UIScreen</span><span class="o">.</span><span class="n">main</span><span class="o">.</span><span class="n">bounds</span><span class="p">)</span>
+        <span class="n">window</span><span class="p">?</span><span class="o">.</span><span class="n">rootViewController</span> <span class="o">=</span> <span class="n">splitViewController</span>
+        <span class="n">window</span><span class="p">?</span><span class="o">.</span><span class="nf">makeKeyAndVisible</span><span class="p">()</span>
+        <span class="k">return</span> <span class="kc">true</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">extension</span> <span class="kt">AppDelegate</span><span class="p">:</span> <span class="kt">MasterDelegate</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">start</span><span class="p">(</span><span class="n">_</span> <span class="nv">show</span><span class="p">:</span> <span class="kt">Show</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">let</span> <span class="nv">detailsVC</span> <span class="o">=</span> <span class="kt">DetailsViewController</span><span class="p">(</span><span class="nv">show</span><span class="p">:</span> <span class="n">show</span><span class="p">)</span>
+        <span class="n">splitViewController</span><span class="o">.</span><span class="nf">showDetailViewController</span><span class="p">(</span><span class="n">detailsVC</span><span class="p">,</span> <span class="nv">sender</span><span class="p">:</span> <span class="k">self</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">extension</span> <span class="kt">AppDelegate</span><span class="p">:</span> <span class="kt">UISplitViewControllerDelegate</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">splitViewController</span><span class="p">(</span><span class="n">_</span> <span class="nv">splitViewController</span><span class="p">:</span> <span class="kt">UISplitViewController</span><span class="p">,</span> <span class="n">collapseSecondary</span> <span class="nv">secondaryViewController</span><span class="p">:</span> <span class="kt">UIViewController</span><span class="p">,</span> <span class="n">onto</span> <span class="nv">primaryViewController</span><span class="p">:</span> <span class="kt">UIViewController</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="kc">true</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>Apple recommends using UISplitViewController as window’s root ViewController. By passing an array with two UIViewController, we set Master-Details flow. You can use the “show” method to present UIViewController in the Master part of UISplitViewController or “showDetailViewController” to present in Details part. When you are running UISplitViewController on iPhone, there is not enough space and it collapse Details controller. In this case, “showDetailViewController” method works as the “show” method and present UIViewController in the master part.</p>
+
+<p>The UISplitViewController has several configuration properties like “preferredPrimaryColumnWidthFraction” and “maximumPrimaryColumnWidth” which give us opportunity to setup needed presentation. Another interesting property here is “preferredDisplayMode” field. It has several options like allVisible, primaryOverlay, primaryHidden and automatic. By using this property, you recommend display mode to UISplitViewController, but it can ignore it in the case when there is not enough space.</p>
+
+<p><img src="/public/showbot-ipad-land.png" alt="ShowBot-iPad" /></p>
+
+<p>UISplitViewController has a UISplitViewControllerDelegate field, where you can set your own delegate object. By using a delegate object, you can override some default behaviors of UISplitViewControllers. For example, you can replace “show” and “showDetailViewController” methods implementation with your custom one, or implement “collapseSecondary” method where you can decide when you have to collapse or expand Details UIViewController.</p>
+
+<h4 id="conclusion">Conclusion</h4>
+<p>This week we discuss how easily we can adapt our apps to iPad screens by efficiently using all the space.</p>
+
+  </article>
+</div>
+
+      </div>
+    </div>
+    <footer class="site-footer">
+
+  <div class="wrapper">
+  	<p>This site was built using <a href="http://jekyllrb.com" target="_blank">Jekyll</a> and is hosted on <a href="https://github.com" target="_blank">Github</a> Photos from <a href="https://unsplash.com" target="_blank">Unsplash</a> and text generated with <a href="http://hipsum.co" target="_blank">Hipster Ipsum</a>. &#169; 2015</p>
+  </div>
+
+</footer>
+
+  </body>
+</html>

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Building complex screens with Child ViewControllers</title>
+    <meta name="description" content="descr about blueantcorp.com">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="canonical" href="http://localhost:4000/2019/02/27/building-complex-screens-with-child-viewcontrollers/">
+
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+</head>
+
+  <body>
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">blueantcorp.com</a>
+    <nav class="site-nav">
+
+      <div class="trigger">
+
+        <a class="page-link" href="/">blog</a>
+
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+          <a class="page-link" href="/management/">plan</a>
+          
+        
+          
+          <a class="page-link" href="/development/">develop</a>
+          
+        
+          
+          <a class="page-link" href="/toolchain/">build</a>
+          
+        
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+  <header class="post-header">
+    <h1 class="post-title">Building complex screens with Child ViewControllers</h1>
+    <p class="post-meta">27 Feb 2019</p>
+  </header>
+  <article class="post-content">
+    <p>Container view controllers are a way to combine the content from multiple ViewControllers into a single user interface. Child ViewControllers are one of the undervalued features of iOS SDK. We use it every day by use of UINavigationController or UITabBarController. Last week we talked about using ViewController containment feature to create <a href="/2019/02/20/navigation-with-flow-controllers/">FlowControllers</a>. But today we are going to discuss how to use this feature to build complex screens.</p>
+
+<h4 id="complex-screens">Complex screens</h4>
+<p>CardioBot is Heart Rate tracker app on which I was working last two years. It uses HealthKit to read Heart Rate values, make some calculations and present Heart Rate analysis for every day in a nice way. Here is Day screen of CardioBot app.</p>
+
+<p><img src="/public/cardiobot.jpg" alt="CardioBot" /></p>
+
+<p>Every day has several sections like Average, Summary, Sleep, Workout, Weekly sleep, etc. If I build this screen as a single ViewController for sure, it will be a Massive-View-Controller. Instead, let’s extract every section in separated ViewController and combine them in parent ViewController by using ViewController containment. It gives me the opportunity to make my ViewControllers small and testable. Another achievement here is reusability. I want to use SummaryViewController as Today extension, so extracting it in another ViewController is what I need.</p>
+
+<h4 id="stackviewcontroller">StackViewController</h4>
+<p>Let’s create base ViewController for our day screen. First of all, it should be able to manage the dynamic count of child ViewControllers with the opportunity to scroll the screen if items too many. The second needed feature is the ability to hide/show Child ViewControllers with animation. UIStackView embedded in UIScrollView is the best candidate here. Animating views inside by switching isHidden property is super easy. Another benefit here is support for intrinsicContentSize by UIStackView. We need to add proper constraints to child ViewController’s root view to make it self sizing, and UIStackView will take care of the right positioning of this view.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+</pre></td><td class="rouge-code"><pre><span class="kd">import</span> <span class="kt">UIKit</span>
+
+<span class="kd">class</span> <span class="kt">StackViewController</span><span class="p">:</span> <span class="kt">UIViewController</span> <span class="p">{</span>
+    <span class="kd">private</span> <span class="k">let</span> <span class="nv">scrollView</span> <span class="o">=</span> <span class="kt">UIScrollView</span><span class="p">()</span>
+    <span class="kd">private</span> <span class="k">let</span> <span class="nv">stackView</span> <span class="o">=</span> <span class="kt">UIStackView</span><span class="p">()</span>
+
+    <span class="k">override</span> <span class="kd">func</span> <span class="nf">viewDidLoad</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">super</span><span class="o">.</span><span class="nf">viewDidLoad</span><span class="p">()</span>
+        <span class="n">view</span><span class="o">.</span><span class="nf">addSubview</span><span class="p">(</span><span class="n">scrollView</span><span class="p">)</span>
+        <span class="n">scrollView</span><span class="o">.</span><span class="nf">addSubview</span><span class="p">(</span><span class="n">stackView</span><span class="p">)</span>
+        <span class="nf">setupConstraints</span><span class="p">()</span>
+        <span class="n">stackView</span><span class="o">.</span><span class="n">axis</span> <span class="o">=</span> <span class="o">.</span><span class="n">vertical</span>
+    <span class="p">}</span>
+
+    <span class="kd">private</span> <span class="kd">func</span> <span class="nf">setupConstraints</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">scrollView</span><span class="o">.</span><span class="n">translatesAutoresizingMaskIntoConstraints</span> <span class="o">=</span> <span class="kc">false</span>
+        <span class="n">stackView</span><span class="o">.</span><span class="n">translatesAutoresizingMaskIntoConstraints</span> <span class="o">=</span> <span class="kc">false</span>
+
+        <span class="kt">NSLayoutConstraint</span><span class="o">.</span><span class="nf">activate</span><span class="p">([</span>
+            <span class="n">scrollView</span><span class="o">.</span><span class="n">leadingAnchor</span><span class="o">.</span><span class="nf">constraint</span><span class="p">(</span><span class="nv">equalTo</span><span class="p">:</span> <span class="n">view</span><span class="o">.</span><span class="n">safeAreaLayoutGuide</span><span class="o">.</span><span class="n">leadingAnchor</span><span class="p">),</span>
+            <span class="n">scrollView</span><span class="o">.</span><span class="n">trailingAnchor</span><span class="o">.</span><span class="nf">constraint</span><span class="p">(</span><span class="nv">equalTo</span><span class="p">:</span> <span class="n">view</span><span class="o">.</span><span class="n">safeAreaLayoutGuide</span><span class="o">.</span><span class="n">trailingAnchor</span><span class="p">),</span>
+            <span class="n">scrollView</span><span class="o">.</span><span class="n">topAnchor</span><span class="o">.</span><span class="nf">constraint</span><span class="p">(</span><span class="nv">equalTo</span><span class="p">:</span> <span class="n">view</span><span class="o">.</span><span class="n">safeAreaLayoutGuide</span><span class="o">.</span><span class="n">topAnchor</span><span class="p">),</span>
+            <span class="n">scrollView</span><span class="o">.</span><span class="n">bottomAnchor</span><span class="o">.</span><span class="nf">constraint</span><span class="p">(</span><span class="nv">equalTo</span><span class="p">:</span> <span class="n">view</span><span class="o">.</span><span class="n">safeAreaLayoutGuide</span><span class="o">.</span><span class="n">bottomAnchor</span><span class="p">),</span>
+            <span class="n">stackView</span><span class="o">.</span><span class="n">leadingAnchor</span><span class="o">.</span><span class="nf">constraint</span><span class="p">(</span><span class="nv">equalTo</span><span class="p">:</span> <span class="n">scrollView</span><span class="o">.</span><span class="n">leadingAnchor</span><span class="p">),</span>
+            <span class="n">stackView</span><span class="o">.</span><span class="n">trailingAnchor</span><span class="o">.</span><span class="nf">constraint</span><span class="p">(</span><span class="nv">equalTo</span><span class="p">:</span> <span class="n">scrollView</span><span class="o">.</span><span class="n">trailingAnchor</span><span class="p">),</span>
+            <span class="n">stackView</span><span class="o">.</span><span class="n">topAnchor</span><span class="o">.</span><span class="nf">constraint</span><span class="p">(</span><span class="nv">equalTo</span><span class="p">:</span> <span class="n">scrollView</span><span class="o">.</span><span class="n">topAnchor</span><span class="p">),</span>
+            <span class="n">stackView</span><span class="o">.</span><span class="n">bottomAnchor</span><span class="o">.</span><span class="nf">constraint</span><span class="p">(</span><span class="nv">equalTo</span><span class="p">:</span> <span class="n">scrollView</span><span class="o">.</span><span class="n">bottomAnchor</span><span class="p">),</span>
+            <span class="n">stackView</span><span class="o">.</span><span class="n">widthAnchor</span><span class="o">.</span><span class="nf">constraint</span><span class="p">(</span><span class="nv">equalTo</span><span class="p">:</span> <span class="n">view</span><span class="o">.</span><span class="n">safeAreaLayoutGuide</span><span class="o">.</span><span class="n">widthAnchor</span><span class="p">)</span>
+            <span class="p">])</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">extension</span> <span class="kt">StackViewController</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">add</span><span class="p">(</span><span class="n">_</span> <span class="nv">child</span><span class="p">:</span> <span class="kt">UIViewController</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nf">addChild</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
+        <span class="n">stackView</span><span class="o">.</span><span class="nf">addArrangedSubview</span><span class="p">(</span><span class="n">child</span><span class="o">.</span><span class="n">view</span><span class="p">)</span>
+        <span class="n">child</span><span class="o">.</span><span class="nf">didMove</span><span class="p">(</span><span class="nv">toParent</span><span class="p">:</span> <span class="k">self</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="kd">func</span> <span class="nf">remove</span><span class="p">(</span><span class="n">_</span> <span class="nv">child</span><span class="p">:</span> <span class="kt">UIViewController</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">guard</span> <span class="n">child</span><span class="o">.</span><span class="n">parent</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="k">return</span>
+        <span class="p">}</span>
+
+        <span class="n">child</span><span class="o">.</span><span class="nf">willMove</span><span class="p">(</span><span class="nv">toParent</span><span class="p">:</span> <span class="kc">nil</span><span class="p">)</span>
+        <span class="n">stackView</span><span class="o">.</span><span class="nf">removeArrangedSubview</span><span class="p">(</span><span class="n">child</span><span class="o">.</span><span class="n">view</span><span class="p">)</span>
+        <span class="n">child</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="nf">removeFromSuperview</span><span class="p">()</span>
+        <span class="n">child</span><span class="o">.</span><span class="nf">removeFromParent</span><span class="p">()</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>In the example above, I create StackViewController which has UIStackView embedded in UIScrollView. I added all needed constraints to make UIScrollView working correctly with UIStackView and understand its real content size. We also have here two public methods which we will use to add or remove child ViewControllers to UIStackView.</p>
+
+<h4 id="day-screen">Day Screen</h4>
+<p>Now we can implement our Day Screen which extends from StackViewController and populates its view with child ViewControllers. Here is a source code.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+</pre></td><td class="rouge-code"><pre><span class="kd">class</span> <span class="kt">DayViewController</span><span class="p">:</span> <span class="kt">StackViewController</span> <span class="p">{</span>
+    <span class="k">override</span> <span class="kd">func</span> <span class="nf">viewDidLoad</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">super</span><span class="o">.</span><span class="nf">viewDidLoad</span><span class="p">()</span>
+        <span class="nf">setupUI</span><span class="p">()</span>
+    <span class="p">}</span>
+
+    <span class="kd">private</span> <span class="kd">func</span> <span class="nf">setupUI</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">let</span> <span class="nv">today</span> <span class="o">=</span> <span class="kt">Date</span><span class="p">()</span>
+        <span class="k">let</span> <span class="nv">calendarVC</span> <span class="o">=</span> <span class="kt">CalendarViewController</span><span class="p">(</span><span class="nv">date</span><span class="p">:</span> <span class="n">today</span><span class="p">)</span>
+        <span class="n">calendarVC</span><span class="o">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="k">self</span>
+
+        <span class="nf">add</span><span class="p">(</span><span class="n">calendarVC</span><span class="p">)</span>
+        <span class="nf">add</span><span class="p">(</span><span class="kt">SummaryViewController</span><span class="p">(</span><span class="nv">date</span><span class="p">:</span> <span class="n">today</span><span class="p">))</span>
+        <span class="nf">add</span><span class="p">(</span><span class="kt">SleepViewController</span><span class="p">(</span><span class="nv">date</span><span class="p">:</span> <span class="n">today</span><span class="p">))</span>
+        <span class="nf">add</span><span class="p">(</span><span class="kt">WorkoutViewController</span><span class="p">(</span><span class="nv">date</span><span class="p">:</span> <span class="n">today</span><span class="p">))</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">extension</span> <span class="kt">DayViewController</span><span class="p">:</span> <span class="kt">CalendarViewControllDelegate</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">dateSelected</span><span class="p">(</span><span class="n">_</span> <span class="nv">date</span><span class="p">:</span> <span class="kt">Date</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nf">reloadDay</span><span class="p">(</span><span class="nv">with</span><span class="p">:</span> <span class="n">date</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>As you can see, DayViewController hosts four child ViewControllers. It also acts as a delegate for CalendarViewController, which presents the current week. As soon as any date selected in the calendar, it passes the date via delegate to parent ViewController, which job is asking child ViewControllers to reload data.</p>
+
+<h4 id="conclusion">Conclusion</h4>
+<p>We used to create one ViewController per screen, but sometimes this rule leads to buggy Massive-View-Controllers. Today we discussed how we could break this rule and compose complex screens from as many child ViewControllers as we need.</p>
+
+  </article>
+</div>
+
+      </div>
+    </div>
+    <footer class="site-footer">
+
+  <div class="wrapper">
+  	<p>This site was built using <a href="http://jekyllrb.com" target="_blank">Jekyll</a> and is hosted on <a href="https://github.com" target="_blank">Github</a> Photos from <a href="https://unsplash.com" target="_blank">Unsplash</a> and text generated with <a href="http://hipsum.co" target="_blank">Hipster Ipsum</a>. &#169; 2015</p>
+  </div>
+
+</footer>
+
+  </body>
+</html>

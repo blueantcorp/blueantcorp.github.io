@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Animations in SwiftUI</title>
+    <meta name="description" content="descr about blueantcorp.com">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="canonical" href="http://localhost:4000/2019/06/26/animations-in-swiftui/">
+
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+</head>
+
+  <body>
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">blueantcorp.com</a>
+    <nav class="site-nav">
+
+      <div class="trigger">
+
+        <a class="page-link" href="/">blog</a>
+
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+          <a class="page-link" href="/management/">plan</a>
+          
+        
+          
+          <a class="page-link" href="/development/">develop</a>
+          
+        
+          
+          <a class="page-link" href="/toolchain/">build</a>
+          
+        
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+  <header class="post-header">
+    <h1 class="post-title">Animations in SwiftUI</h1>
+    <p class="post-meta">26 Jun 2019</p>
+  </header>
+  <article class="post-content">
+    <p><em>SwiftUI</em> brings declarative and straightforward approach in building User Interfaces. We have <em>List</em> and <em>Form</em> components and <em>Bindings</em>. All of these things make <em>SwiftUI</em> so easy to use and very powerful. But today we are going to talk about another feature of <em>SwiftUI</em>, and it is <em>Animations</em>.</p>
+
+<h4 id="animation">Animation</h4>
+<p>You can smoothly animate any change in <em>SwiftUI</em> by wrapping it into <em>withAnimation</em> block. By default, <em>SwiftUI</em> uses fade in and fade out for animating changes. Let’s take a look at a small example.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+</pre></td><td class="rouge-code"><pre><span class="kd">struct</span> <span class="kt">ContentView</span> <span class="p">:</span> <span class="kt">View</span> <span class="p">{</span>
+    <span class="kd">@State</span> <span class="kd">private</span> <span class="k">var</span> <span class="nv">isButtonVisible</span> <span class="o">=</span> <span class="kc">true</span>
+
+    <span class="k">var</span> <span class="nv">body</span><span class="p">:</span> <span class="kd">some</span> <span class="kt">View</span> <span class="p">{</span>
+        <span class="kt">VStack</span> <span class="p">{</span>
+            <span class="kt">Button</span><span class="p">(</span><span class="nv">action</span><span class="p">:</span> <span class="p">{</span>
+                <span class="n">withAnimation</span> <span class="p">{</span>
+                    <span class="k">self</span><span class="o">.</span><span class="n">isButtonVisible</span><span class="o">.</span><span class="nf">toggle</span><span class="p">()</span>
+                <span class="p">}</span>
+            <span class="p">})</span> <span class="p">{</span>
+                <span class="kt">Text</span><span class="p">(</span><span class="s">"Press me"</span><span class="p">)</span>
+            <span class="p">}</span>
+
+            <span class="k">if</span> <span class="n">isButtonVisible</span> <span class="p">{</span>
+                <span class="kt">Button</span><span class="p">(</span><span class="nv">action</span><span class="p">:</span> <span class="p">{})</span> <span class="p">{</span>
+                    <span class="kt">Text</span><span class="p">(</span><span class="s">"Hidden Button"</span><span class="p">)</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>In the current example, we wrap the <em>State</em> change with <em>withAnimation</em> block, and it produces nice fade in animation. You can modify animation by passing timing and spring values. Another option can be attaching animation modifier to the animating view.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+</pre></td><td class="rouge-code"><pre><span class="kd">struct</span> <span class="kt">ContentView</span> <span class="p">:</span> <span class="kt">View</span> <span class="p">{</span>
+    <span class="kd">@State</span> <span class="kd">private</span> <span class="k">var</span> <span class="nv">isButtonVisible</span> <span class="o">=</span> <span class="kc">true</span>
+
+    <span class="k">var</span> <span class="nv">body</span><span class="p">:</span> <span class="kd">some</span> <span class="kt">View</span> <span class="p">{</span>
+        <span class="kt">VStack</span> <span class="p">{</span>
+            <span class="kt">Button</span><span class="p">(</span><span class="nv">action</span><span class="p">:</span> <span class="p">{</span>
+                <span class="k">self</span><span class="o">.</span><span class="n">isButtonVisible</span><span class="o">.</span><span class="nf">toggle</span><span class="p">()</span>
+            <span class="p">})</span> <span class="p">{</span>
+                <span class="kt">Text</span><span class="p">(</span><span class="s">"Press me"</span><span class="p">)</span>
+            <span class="p">}</span>
+
+            <span class="k">if</span> <span class="n">isButtonVisible</span> <span class="p">{</span>
+                <span class="kt">Button</span><span class="p">(</span><span class="nv">action</span><span class="p">:</span> <span class="p">{})</span> <span class="p">{</span>
+                    <span class="kt">Text</span><span class="p">(</span><span class="s">"Hidden Button"</span><span class="p">)</span>
+                <span class="p">}</span><span class="o">.</span><span class="nf">animation</span><span class="p">(</span><span class="o">.</span><span class="n">easeInOut</span><span class="p">)</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>In the code sample above, we achieve the same animation by simply adding animation modifier. We use <em>easeInOut</em> animation, but you can pass custom animation properties.</p>
+
+<p>Sometimes we have a situation where multiple views depend on some state, and we want to animate all depending view changes together. For this case, we have animatable bindings.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+</pre></td><td class="rouge-code"><pre><span class="kd">struct</span> <span class="kt">ContentView</span> <span class="p">:</span> <span class="kt">View</span> <span class="p">{</span>
+    <span class="kd">@State</span> <span class="kd">private</span> <span class="k">var</span> <span class="nv">isButtonVisible</span> <span class="o">=</span> <span class="kc">true</span>
+
+    <span class="k">var</span> <span class="nv">body</span><span class="p">:</span> <span class="kd">some</span> <span class="kt">View</span> <span class="p">{</span>
+        <span class="kt">VStack</span> <span class="p">{</span>
+            <span class="kt">Toggle</span><span class="p">(</span><span class="nv">isOn</span><span class="p">:</span> <span class="err">$</span><span class="n">isButtonVisible</span><span class="o">.</span><span class="nf">animation</span><span class="p">())</span> <span class="p">{</span>
+                <span class="kt">Text</span><span class="p">(</span><span class="s">"Show/Hide button"</span><span class="p">)</span>
+            <span class="p">}</span>
+
+            <span class="k">if</span> <span class="n">isButtonVisible</span> <span class="p">{</span>
+                <span class="kt">Button</span><span class="p">(</span><span class="nv">action</span><span class="p">:</span> <span class="p">{})</span> <span class="p">{</span>
+                    <span class="kt">Text</span><span class="p">(</span><span class="s">"Hidden Button"</span><span class="p">)</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>As you can see, we can easily convert our binding into animatable binding by calling animation method on it. This method wraps every change of binding value into an animation block. You can pass animation settings as parameters to this method. More about bindings you can read in my <a href="/2019/06/12/understanding-property-wrappers-in-swiftui">previous post</a>.</p>
+
+<h4 id="transitions">Transitions</h4>
+
+<p>As I said before, <em>SwiftUI</em> uses fade in and fade out transition by default, but we can apply any other transition we want. Let’s replace fading with moving.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+</pre></td><td class="rouge-code"><pre><span class="kd">struct</span> <span class="kt">ContentView</span> <span class="p">:</span> <span class="kt">View</span> <span class="p">{</span>
+    <span class="kd">@State</span> <span class="kd">private</span> <span class="k">var</span> <span class="nv">isButtonVisible</span> <span class="o">=</span> <span class="kc">true</span>
+
+    <span class="k">var</span> <span class="nv">body</span><span class="p">:</span> <span class="kd">some</span> <span class="kt">View</span> <span class="p">{</span>
+        <span class="kt">VStack</span> <span class="p">{</span>
+            <span class="kt">Toggle</span><span class="p">(</span><span class="nv">isOn</span><span class="p">:</span> <span class="err">$</span><span class="n">isButtonVisible</span><span class="o">.</span><span class="nf">animation</span><span class="p">())</span> <span class="p">{</span>
+                <span class="kt">Text</span><span class="p">(</span><span class="s">"Show/Hide button"</span><span class="p">)</span>
+            <span class="p">}</span>
+
+            <span class="k">if</span> <span class="n">isButtonVisible</span> <span class="p">{</span>
+                <span class="kt">Button</span><span class="p">(</span><span class="nv">action</span><span class="p">:</span> <span class="p">{})</span> <span class="p">{</span>
+                    <span class="kt">Text</span><span class="p">(</span><span class="s">"Hidden Button"</span><span class="p">)</span>
+                <span class="p">}</span><span class="o">.</span><span class="nf">transition</span><span class="p">(</span><span class="o">.</span><span class="nf">move</span><span class="p">(</span><span class="nv">edge</span><span class="p">:</span> <span class="o">.</span><span class="n">trailing</span><span class="p">))</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>In the example above, we attach transition modifier to the view. <em>SwiftUI</em> has a bunch of ready to use transitions like <em>move</em>, <em>slide</em>, <em>scale</em>, <em>offset</em>, <em>opacity</em>, etc. We can combine them into a single transition. Let’s take a look at the example.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+</pre></td><td class="rouge-code"><pre><span class="kd">extension</span> <span class="kt">AnyTransition</span> <span class="p">{</span>
+    <span class="kd">static</span> <span class="kd">func</span> <span class="nf">moveAndScale</span><span class="p">(</span><span class="nv">edge</span><span class="p">:</span> <span class="kt">Edge</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">AnyTransition</span> <span class="p">{</span>
+        <span class="kt">AnyTransition</span><span class="o">.</span><span class="nf">move</span><span class="p">(</span><span class="nv">edge</span><span class="p">:</span> <span class="n">edge</span><span class="p">)</span><span class="o">.</span><span class="nf">combined</span><span class="p">(</span><span class="nv">with</span><span class="p">:</span> <span class="o">.</span><span class="nf">scale</span><span class="p">())</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">struct</span> <span class="kt">ContentView</span> <span class="p">:</span> <span class="kt">View</span> <span class="p">{</span>
+    <span class="kd">@State</span> <span class="kd">private</span> <span class="k">var</span> <span class="nv">isButtonVisible</span> <span class="o">=</span> <span class="kc">true</span>
+
+    <span class="k">var</span> <span class="nv">body</span><span class="p">:</span> <span class="kd">some</span> <span class="kt">View</span> <span class="p">{</span>
+        <span class="kt">VStack</span> <span class="p">{</span>
+            <span class="kt">Toggle</span><span class="p">(</span><span class="nv">isOn</span><span class="p">:</span> <span class="err">$</span><span class="n">isButtonVisible</span><span class="o">.</span><span class="nf">animation</span><span class="p">())</span> <span class="p">{</span>
+                <span class="kt">Text</span><span class="p">(</span><span class="s">"Show/Hide button"</span><span class="p">)</span>
+            <span class="p">}</span>
+
+            <span class="k">if</span> <span class="n">isButtonVisible</span> <span class="p">{</span>
+                <span class="kt">Button</span><span class="p">(</span><span class="nv">action</span><span class="p">:</span> <span class="p">{})</span> <span class="p">{</span>
+                    <span class="kt">Text</span><span class="p">(</span><span class="s">"Hidden Button"</span><span class="p">)</span>
+                <span class="p">}</span><span class="o">.</span><span class="nf">transition</span><span class="p">(</span><span class="o">.</span><span class="nf">moveAndScale</span><span class="p">(</span><span class="nv">edge</span><span class="p">:</span> <span class="o">.</span><span class="n">trailing</span><span class="p">))</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>We created a <em>moveAndScale</em> transition, which is basically a combination of move and scale transitions. <em>SwiftUI</em> applies the current transition symmetrically according to timing or spring values which you pass into the animation method.</p>
+
+<p><em>SwiftUI</em> provides a way of building asymmetric transitions also. Assume that you need a move transition on insertion and a fade transition on removal. For those cases, we have an <em>asymmetric</em> method on <em>AnyTransition</em> struct, which we can use to build asymmetric transitions.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+</pre></td><td class="rouge-code"><pre><span class="kd">extension</span> <span class="kt">AnyTransition</span> <span class="p">{</span>
+    <span class="kd">static</span> <span class="kd">func</span> <span class="nf">moveOrFade</span><span class="p">(</span><span class="nv">edge</span><span class="p">:</span> <span class="kt">Edge</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">AnyTransition</span> <span class="p">{</span>
+        <span class="kt">AnyTransition</span><span class="o">.</span><span class="nf">asymmetric</span><span class="p">(</span>
+            <span class="nv">insertion</span><span class="p">:</span> <span class="o">.</span><span class="nf">move</span><span class="p">(</span><span class="nv">edge</span><span class="p">:</span> <span class="n">edge</span><span class="p">),</span>
+            <span class="nv">removal</span><span class="p">:</span> <span class="o">.</span><span class="n">opacity</span>
+        <span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">struct</span> <span class="kt">ContentView</span> <span class="p">:</span> <span class="kt">View</span> <span class="p">{</span>
+    <span class="kd">@State</span> <span class="kd">private</span> <span class="k">var</span> <span class="nv">isButtonVisible</span> <span class="o">=</span> <span class="kc">true</span>
+
+    <span class="k">var</span> <span class="nv">body</span><span class="p">:</span> <span class="kd">some</span> <span class="kt">View</span> <span class="p">{</span>
+        <span class="kt">VStack</span> <span class="p">{</span>
+            <span class="kt">Toggle</span><span class="p">(</span><span class="nv">isOn</span><span class="p">:</span> <span class="err">$</span><span class="n">isButtonVisible</span><span class="o">.</span><span class="nf">animation</span><span class="p">())</span> <span class="p">{</span>
+                <span class="kt">Text</span><span class="p">(</span><span class="s">"Show/Hide button"</span><span class="p">)</span>
+            <span class="p">}</span>
+
+            <span class="k">if</span> <span class="n">isButtonVisible</span> <span class="p">{</span>
+                <span class="kt">Button</span><span class="p">(</span><span class="nv">action</span><span class="p">:</span> <span class="p">{})</span> <span class="p">{</span>
+                    <span class="kt">Text</span><span class="p">(</span><span class="s">"Hidden Button"</span><span class="p">)</span>
+                <span class="p">}</span><span class="o">.</span><span class="nf">transition</span><span class="p">(</span><span class="o">.</span><span class="nf">moveOrFade</span><span class="p">(</span><span class="nv">edge</span><span class="p">:</span> <span class="o">.</span><span class="n">trailing</span><span class="p">))</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>As you can see, we use <em>asymmetric</em> method to pass two transitions, the first one for insertion and another one for removal.</p>
+
+<p><strong>Bonus tip: We can pass here combined transition which we created before.</strong></p>
+
+<h4 id="conclusion">Conclusion</h4>
+<p>Today we discussed multiple ways of animating changes in <em>SwiftUI</em>. It totally depends on you and on use-case which way you have to choose. By spending more and more time with <em>SwiftUI</em>, I understand that it is already a compelling framework.</p>
+
+  </article>
+</div>
+
+      </div>
+    </div>
+    <footer class="site-footer">
+
+  <div class="wrapper">
+  	<p>This site was built using <a href="http://jekyllrb.com" target="_blank">Jekyll</a> and is hosted on <a href="https://github.com" target="_blank">Github</a> Photos from <a href="https://unsplash.com" target="_blank">Unsplash</a> and text generated with <a href="http://hipsum.co" target="_blank">Hipster Ipsum</a>. &#169; 2015</p>
+  </div>
+
+</footer>
+
+  </body>
+</html>

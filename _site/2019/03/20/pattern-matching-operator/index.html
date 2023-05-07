@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Deep dive into Pattern matching with ~= operator</title>
+    <meta name="description" content="descr about blueantcorp.com">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="canonical" href="http://localhost:4000/2019/03/20/pattern-matching-operator/">
+
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+</head>
+
+  <body>
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">blueantcorp.com</a>
+    <nav class="site-nav">
+
+      <div class="trigger">
+
+        <a class="page-link" href="/">blog</a>
+
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+          <a class="page-link" href="/management/">plan</a>
+          
+        
+          
+          <a class="page-link" href="/development/">develop</a>
+          
+        
+          
+          <a class="page-link" href="/toolchain/">build</a>
+          
+        
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+  <header class="post-header">
+    <h1 class="post-title">Deep dive into Pattern matching with ~= operator</h1>
+    <p class="post-meta">20 Mar 2019</p>
+  </header>
+  <article class="post-content">
+    <p><a href="/2019/02/06/pattern-matching-with-case-let">In one of my previous posts, we talked about the Pattern Matching feature of Swift language</a>. We discussed how we could use “case let” keyword in our daily development to find patterns in Enums, Turples, and Optionals. But today we are going to talk about particular Pattern Matching operator which hides all of this magic behind it.</p>
+
+<p>Pattern Matching is the act of checking a given sequence of tokens for the presence of the constituents of some pattern. Let’s take a look at a simple string matching operation.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre></td><td class="rouge-code"><pre><span class="k">let</span> <span class="nv">message</span> <span class="o">=</span> <span class="s">"Hello World!"</span>
+
+<span class="k">switch</span> <span class="n">message</span> <span class="p">{</span>
+<span class="k">case</span> <span class="s">"Hello"</span><span class="p">:</span> <span class="nf">print</span><span class="p">(</span><span class="s">"hello"</span><span class="p">)</span>
+<span class="k">case</span> <span class="s">"World"</span><span class="p">:</span> <span class="nf">print</span><span class="p">(</span><span class="s">"world"</span><span class="p">)</span>
+<span class="k">case</span> <span class="s">"Hello World!"</span><span class="p">:</span> <span class="nf">print</span><span class="p">(</span><span class="s">"Hello World!"</span><span class="p">)</span>
+<span class="k">default</span><span class="p">:</span> <span class="k">break</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>As you can understand this code will print “Hello World!” message in the console. In most of the cases Pattern Matching work as equality check, except Ranges, where it refers to the “contains” method of Range type.</p>
+
+<p>So, the question is “How it is really working?”. Behind the Pattern Matching operation, Swift uses ~= operator, which is overloaded for most of the standard types. While using Pattern Matching, Swift is looking for ~= operator for the current types. Here is an example of how ~= operator looks for String type.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre></td><td class="rouge-code"><pre><span class="kd">func</span> <span class="o">~=</span> <span class="p">(</span><span class="nv">pattern</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">pattern</span> <span class="o">==</span> <span class="n">value</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>The good news here is that we can easily overload ~= operator to change this behavior. For example, in the code listing below we change the implementation to custom one, where we instead of equality checking match for containment and now you will see the “Hello” message in the console.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+</pre></td><td class="rouge-code"><pre><span class="kd">func</span> <span class="o">~=</span> <span class="p">(</span><span class="nv">pattern</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">value</span><span class="o">.</span><span class="nf">contains</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="k">let</span> <span class="nv">message</span> <span class="o">=</span> <span class="s">"Hello World!"</span>
+
+<span class="k">switch</span> <span class="n">message</span> <span class="p">{</span>
+<span class="k">case</span> <span class="s">"Hello"</span><span class="p">:</span> <span class="nf">print</span><span class="p">(</span><span class="s">"hello"</span><span class="p">)</span>
+<span class="k">case</span> <span class="s">"World"</span><span class="p">:</span> <span class="nf">print</span><span class="p">(</span><span class="s">"world"</span><span class="p">)</span>
+<span class="k">case</span> <span class="s">"Hello World!"</span><span class="p">:</span> <span class="nf">print</span><span class="p">(</span><span class="s">"Hello World!"</span><span class="p">)</span>
+<span class="k">default</span><span class="p">:</span> <span class="k">break</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>There is no magic behind the Pattern Matching. It is just a simple ~= function. We can easily define it for our types and use them in switch statements. Let’s do that.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+</pre></td><td class="rouge-code"><pre><span class="kd">struct</span> <span class="kt">User</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">firstName</span><span class="p">:</span> <span class="kt">String</span>
+    <span class="k">let</span> <span class="nv">secondName</span><span class="p">:</span> <span class="kt">String</span>
+    <span class="k">let</span> <span class="nv">age</span><span class="p">:</span> <span class="kt">Int</span>
+<span class="p">}</span>
+
+<span class="kd">extension</span> <span class="kt">User</span> <span class="p">{</span>
+    <span class="kd">static</span> <span class="kd">func</span> <span class="o">~=</span> <span class="p">(</span><span class="nv">range</span><span class="p">:</span> <span class="kt">ClosedRange</span><span class="o">&lt;</span><span class="kt">Int</span><span class="o">&gt;</span><span class="p">,</span> <span class="nv">user</span><span class="p">:</span> <span class="kt">User</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">range</span><span class="o">.</span><span class="nf">contains</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">age</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">let</span> <span class="nv">user</span> <span class="o">=</span> <span class="kt">User</span><span class="p">(</span><span class="nv">firstName</span><span class="p">:</span> <span class="s">"Majid"</span><span class="p">,</span> <span class="nv">secondName</span><span class="p">:</span> <span class="s">"Jabrayilov"</span><span class="p">,</span> <span class="nv">age</span><span class="p">:</span> <span class="mi">27</span><span class="p">)</span>
+
+<span class="k">switch</span> <span class="n">user</span> <span class="p">{</span>
+<span class="k">case</span> <span class="mi">21</span><span class="o">...</span><span class="mi">30</span><span class="p">:</span> <span class="nf">print</span><span class="p">(</span><span class="s">"The user age is between 21 and 30"</span><span class="p">)</span>
+<span class="k">case</span> <span class="mi">31</span><span class="o">...</span><span class="mi">40</span><span class="p">:</span> <span class="nf">print</span><span class="p">(</span><span class="s">"The user age is between 31 and 40"</span><span class="p">)</span>
+<span class="k">default</span><span class="p">:</span> <span class="k">break</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>Here we have straightforward User struct which contains the name, second name and age fields. I want to be able to use User struct instances in switch statements for matching the age range of my users. Please take a look at the order of parameters in ~= function. The first one describes the case value, where the second one is the value used after the switch keyword. Console output, in this case, is “The user age is between 20 and 30”.</p>
+
+<p>Another good option for overloading Pattern Matching operator can be regular expressions. I want to match the text to multiple regular expression patterns. Let’s dive into the code.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+</pre></td><td class="rouge-code"><pre><span class="kd">struct</span> <span class="kt">Regex</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">pattern</span><span class="p">:</span> <span class="kt">String</span>
+
+    <span class="kd">static</span> <span class="k">let</span> <span class="nv">email</span> <span class="o">=</span> <span class="kt">Regex</span><span class="p">(</span><span class="nv">pattern</span><span class="p">:</span> <span class="s">"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+</span><span class="se">\\</span><span class="s">.[A-Za-z]{2,64}"</span><span class="p">)</span>
+    <span class="kd">static</span> <span class="k">let</span> <span class="nv">phone</span> <span class="o">=</span> <span class="kt">Regex</span><span class="p">(</span><span class="nv">pattern</span><span class="p">:</span> <span class="s">"([+]?1+[-]?)?+([(]?+([0-9]{3})?+[)]?)?+[-]?+[0-9]{3}+[-]?+[0-9]{4}"</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kd">extension</span> <span class="kt">Regex</span> <span class="p">{</span>
+    <span class="kd">static</span> <span class="kd">func</span> <span class="o">~=</span><span class="p">(</span><span class="nv">regex</span><span class="p">:</span> <span class="kt">Regex</span><span class="p">,</span> <span class="nv">text</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">text</span><span class="o">.</span><span class="nf">range</span><span class="p">(</span><span class="nv">of</span><span class="p">:</span> <span class="n">regex</span><span class="o">.</span><span class="n">pattern</span><span class="p">,</span> <span class="nv">options</span><span class="p">:</span> <span class="o">.</span><span class="n">regularExpression</span><span class="p">)</span> <span class="o">!=</span> <span class="kc">nil</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>Here we have Regex struct which has only one field, and that is the pattern string. We also implement email and phone static constants with predefined regular expressions. Next, we overload ~= operator, in this case, it matches text to our Regex struct by using “range of” method of string type. That’s all we need to use our Regex type for Pattern Matching. Here is the usage example.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre></td><td class="rouge-code"><pre><span class="k">let</span> <span class="nv">email</span> <span class="o">=</span> <span class="s">"cmecid@gmail.com"</span>
+
+<span class="k">switch</span> <span class="n">email</span> <span class="p">{</span>
+<span class="k">case</span> <span class="kt">Regex</span><span class="o">.</span><span class="nv">email</span><span class="p">:</span> <span class="nf">print</span><span class="p">(</span><span class="s">"email"</span><span class="p">)</span>
+<span class="k">case</span> <span class="kt">Regex</span><span class="o">.</span><span class="nv">phone</span><span class="p">:</span> <span class="nf">print</span><span class="p">(</span><span class="s">"phone"</span><span class="p">)</span>
+<span class="k">default</span><span class="p">:</span> <span class="nf">print</span><span class="p">(</span><span class="s">"default"</span><span class="p">)</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>Today we discussed how actually is working Pattern Matching in Swift, how easily we can override the logic for standard types and how we can add the ability for Pattern Matching to custom types.</p>
+
+  </article>
+</div>
+
+      </div>
+    </div>
+    <footer class="site-footer">
+
+  <div class="wrapper">
+  	<p>This site was built using <a href="http://jekyllrb.com" target="_blank">Jekyll</a> and is hosted on <a href="https://github.com" target="_blank">Github</a> Photos from <a href="https://unsplash.com" target="_blank">Unsplash</a> and text generated with <a href="http://hipsum.co" target="_blank">Hipster Ipsum</a>. &#169; 2015</p>
+  </div>
+
+</footer>
+
+  </body>
+</html>

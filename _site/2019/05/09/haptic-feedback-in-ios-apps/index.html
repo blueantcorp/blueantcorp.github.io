@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Haptic feedback in iOS apps</title>
+    <meta name="description" content="descr about blueantcorp.com">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="canonical" href="http://localhost:4000/2019/05/09/haptic-feedback-in-ios-apps/">
+
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+</head>
+
+  <body>
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">blueantcorp.com</a>
+    <nav class="site-nav">
+
+      <div class="trigger">
+
+        <a class="page-link" href="/">blog</a>
+
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+          <a class="page-link" href="/management/">plan</a>
+          
+        
+          
+          <a class="page-link" href="/development/">develop</a>
+          
+        
+          
+          <a class="page-link" href="/toolchain/">build</a>
+          
+        
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+  <header class="post-header">
+    <h1 class="post-title">Haptic feedback in iOS apps</h1>
+    <p class="post-meta">09 May 2019</p>
+  </header>
+  <article class="post-content">
+    <p>Feedback helps people know what an app is doing, discover what they can do next, and understand the results of actions. This week I am going to talk about the Haptic Feedback Engine which provided by Apple in most of the devices.</p>
+
+<blockquote>
+  <p>On supported devices, haptics provide a way to physically engage users with tactile feedback that gets attention and reinforces actions. Some system-provided interface elements, such as pickers, switches, and sliders, automatically provide haptic feedback as users interact with them. Your app can also ask the system to generate different types of haptic feedback. iOS manages the strength and behavior of this feedback.</p>
+</blockquote>
+
+<p>Another benefit of the feedback engine is Accessibility. It helps to understand the result of any action without actually watching the screen.</p>
+
+<h4 id="uifeedbackgenerator">UIFeedbackGenerator</h4>
+<p>Apple provides us with abstract class <em>UIFeedbackGenerator</em> for all type haptic feedbacks. We don’t need to subclass it in our apps. Instead, we have to use Apple provided ready to use subclasses. There are three classes:</p>
+<ol>
+  <li><a href="https://developer.apple.com/documentation/uikit/uiimpactfeedbackgenerator">UIImpactFeedbackGenerator</a></li>
+  <li><a href="https://developer.apple.com/documentation/uikit/uiselectionfeedbackgenerator">UISelectionFeedbackGenerator</a></li>
+  <li><a href="https://developer.apple.com/documentation/uikit/uinotificationfeedbackgenerator">UINotificationFeedbackGenerator</a></li>
+</ol>
+
+<p>All of them have system predefined haptic feedback patterns, so instead of using custom vibration patterns let’s use well-known haptics. All these subclasses share the same logic. First, you need to prepare the haptic engine before using it. The second is the call to the appropriate method to run this haptic. Let’s take a look at simple usage of <em>UINotificationFeedbackGenerator</em> class.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+</pre></td><td class="rouge-code"><pre><span class="kd">class</span> <span class="kt">EpisodeViewController</span><span class="p">:</span> <span class="kt">UIViewController</span> <span class="p">{</span>
+    <span class="kd">private</span> <span class="k">let</span> <span class="nv">episodeModelController</span><span class="p">:</span> <span class="kt">EpisodeModelController</span>
+    <span class="kd">private</span> <span class="k">let</span> <span class="nv">feedback</span> <span class="o">=</span> <span class="kt">UINotificationFeedbackGenerator</span><span class="p">()</span>
+
+    <span class="nf">init</span><span class="p">(</span><span class="nv">episodeModelController</span><span class="p">:</span> <span class="kt">EpisodeModelController</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">episodeModelController</span> <span class="o">=</span> <span class="n">episodeModelController</span>
+        <span class="k">super</span><span class="o">.</span><span class="nf">init</span><span class="p">(</span><span class="nv">nibName</span><span class="p">:</span> <span class="kc">nil</span><span class="p">,</span> <span class="nv">bundle</span><span class="p">:</span> <span class="kc">nil</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="kd">@IBAction</span> <span class="kd">func</span> <span class="nf">markAsWatched</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">feedback</span><span class="o">.</span><span class="nf">prepare</span><span class="p">()</span>
+        <span class="n">episodeModelController</span><span class="o">.</span><span class="n">markAsWatched</span> <span class="p">{</span> <span class="p">[</span><span class="k">weak</span> <span class="k">self</span><span class="p">]</span> <span class="n">outcome</span> <span class="k">in</span>
+            <span class="k">switch</span> <span class="n">outcome</span> <span class="p">{</span>
+            <span class="k">case</span> <span class="o">.</span><span class="nv">success</span><span class="p">:</span>
+                <span class="k">self</span><span class="p">?</span><span class="o">.</span><span class="n">feedback</span><span class="o">.</span><span class="nf">notificationOccurred</span><span class="p">(</span><span class="o">.</span><span class="n">success</span><span class="p">)</span>
+            <span class="k">case</span> <span class="o">.</span><span class="nv">failure</span><span class="p">:</span>
+                <span class="k">self</span><span class="p">?</span><span class="o">.</span><span class="n">feedback</span><span class="o">.</span><span class="nf">notificationOccurred</span><span class="p">(</span><span class="o">.</span><span class="n">error</span><span class="p">)</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>Here we have a TV show tracking apps screen which maintains an episode. We have a button which should mark the episode as watched on click. As you can see before the request to our API service, we prepare the feedback generator, and when the result comes, we run appropriate feedback type.</p>
+
+<p>Another interesting subclass is <em>UISelectionFeedbackGenerator</em>. We can use on the same screen as a result of selection changes. For example, we can have buttons which should fetch next or previous episodes after a click.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+</pre></td><td class="rouge-code"><pre>    <span class="kd">@IBAction</span> <span class="kd">func</span> <span class="nf">fetchNext</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">selectionFeedback</span><span class="o">.</span><span class="nf">prepare</span><span class="p">()</span>
+        <span class="n">episodeModelController</span><span class="o">.</span><span class="n">fetchNext</span> <span class="p">{</span> <span class="p">[</span><span class="k">weak</span> <span class="k">self</span><span class="p">]</span> <span class="n">outcome</span> <span class="k">in</span>
+            <span class="k">switch</span> <span class="n">outcome</span> <span class="p">{</span>
+            <span class="k">case</span> <span class="o">.</span><span class="nv">success</span><span class="p">:</span>
+                <span class="k">self</span><span class="p">?</span><span class="o">.</span><span class="n">selectionFeedback</span><span class="o">.</span><span class="nf">selectionChanged</span><span class="p">()</span>
+            <span class="k">case</span> <span class="o">.</span><span class="nv">failure</span><span class="p">:</span>
+                <span class="k">self</span><span class="p">?</span><span class="o">.</span><span class="n">feedback</span><span class="o">.</span><span class="nf">notificationOccurred</span><span class="p">(</span><span class="o">.</span><span class="n">error</span><span class="p">)</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>As you can see on the code sample above usage of <em>UISelectionFeedbackGenerator</em> is very similar to <em>UINotificationFeedbackGenerator</em>. We prepare and run the haptic engine.</p>
+
+<p>I want to mention that these classes have UI prefix and we should run them on the main queue. To keep it crash-free I prepared a simple extension which runs methods on the main queue.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+</pre></td><td class="rouge-code"><pre><span class="kd">import</span> <span class="kt">UIKit</span>
+
+<span class="kd">extension</span> <span class="kt">UINotificationFeedbackGenerator</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">safePrepare</span><span class="p">()</span> <span class="p">{</span>
+        <span class="kt">DispatchQueue</span><span class="o">.</span><span class="n">main</span><span class="o">.</span><span class="n">async</span> <span class="p">{</span>
+            <span class="k">self</span><span class="o">.</span><span class="nf">prepare</span><span class="p">()</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="kd">func</span> <span class="nf">safeNotificationOccurred</span><span class="p">(</span><span class="n">_</span> <span class="nv">type</span><span class="p">:</span> <span class="kt">UINotificationFeedbackGenerator</span><span class="o">.</span><span class="kt">FeedbackType</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kt">DispatchQueue</span><span class="o">.</span><span class="n">main</span><span class="o">.</span><span class="n">async</span> <span class="p">{</span>
+            <span class="k">self</span><span class="o">.</span><span class="nf">notificationOccurred</span><span class="p">(</span><span class="n">type</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<h4 id="conclusion">Conclusion</h4>
+
+<p>Today we discussed a straightforward and accessible feature of iOS SDK. Haptic Feedback can be very useful both for accessible part of your user base and for anyone who engaged in your app.</p>
+
+  </article>
+</div>
+
+      </div>
+    </div>
+    <footer class="site-footer">
+
+  <div class="wrapper">
+  	<p>This site was built using <a href="http://jekyllrb.com" target="_blank">Jekyll</a> and is hosted on <a href="https://github.com" target="_blank">Github</a> Photos from <a href="https://unsplash.com" target="_blank">Unsplash</a> and text generated with <a href="http://hipsum.co" target="_blank">Hipster Ipsum</a>. &#169; 2015</p>
+  </div>
+
+</footer>
+
+  </body>
+</html>

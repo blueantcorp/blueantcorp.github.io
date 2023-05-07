@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Navigation with Flow Controllers</title>
+    <meta name="description" content="descr about blueantcorp.com">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="canonical" href="http://localhost:4000/2019/02/20/navigation-with-flow-controllers/">
+
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+</head>
+
+  <body>
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">blueantcorp.com</a>
+    <nav class="site-nav">
+
+      <div class="trigger">
+
+        <a class="page-link" href="/">blog</a>
+
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+          <a class="page-link" href="/management/">plan</a>
+          
+        
+          
+          <a class="page-link" href="/development/">develop</a>
+          
+        
+          
+          <a class="page-link" href="/toolchain/">build</a>
+          
+        
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+  <header class="post-header">
+    <h1 class="post-title">Navigation with Flow Controllers</h1>
+    <p class="post-meta">20 Feb 2019</p>
+  </header>
+  <article class="post-content">
+    <p>Last month I started refactoring navigation flow in my pet project. I’ve been using Coordinator pattern for a while, but now I decide to switch to a more native and simple approach like Flow Controllers. Today we will talk about Flow Controllers and why it is more native than Coordinators.</p>
+
+<h4 id="coordinators">Coordinators</h4>
+<p>Coordinator is a plain object which handles the navigation flow. It owns rootViewController, where it pushes next ViewControllers. ViewControllers and Coordinators talk with each other by delegates. It gives us an opportunity to keep ViewControllers reusable, by extracting navigation knowledge from them. More about Coordinator pattern you can read in the original <a href="http://khanlou.com/2015/01/the-coordinator/">post by Soroush Khanlou</a>.</p>
+
+<p>The one huge problem which I have with Coordinator pattern is keeping it in sync with ViewController hierarchy. Every Coordinator has a childCoordinators field which is used to keep navigation sub-flows. Users can finish sub-flow anytime they want by pressing back button in the navigation bar. Coordinators by default can’t handle this situation, and our child coordinator will live in childCoordinators array forever, which leads to huge memory leak.</p>
+
+<p>To fix this problem, we have to implement a navigation controller delegate in a coordinator to understand when the user finishes flow by pressing back button and remove child coordinator from the array. This solution described very well in the original <a href="http://khanlou.com/2017/05/back-buttons-and-coordinators/">post</a>. I think we can avoid this complexity and boilerplate by using Flow Controllers.</p>
+
+<h4 id="flow-controllers">Flow Controllers</h4>
+<p>Flow Controller is a UIViewController subclass which handles navigation flow by using ViewController containment feature. Let’s dive into the code example. Assume that we have Master-Details flow, where our app navigates from product list screen to product details.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+</pre></td><td class="rouge-code"><pre><span class="kd">import</span> <span class="kt">UIKit</span>
+
+<span class="kd">class</span> <span class="kt">ProductsFlowController</span><span class="p">:</span> <span class="kt">UIViewController</span> <span class="p">{</span>
+    <span class="kd">private</span> <span class="k">let</span> <span class="nv">navigation</span> <span class="o">=</span> <span class="kt">UINavigationController</span><span class="p">()</span>
+
+    <span class="k">override</span> <span class="kd">func</span> <span class="nf">viewDidLoad</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">super</span><span class="o">.</span><span class="nf">viewDidLoad</span><span class="p">()</span>
+        <span class="k">let</span> <span class="nv">productsVC</span> <span class="o">=</span> <span class="kt">ProductListViewController</span><span class="p">()</span>
+        <span class="n">productsVC</span><span class="o">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="k">self</span>
+        <span class="n">navigation</span><span class="o">.</span><span class="nf">show</span><span class="p">(</span><span class="n">productsVC</span><span class="p">,</span> <span class="nv">sender</span><span class="p">:</span> <span class="k">self</span><span class="p">)</span>
+        <span class="nf">add</span><span class="p">(</span><span class="n">navigation</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">protocol</span> <span class="kt">ProductsFlowControllerDelegate</span><span class="p">:</span> <span class="kt">AnyObject</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">startDetails</span><span class="p">(</span><span class="k">for</span> <span class="nv">productId</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kd">extension</span> <span class="kt">ProductsFlowController</span><span class="p">:</span> <span class="kt">ProductsFlowControllerDelegate</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">startDetails</span><span class="p">(</span><span class="k">for</span> <span class="nv">productId</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">let</span> <span class="nv">productVC</span> <span class="o">=</span> <span class="kt">ProductDetailsViewController</span><span class="p">(</span><span class="nv">productId</span><span class="p">:</span> <span class="n">productId</span><span class="p">)</span>
+        <span class="n">navigation</span><span class="o">.</span><span class="nf">show</span><span class="p">(</span><span class="n">productVC</span><span class="p">,</span> <span class="nv">sender</span><span class="p">:</span> <span class="k">self</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>As you can see, ProductsFlowController creates UINavigationController, add it as a child, then it pushes ProductListViewController to the NavigationController which it owns. It also sets delegate to ProductListViewController which will be used to ask FlowController to show details of the selected product.</p>
+
+<p>Here is my extension which I use to add child ViewControllers to a parent.</p>
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre></td><td class="rouge-code"><pre><span class="kd">extension</span> <span class="kt">UIViewController</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">add</span><span class="p">(</span><span class="n">_</span> <span class="nv">child</span><span class="p">:</span> <span class="kt">UIViewController</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nf">addChild</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
+        <span class="n">view</span><span class="o">.</span><span class="nf">addSubview</span><span class="p">(</span><span class="n">child</span><span class="o">.</span><span class="n">view</span><span class="p">)</span>
+        <span class="n">child</span><span class="o">.</span><span class="nf">didMove</span><span class="p">(</span><span class="nv">toParent</span><span class="p">:</span> <span class="k">self</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<h4 id="handling-sub-flows-with-flow-controllers">Handling sub-flows with Flow Controllers</h4>
+<p>Let’s take a look at another example where we have to start sub-flow which handled by separated Flow Controller.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre></td><td class="rouge-code"><pre><span class="kd">extension</span> <span class="kt">ProductsFlowController</span><span class="p">:</span> <span class="kt">ProductsFlowControllerDelegate</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">startDetails</span><span class="p">(</span><span class="k">for</span> <span class="nv">productId</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">let</span> <span class="nv">detailsFlow</span> <span class="o">=</span> <span class="kt">DetailsFlowController</span><span class="p">(</span><span class="nv">productId</span><span class="p">:</span> <span class="n">productId</span><span class="p">)</span>
+        <span class="n">navigation</span><span class="o">.</span><span class="nf">show</span><span class="p">(</span><span class="n">detailsFlow</span><span class="p">,</span> <span class="nv">sender</span><span class="p">:</span> <span class="k">self</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>In this example, we start DetailsFlowController which handles another flow. We don’t need to add it to childs array as we do it with Coordinators. It is plain UIViewController, as soon as the user presses the back button in the navigation bar, UINavigationController will remove this Flow Controller both from the screen and the memory. As you can see by using UIViewController as FlowControllers, we don’t need to deal with the synchronization between flow and visible ViewController. It is coming out of the box from iOS SDK.</p>
+
+<h4 id="appflowcontroller">AppFlowController</h4>
+<p>Very often we are using UITabBarController as a rootViewController in our app. Let’s extract tab configuration from AppDelegate and wrap inside AppFlowController. Here is a quick example of this idea.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+</pre></td><td class="rouge-code"><pre><span class="kd">import</span> <span class="kt">UIKit</span>
+
+<span class="kd">class</span> <span class="kt">AppFlowViewController</span><span class="p">:</span> <span class="kt">UIViewController</span> <span class="p">{</span>
+    <span class="kd">private</span> <span class="k">let</span> <span class="nv">tabController</span> <span class="o">=</span> <span class="kt">UITabBarController</span><span class="p">()</span>
+
+    <span class="k">override</span> <span class="kd">func</span> <span class="nf">viewDidLoad</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">super</span><span class="o">.</span><span class="nf">viewDidLoad</span><span class="p">()</span>
+        <span class="n">tabController</span><span class="o">.</span><span class="n">viewControllers</span> <span class="o">=</span> <span class="p">[</span><span class="kt">ProductsFlowController</span><span class="p">()]</span>
+        <span class="nf">add</span><span class="p">(</span><span class="n">tabController</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">@UIApplicationMain</span>
+<span class="kd">class</span> <span class="kt">AppDelegate</span><span class="p">:</span> <span class="kt">UIResponder</span><span class="p">,</span> <span class="kt">UIApplicationDelegate</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">window</span><span class="p">:</span> <span class="kt">UIWindow</span><span class="p">?</span>
+
+    <span class="kd">func</span> <span class="nf">application</span><span class="p">(</span><span class="n">_</span> <span class="nv">application</span><span class="p">:</span> <span class="kt">UIApplication</span><span class="p">,</span> <span class="n">didFinishLaunchingWithOptions</span> <span class="nv">launchOptions</span><span class="p">:</span> <span class="p">[</span><span class="kt">UIApplication</span><span class="o">.</span><span class="kt">LaunchOptionsKey</span><span class="p">:</span> <span class="kt">Any</span><span class="p">]?)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span> <span class="p">{</span>
+        <span class="n">window</span> <span class="o">=</span> <span class="kt">UIWindow</span><span class="p">(</span><span class="nv">frame</span><span class="p">:</span> <span class="kt">UIScreen</span><span class="o">.</span><span class="n">main</span><span class="o">.</span><span class="n">bounds</span><span class="p">)</span>
+        <span class="n">window</span><span class="p">?</span><span class="o">.</span><span class="n">rootViewController</span> <span class="o">=</span> <span class="kt">AppFlowViewController</span><span class="p">()</span>
+        <span class="n">window</span><span class="p">?</span><span class="o">.</span><span class="nf">makeKeyAndVisible</span><span class="p">()</span>
+        <span class="k">return</span> <span class="kc">true</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>As you can see in the example above, we create AppFlowController which creates UITabBarController and populate every tab with separated navigation flow.</p>
+
+<h4 id="conclusion">Conclusion</h4>
+<p>Today we talked about navigation flow and how we can extract it into Flow Controllers by using ViewController containment feature. It gives us an opportunity to reuse our ViewControllers and make them more testable. We will continue to cover ViewController containment feature in next posts.</p>
+
+  </article>
+</div>
+
+      </div>
+    </div>
+    <footer class="site-footer">
+
+  <div class="wrapper">
+  	<p>This site was built using <a href="http://jekyllrb.com" target="_blank">Jekyll</a> and is hosted on <a href="https://github.com" target="_blank">Github</a> Photos from <a href="https://unsplash.com" target="_blank">Unsplash</a> and text generated with <a href="http://hipsum.co" target="_blank">Hipster Ipsum</a>. &#169; 2015</p>
+  </div>
+
+</footer>
+
+  </body>
+</html>
