@@ -8,12 +8,14 @@
 
         <a class="page-link" href="{{ site.baseurl }}/">blog</a>
 
-        {% for link in site.data.topics %}
-          {% if link.title %}
-          <a class="page-link" href="{{ link.url | prepend: site.baseurl }}">{{ link.title }}</a>
+        {% for page in site.pages %}
+          {% if page.title %}
+          <a class="page-link" href="{{ page.url | prepend: site.baseurl }}">{{ page.title }}</a>
           {% endif %}
         {% endfor %}
 
+        <a class="page-link fa fa-linkedin" href="https://www.linkedin.com/in/{{ site.linkedin }}" data-toggle="tooltip" target="_blank" title="LinkedIn"></a>
+        <a class="page-link fa fa-github" href="https://github.com/{{ site.github }}" data-toggle="tooltip" target="_blank" title="GitHub"></a>
       </div>
     </nav>
 

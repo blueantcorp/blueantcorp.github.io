@@ -1,4 +1,1 @@
----
----
-# blueantcorp.github.io
-www.blueantcorp.com
+blueantcorp.github.io

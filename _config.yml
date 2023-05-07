@@ -1,19 +1,18 @@
 # Site settings
-site:
-  title: blueantcorp.com
-  description: descr about blueantcorp.com
-  email: info@blueantcorp.com
+title: blueantcorp.com
+description: descr about blueantcorp.com
+email: info@blueantcorp.com
 
-  # Social
-  github: blueantcorp
-  twitter: blueantcorp
-  linkedin: blueantcorp
+# Social
+github: blueantcorp
+twitter: blueantcorp
+linkedin: blueantcorp
 
-  # Build settings
-  baseurl: /
-  url:  https://www.blueantcorp.com
-  markdown: kramdown
-  highlighter: rouge
+# Build settings
+baseurl: /
+url:  https://www.blueantcorp.com
+markdown: kramdown
+highlighter: rouge
 
 author:
   name: emile
@@ -27,17 +26,40 @@ author:
 paginate: 15
 paginate_path: "/blog/page:num/"
 
+navigation:
+  - title: 'teams'
+    description: 'teams description'
+    permalink: '/teams/'
+
+  - title: 'development'
+    category: 'development'
+    description: 'development description'
+    permalink: '/development/'
+    published: true
+  
+  - title: 'agile'
+    category: 'agile'
+    permalink: '/agile/'
+    published: true
+    
+
 # Collections
 collections:
   development:
     output: true
-    permalink: /development/:path/
+    permalink: /development/:title
+
   teams:
-    output: false
-    permalink: /teams/:path/
+    output: true
+    permalink: /teams/:title
+
   agile:
     output: true
-    permalink: /agile/:path/
+    permalink: /agile/:title
+
+exclude:
+  - README.md
+  - LICENSE
 
 # Plugins
 plugins:

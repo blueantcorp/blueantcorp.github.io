@@ -1,7 +1,0 @@
-- title: test
-  url: /test/
-  published: true
-  layout: page
-  permalink: /test/index.html
-  description: mobile development topics
-  output: true
