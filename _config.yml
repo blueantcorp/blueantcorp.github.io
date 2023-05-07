@@ -11,6 +11,7 @@ linkedin: blueantcorp
 # Build settings
 baseurl: 
 url:  https://www.blueantcorp.com
+
 markdown: kramdown
 highlighter: rouge
 
@@ -27,9 +28,6 @@ paginate: 15
 paginate_path: "/blog/page:num/"
 
 navigation:
-  - title: 'teams'
-    description: 'teams description'
-    permalink: '/teams/'
 
   - title: 'development'
     category: 'development'
@@ -38,9 +36,14 @@ navigation:
     published: true
   
   - title: 'agile'
+    description: 'agile description'
     category: 'agile'
     permalink: '/agile/'
-    published: true
+    published: false
+
+  - title: 'teams'
+    description: 'teams description'
+    published: false
     
 
 # Collections

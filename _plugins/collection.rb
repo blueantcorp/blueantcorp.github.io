@@ -17,8 +17,8 @@ module Jekyll
             data.each do |data|
                 name = 'index.html'
                 title = data['title']
-                category = data['category']
-                permalink = data['permalink']
+                category  = data['category']  || title
+                permalink = data['permalink'] || "/#{category}/"
                 published = data['published'] || false
                 if title && category && permalink && published
                     page = Jekyll::DataPage.new(site, site.source, permalink, name)

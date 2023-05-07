@@ -15,7 +15,7 @@ z-index: 50;
 }
 
 .site-title {
-font-size: 20px;
+font-size: 16px;
 line-height: $nav-height;
 letter-spacing: -1px;
 margin-bottom: 0;
@@ -119,7 +119,7 @@ margin: 0px 0;
 list-style: none;
     > li {
 margin-bottom: $vertical-spacing-unit;
-    }
+    } 
 }
 .contacticon {
 font-size: 60px;
@@ -178,7 +178,7 @@ font-size: 42px;
 }
 
 /** blueantcorp formatting ********************************************/
-.blueantcorp-title {
+.post-list-title {
 font-size: 24px;
 letter-spacing: -1px;
 line-height: 1;
