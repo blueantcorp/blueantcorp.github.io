@@ -281,8 +281,11 @@ html { color-scheme: light; --page-color: #fdfdfd; --ink-color: #666; --highligh
 
 .site-header, .site-footer { border-color: #e6e6e6; }
 
+.post-list-title { color: var(--highlight-color); }
+
 @media (prefers-color-scheme: dark) { html { color-scheme: dark; --page-color: #1D2126; --ink-color: #acbac7; --highlight-color: #FF3636; }
-  .site-header, .site-footer { border-color: #2d333b; } }
+  .site-header, .site-footer { border-color: #2d333b; }
+  .post-list-title { color: var(--highlight-color); } }
 html { background-color: var(--page-color); accent-color: var(--highlight-color); }
 
 body, .site-header, .site-footer { background-color: var(--page-color); color: var(--ink-color); }
@@ -295,8 +298,6 @@ a:hover { color: var(--highlight-color); }
 .pagination { color: #2d333b; }
 .pagination a { color: #434c56; }
 .pagination a:hover { color: var(--highlight-color); }
-
-.post-list-title { color: var(--highlight-color); }
 
 .post-description { color: var(--highlight-color); }
 

@@ -7,6 +7,7 @@ layout: page
     <li>
         <h2><a class="post-list-title" href="{{ page.url | prepend: site.baseurl }}">{{ page.title }}</a></h2>
         <p class="post-meta">{{ page.date | date_to_string }}</p>
+        <p class="post-describtion">{{ page.description }}</p>
     </li>
 {% endfor %}
 </ul>

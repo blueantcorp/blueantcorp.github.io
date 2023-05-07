@@ -47,6 +47,7 @@ blueantcorp:
     - title: 'build'
       category: 'toolchain'
       description: 'build and automation toolchain'
+      permalink: '/toolchain/'
       published: true
       order: 3
     
@@ -85,7 +86,6 @@ plugins:
   - jekyll-paginate
   - jekyll-index-page
 
-# 
 # Markdown
 encoding: utf-8
 markdown: kramdown

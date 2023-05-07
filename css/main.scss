@@ -61,6 +61,10 @@ html {
     border-color: #e6e6e6;
 }
 
+.post-list-title {
+    color: var(--highlight-color)
+}
+
 @media (prefers-color-scheme: dark) {
     html {
         color-scheme: dark;
@@ -71,6 +75,10 @@ html {
 
     .site-header, .site-footer {
         border-color: #2d333b;
+    }
+
+    .post-list-title {
+        color: var(--highlight-color)
     }
 }
 
@@ -106,10 +114,6 @@ a {
             color: var(--highlight-color);
         }
     }
-}
-
-.post-list-title {
-    color: var(--highlight-color)
 }
 
 .post-description {
