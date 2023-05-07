@@ -57,19 +57,21 @@ blueantcorp:
     - title: 'develop'
       category: 'development'
       description: 'mobile development'
-      permalink: '/development/'
+      permalink: '/development.html'
       published: true
       order: 2
 
     - title: 'build'
       category: 'toolchain'
       description: 'build and automation toolchain'
+      permalink: '/toolchain.html'
       published: true
       order: 3
     
     - title: 'plan'
       category: 'management'
       description: 'planning and management'
+      permalink: '/management.html'
       published: true
       order: 1
 
