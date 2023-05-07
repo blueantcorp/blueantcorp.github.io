@@ -1,3 +1,5 @@
+$schema: "https://www.blueantcorp.com/schema.json"
+
 # Site settings
 title: blueantcorp.com
 description: descr about blueantcorp.com
@@ -43,8 +45,6 @@ paginate: 5
 paginate_path: "/blog/:num/"
 
 blueantcorp:
-  $schema: "http://json-schema.org/draft-04/schema#"
-  $id: "definitions/schema.json"
   structure:
     - title: 'develop'
       category: 'development'
@@ -67,7 +67,6 @@ blueantcorp:
 
     - title: 'teams'
       description: 'teams description'
-      order: 1
     
 
 # Collections
