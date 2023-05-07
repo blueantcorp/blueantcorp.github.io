@@ -1,4 +1,8 @@
-$schema: "https://www.blueantcorp.com/schema.json"
+lsi: false
+safe: true
+incremental: false
+gist:
+  noscript: false
 
 # Site settings
 title: blueantcorp.com
@@ -18,7 +22,7 @@ baseurl:
 url:  https://www.blueantcorp.com
 
 
-
+plugins_dir: _plugins
 
 # Markdown
 encoding: utf-8

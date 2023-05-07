@@ -1,6 +1,6 @@
-module Jekyll
+module IndexPageGenerator
 
-    class CollectionIndexPage < Page
+    class CollectionIndexPage < Jekyll::Page
       def initialize(site, base, dir, name)
         @site = site
         @base = base
@@ -22,7 +22,7 @@ module Jekyll
         end
     end
 
-    class CollectionIndexPageGenerator < Generator
+    class CollectionIndexPageGenerator < Jekyll::Generator
       safe true
       priority :highest
 
