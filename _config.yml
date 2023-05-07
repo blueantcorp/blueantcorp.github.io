@@ -96,7 +96,5 @@ collections:
     permalink: "/teams/:title"
 
 # Plugins
-whihte_listed_plugins:
-  - IndexPageGenerator
 plugins:
   - jekyll-paginate
