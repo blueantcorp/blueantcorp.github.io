@@ -22,9 +22,6 @@ baseurl:
 url:  https://www.blueantcorp.com
 
 
-plugins_dir: _plugins
-whitelist: ['jekyll-paginate']
-
 # Markdown
 encoding: utf-8
 markdown: kramdown
@@ -99,5 +96,7 @@ collections:
     permalink: "/teams/:title"
 
 # Plugins
+whihte_listed_plugins:
+  - IndexPageGenerator
 plugins:
   - jekyll-paginate
