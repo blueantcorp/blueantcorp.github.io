@@ -9,7 +9,6 @@ title: blueantcorp.com
 description: descr about blueantcorp.com
 email: info@blueantcorp.com
 
-
 timezone: Europe/London
 
 # Social
@@ -17,25 +16,9 @@ github: blueantcorp
 twitter: blueantcorp
 linkedin: blueantcorp
 
-# U
+# URL
 baseurl: 
 url:  https://www.blueantcorp.com
-
-
-# Markdown
-encoding: utf-8
-markdown: kramdown
-highlighter: rouge
-kramdown:
-  input: GFM
-  syntax_highlighter_opts:
-    default_lang: swift
-    css_class: 'highlight'
-    span:
-      line_numbers: false
-    block:
-      line_numbers: true
-      start_line: 1
 
 # Pagination
 paginate: 4
@@ -57,21 +40,19 @@ blueantcorp:
     - title: 'develop'
       category: 'development'
       description: 'mobile development'
-      permalink: '/development.html'
+      permalink: '/development/'
       published: true
       order: 2
 
     - title: 'build'
       category: 'toolchain'
       description: 'build and automation toolchain'
-      permalink: '/toolchain.html'
       published: true
       order: 3
     
     - title: 'plan'
       category: 'management'
       description: 'planning and management'
-      permalink: '/management.html'
       published: true
       order: 1
 
@@ -103,3 +84,30 @@ whitelist:
 plugins:
   - jekyll-paginate
   - jekyll-index-page
+
+# 
+# Markdown
+encoding: utf-8
+markdown: kramdown
+highlighter: rouge
+kramdown:
+  input: GFM
+  syntax_highlighter_opts:
+    default_lang: swift
+    css_class: 'highlight'
+    span:
+      line_numbers: false
+    block:
+      line_numbers: true
+      start_line: 1
+
+# Compress HTML
+compress_html:
+  clippings: all
+  comments: [""]
+  endings: [html, head, body, li, dt, dd, rt, rp, optgroup, option, colgroup, caption, thead, tbody, tfoot, tr, td, th]
+  profile: false
+  blanklines: false
+  ignore:
+    envs: []
+    elements: [code, pre, script, style, textarea]

@@ -133,56 +133,65 @@ text-align: center;
  * Posts  **********************************************************
  */
 .post-header {
-margin-bottom: $vertical-spacing-unit;
+    margin-bottom: $vertical-spacing-unit;
 }
 .post-title {
-font-size: 42px;
-letter-spacing: -1px;
-line-height: 1;
-text-transform: capitalize;
-@include media-query($on-laptop) {
-font-size: 36px;
+    font-size: 42px;
+    letter-spacing: -1px;
+    line-height: 1;
+    text-transform: capitalize;
+    margin: 0;
+    @include media-query($on-laptop) {
+        font-size: 36px;
     }
 }
 .post-content {
-h2 {
-font-size: 42px;
-@include media-query($on-laptop) {
-font-size: 28px;
+    h2 {
+        font-size: 42px;
+        @include media-query($on-laptop) {
+            font-size: 28px;
         }
     }
-h3 {
-font-size: 30px;
-@include media-query($on-laptop) {
-font-size: 22px;
+    h3 {
+        font-size: 30px;
+        @include media-query($on-laptop) {
+            font-size: 22px;
         }
     }
-h4 {
-font-size: 20px;
-@include media-query($on-laptop) {
-font-size: 18px;
+    h4 {
+        font-size: 20px;
+        @include media-query($on-laptop) {
+            font-size: 18px;
         }
     }
 }
 .post-description {
-color: $theme-color;
+    color: $theme-color;
+    margin: 0;
 }
 .post-meta {
-font-size: $small-font-size;
-color: $grey-color;
-margin-bottom: 0px; 
+    font-size: $small-font-size;
+    color: $grey-color;
+    margin-bottom: 0px; 
 }
 .post-link {
-display: block;
-font-size: 42px;
+    display: block;
+    font-size: 42px;
 }
 
 /** blueantcorp formatting ********************************************/
 .post-list-title {
-font-size: 24px;
-letter-spacing: -1px;
-line-height: 1;
-@include media-query($on-laptop) {
-font-size: 16px;
+    font-size: 24px;
+    letter-spacing: -1px;
+    line-height: 1;
+    @include media-query($on-laptop) {
+        font-size: 16px;
     }
+}
+
+/**
+ * Code highlighter **********************************************************
+ */
+.highlight {
+    margin: $vertical-spacing-unit 0;
 }

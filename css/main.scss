@@ -2,8 +2,6 @@
 ---
 @charset "utf-8";
 
-
-
 // Our variables
 $base-font-family:              Helvetica, sans-serif;
 $base-font-size:                18px;
@@ -34,13 +32,14 @@ $on-laptop:        800px;
 /* COLORS  */
 $red:  #FF3636;
 $orange: #F29105;
-$blue: #2698BA;
+$blue: #3070B6;
 $green: #11D68B;
 $lime_green: #B7D12A;
 $purple: #B509AC;
 
 /* Set theme color *************************/
 $theme-color: $red;
+
 
 
 // Using media queries with like this:
@@ -62,10 +61,20 @@ $theme-color: $red;
 
 // Light mode
 @media (prefers-color-scheme: light) {
+
     body, .site-header, .site-footer {
         background-color: $background-color;
+        color: $text-color;
+        font-weight: 500;
     }
-    body, a {
+    a, h1 {
+        color: $theme-color;
+        font-weight: 200;
+    }
+    .post-title {
+        color: $theme-color;
+    }
+    .post-description {
         color: $text-color;
     }
     .site-header {
@@ -75,14 +84,20 @@ $theme-color: $red;
         color: $grey-color-dark;
         border-top: 1px solid $grey-color-light;
     }
+    .highlight {
+        border: 1px;
+        border-radius: 20px;
+        background-color: #14263f;
+    }
 }
 
 // Dark mode
 @media (prefers-color-scheme: dark) {
     body, .site-header, .site-footer {
         background-color: $background-color-dark;
+        color: $text-color-dark;
     }
-    body, a {
+    a, body {
         color: $text-color-dark;
     }
     .paginator {
