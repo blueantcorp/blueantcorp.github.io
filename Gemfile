@@ -10,7 +10,7 @@ gem "webrick"
 group :jekyll_plugins do
     gem "jekyll-paginate"
     gem "github-pages"
-    gem "jekyll-index-page", url: "http://github.com/openjournals/jekyll-index-page" 
+    gem "jekyll-index-page", github: "openbynature/jekyll-index-page" 
 end
 
 # gem "jekyll-theme-minimal"

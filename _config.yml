@@ -96,5 +96,8 @@ collections:
     permalink: "/teams/:title"
 
 # Plugins
+whitelist:
+  - jekyll-index-page
 plugins:
   - jekyll-paginate
+  - jekyll-index-page
