@@ -5,15 +5,23 @@ title: blueantcorp.com
 description: descr about blueantcorp.com
 email: info@blueantcorp.com
 
+
+timezone: Europe/London
+
 # Social
 github: blueantcorp
 twitter: blueantcorp
 linkedin: blueantcorp
 
-# Build settings
+# U
 baseurl: 
 url:  https://www.blueantcorp.com
 
+
+
+
+# Markdown
+encoding: utf-8
 markdown: kramdown
 highlighter: rouge
 kramdown:
@@ -27,29 +35,27 @@ kramdown:
       line_numbers: true
       start_line: 1
 
-permalink: pretty
-encoding: utf-8
-timezone: Europe/London
-
-
-author:
-  name: emile
-  email: emile@blueantcorp.com
-  github: blueantcorp
-  twitter: blueantcorp
-  linkedin: emilep
-  bio: bio.
-
 # Pagination
-paginate: 5
+paginate: 4
 paginate_path: "/blog/:num/"
+permalink: pretty
+pretty: true
 
 blueantcorp:
+
+  author:
+    name: emile
+    email: emile@blueantcorp.com
+    github: blueantcorp
+    twitter: blueantcorp
+    linkedin: emilep
+    bio: bio.
+
   structure:
     - title: 'develop'
       category: 'development'
       description: 'mobile development'
-      permalink: '/development/'
+      permalink: '/_development/index.html'
       published: true
       order: 2
 
