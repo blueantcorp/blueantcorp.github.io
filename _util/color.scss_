@@ -1,5 +1,3 @@
----
----
 :root {
  
     // Color palette
@@ -52,6 +50,7 @@
     --color-text:           #666666;
     --color-code:           #14263f;
     --color-border:         #e6e6e6;
+   
     --color-bg:             #fdfdfd;
     --color-bg-light:       #e6e6e6;
     --color-bg-dark:        #14263f;

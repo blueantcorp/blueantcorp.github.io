@@ -2,25 +2,30 @@
 ---
 @charset "utf-8";
 
-// Presets
-$base-font-family:              Helvetica, sans-serif;
-$base-font-size:                18px;
-$small-font-size: $base-font-size * 0.875;
-$base-line-height:              1.5em;
+@import "theme";
 
-$horizontal-spacing-unit:       50px;
-$vertical-spacing-unit:         20px;
-$nav-height:                    36px;
+:root {
 
-$spacing-unit:     30px;
+    // Fonts
+    --font-family: Helvetica, sans-serif;
+    --font-weight: 100;
+    --font-size: 18px;
+    --small-font-size: var(--font-size) * 0.875;
+    --line-height: 1.5em;
 
+    // Spacing units
+    --horizontal-spacing-unit: 50px;
+    --vertical-spacing-unit: 20px;
+    --spacing-unit: 30px;
 
-$brand-color:      #2a7ae2;
+    // Navigation
+    --navigation-height: 36px;
 
-
-$on-palm:          600px;
-$on-laptop:        800px;
-$on-desktop:       1000px;
+    // Devices
+    --palm: 600px;
+    --laptop: 800px;
+    --desktop: 1000px;
+}
 
 // Device size media queries
 @mixin media-query($device) {
@@ -28,6 +33,7 @@ $on-desktop:       1000px;
         @content;
     }
 }
+
 // Using media queries with like this:
 // @include media-query($palm) {
 //     .wrapper {
@@ -37,105 +43,67 @@ $on-desktop:       1000px;
 // }
 
 // Import partials
-@import "base", "layout", "syntax-highlighting";
-
-:root {
-    --background-primary:   #fdfdfd;
-    --background-secondary: #e6e6e6;
-    --background-highlight: #d9d9d9;
-    --background-border:    #cccccc;
-    --background-accent:    #3070B6;
-    --background-text:      #666666;
-    --background-code:      #14263f;
-}
-
-// Color schemes
-html {
-    color-scheme: light;
-    --page-color: #fdfdfd;
-    --ink-color: #666;
-    --highlight-color: #3070B6;
-}
-
-.site-header, .site-footer {
-    border-color: #e6e6e6;
-}
-
-.post-list-title {
-    color: var(--highlight-color)
-}
-
-@media (prefers-color-scheme: dark) {
-    html {
-        color-scheme: dark;
-        --page-color: #1D2126;
-        --ink-color: #acbac7;
-        --highlight-color: #FF3636;
-    }
-
-    .site-header, .site-footer {
-        border-color: #2d333b;
-    }
-
-    .post-list-title {
-        color: var(--highlight-color)
-    }
-}
+@import "base", 
+        "layout", 
+        "syntax";
 
 html {
-    background-color: var(--page-color);
     accent-color: var(--highlight-color);
-}
-
-body, .site-header, .site-footer {
-    background-color: var(--page-color);
-    color: var(--ink-color);
+    background-color: var(--bg-color);
+    color: var(--text-primary-color);
 }
 
 a {
-    color: var(--ink-color);
+    color: var(--text-link-color);
     text-decoration: none;
     font-weight: 200;
     &:hover {
-        color: var(--highlight-color);
+        color: var(--text-link-hover-color);
     }
 }
 
-// Header
+// Header and footer
 .site-title {
-    color: var(--highlight-color);
+    color: var(--header-title);
 }
 
-.pagination {
-    color: #2d333b;
+.site-header {
+    border-bottom: 1px solid var(--color-border);
+    background-color: var(--header-bg);
+}
+
+.site-footer {
+    color: var(--footer-text);
+    border-top: 1px solid var(--color-border);
+    background-color: var(--footer-bg);
     a {
-        color: #434c56;
+        color: var(--text-link-color);
         &:hover {
-            color: var(--highlight-color);
+            color: var(--text-link-hover-color);
         }
     }
 }
 
-.post-description {
-    color: var(--highlight-color);
+// Post
+.post-list-title {
+    color: var(--post-tilte)
 }
 
 .post-meta {
-    color: #434c56;
+    color: var(--post-meta);
 }
 
-.site-header {
-    border: 1px 0 0;
+.post-description {
+    color: var(--post-description);
 }
 
-// Footer
-.site-footer {
-    color: #2d333b;
-    border: 1px 0 0;
+// Pagination
+.pagination {
+    color: var(--text-paginator);
     a {
-        color: #434c56;
+        color: var(--text-link-color);
         &:hover {
-            color: var(--highlight-color);
+            color: var(--text-link-hover-color);
         }
     }
 }
@@ -144,8 +112,5 @@ a {
 .highlight {
     border: 1px;
     border-radius: 20px;
-    background-color: #14263f;
-    @media (prefers-color-scheme: dark) {
-        background-color: #101010;
-    }
+    background-color: var(--code-bg-color);
 }

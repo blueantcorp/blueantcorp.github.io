@@ -2,49 +2,50 @@
  * Site header   **********************************************************
  */
 .site-header {
-border-bottom: 1px solid green;
-background-color: #fff;
-opacity: 0.75;
-position:fixed;
-left:0px;
-top:0px;
-height:36px;
-width:100%;
-z-index: 50;
+    border-bottom: 1px solid green;
+    background-color: #fff;
+    opacity: 0.75;
+    position:fixed;
+    left:0px;
+    top:0px;
+    height:36px;
+    width:100%;
+    z-index: 50;
 }
 
 .site-title {
-font-size: 24px;
-line-height: $nav-height;
-letter-spacing: -1px;
-margin-bottom: 0;
-color: accent-color;
-&:hover {
-text-decoration: none;
-color: accent-color;
+    font-size: 24px;
+    line-height: $nav-height;
+    letter-spacing: -1px;
+    margin-bottom: 0;
+    color: accent-color;
+    &:hover {
+        text-decoration: none;
+        color: accent-color;
     }
 }
+
 .site-nav {
-float: right;
-line-height: $nav-height;
-.page-link{
-line-height: $base-line-height;
+    float: right;
+    line-height: $nav-height;
+    .page-link{
+        line-height: $base-line-height;
         // Gaps between nav items, but not on the first one
-&:not(:first-child) {
-margin-left: 10px;
+        &:not(:first-child) {
+            margin-left: 10px;
+            }
         }
-    }
-@include media-query($on-palm) {
-position: fixed;
-top: 0px;
-right: 10px;
-text-align: right;
-&:hover .trigger {
-display: block;
-padding-bottom: 5px;
+    @include media-query($on-palm) {
+        position: fixed;
+        top: 0px;
+        right: 10px;
+        text-align: right;
+        &:hover .trigger {
+            display: block;
+            padding-bottom: 5px;
         }
-.page-link {
-display: line;
+        .page-link {
+            display: line;
         }
     }
 }
@@ -74,15 +75,15 @@ display: line;
  * Site footer  **********************************************************
  */
 .site-footer {
-border-top: 1px solid green;
-font-size: 10px;
-background-color: green;
-padding: 2px;
-color: #aaa;
-position:fixed;
-left:0px;
-bottom:0px;
-width:100%;
+    border-top: 1px solid green;
+    font-size: 10px;
+    background-color: green;
+    padding: 2px;
+    color: #aaa;
+    position:fixed;
+    left:0px;
+    bottom:0px;
+    width:100%;
 }
 
 .site-footer p {
@@ -92,49 +93,57 @@ width:100%;
 /**
  * Pagination   **********************************************************
  */
-.pagination{
-max-width: -webkit-calc(800px - (#{$horizontal-spacing-unit} * 2));
-text-align: center;
-width: 100%;
-position: fixed;
-bottom: 50px;
+.paginationx{
+    max-width: -webkit-calc(800px - (#{$horizontal-spacing-unit} * 2));
+    text-align: center;
+    width: 100%;
+    position: fixed;
+    bottom: 50px;
 }
+
 .paginationicon {
-font-size: 50px;
-a {
-color: accent-color;
+    font-size: 50px;
+    a {
+        color: accent-color;
     }
 }
+
 /**
  * Page content   **********************************************************
  */
 .page-content {
-padding: 100px 0; /* VERTICAL PADDING FOR TITLE ON EVERY PAGE */
+    padding: 100px 0; /* VERTICAL PADDING FOR TITLE ON EVERY PAGE */
 }
+
 .page-heading {
-font-size: 20px;
+    font-size: 20px;
 }
+
 .post-list {
-margin: 0px 0;
-list-style: none;
+    margin: 0px 0;
+    list-style: none;
     > li {
-margin-bottom: $vertical-spacing-unit;
+        margin-bottom: $vertical-spacing-unit;
     } 
 }
+
 .contacticon {
-font-size: 60px;
-display:block;
-margin: 10px;
+    font-size: 60px;
+    display:block;
+    margin: 10px;
 }
+
 .center{
-text-align: center;
+    text-align: center;
 }
+
 /**
  * Posts  **********************************************************
  */
 .post-header {
     margin-bottom: $vertical-spacing-unit;
 }
+
 .post-title {
     font-size: 42px;
     letter-spacing: -1px;
@@ -145,6 +154,7 @@ text-align: center;
         font-size: 36px;
     }
 }
+
 .post-content {
     h2 {
         font-size: 42px;
@@ -165,15 +175,18 @@ text-align: center;
         }
     }
 }
+
 .post-description {
     color: accent-color;
     margin: 0;
 }
+
 .post-meta {
     font-size: $small-font-size;
     color: green;
     margin-bottom: 0px; 
 }
+
 .post-link {
     display: block;
     font-size: 42px;

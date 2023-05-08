@@ -1,0 +1,87 @@
+---
+author: "blueantcorp"
+---
+@charset "utf-8";
+
+:root {
+
+    // Color palette
+    --color-border:     rgba(230, 230, 230, 1.00);
+    --color-primary:    rgba(102, 102, 102, 1.00);
+    --color-secondary:  rgba(45, 51, 59, 1.00);
+    --color-highlight:  rgba(47, 112, 182, 1.00);
+    --color-meta:       rgba(67, 76, 86, 1.00);
+
+    // Background
+    --bg-color: rgba(253, 253, 253, 1.00);
+    --code-bg-color: rgba(20, 38, 63, 1.00);
+
+    // Text
+    --text-primary-color: var(--color-primary);
+    --text-secondary-color: var(--color-primary);
+
+    // Link
+    --text-link-color: var(--color-primary);
+    --text-link-hover-color: var(--color-highlight);
+
+    // Pagination
+    --text-paginator: var(--color-secondary);
+
+    // Header
+    --header-title: var(--color-highlight);
+    --header-text: var(--color-secondary);
+    --header-bg:  var(--bg-color);
+
+    // Article
+    --post-tilte: var(--color-highlight);
+    --post-meta: var(--color-meta);
+    --post-description: var(--color-primary);
+    --post-text: var(--color-primary);
+    
+    // Footer
+    --footer-text: var(--color-secondary);
+    --footer-bg: var(--bg-color);
+}
+
+// Dark mode
+@media (prefers-color-scheme: dark) {
+    :root {
+
+        // Color palette
+        --color-border:     rgba(45, 51, 59, 1.00);
+        --color-primary:    rgba(172, 186, 199, 1.00);
+        --color-secondary:  rgba(45, 51, 59, 1.00);
+        --color-highlight:  rgba(255, 54, 54, 1.00);
+        --color-meta:       rgba(67, 76, 86, 1.00);
+    
+        // Background
+        --bg-color: rgba(29, 33, 39, 1.00);
+        --code-bg-color: rgba(16, 16, 16, 1.00);
+    
+        // Text
+        --text-primary-color: var(--color-primary);
+        --text-secondary-color: var(--color-secondary);
+    
+        // Link
+        --text-link-color: var(--color-primary);
+        --text-link-hover-color: var(--color-highlight);
+    
+        // Pagination
+        --text-paginator: var(--color-secondary);
+    
+        // Header
+        --header-title: var(--color-highlight);
+        --header-text: var(--color-secondary);
+        --header-bg:  var(--bg-color);
+    
+        // Article
+        --post-tilte: var(--color-highlight);
+        --post-meta: var(--color-meta);
+        --post-description: var(--color-primary);
+        --post-text: var(--color-primary);
+        
+        // Footer
+        --footer-text: var(--color-meta);
+        --footer-bg: var(--bg-color);
+    }
+}
